@@ -1,5 +1,218 @@
-<!doctype html><html lang="ja"><meta charset="utf-8"><link rel="stylesheet" href="assets/v2.css"><title>Python補助</title><body><header><b>Python補助演習</b><nav><a href="index.html">ホーム</a></nav></header><main><section class="card"><i>テキスト p.83-91</i><h2>基本統計量・欠損・外れ値</h2><pre>import pandas as pd
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Python補助・標本抽出シミュレーター (第4・5章連動) | ビジネスパーソンのためのデータリテラシー入門</title>
+  <link rel="stylesheet" href="assets/style.css">
+  <link rel="stylesheet" href="assets/v2.css">
+</head>
+<body>
+  <header>
+    <b>第4章 p.103-106 & 第5章 p.150-158 連動</b>
+    <h1>Python補助演習 ＆ 母集団と標本・標準誤差シミュレーター</h1>
+    <nav>
+      <a href="index.html">ホーム</a>
+      <a href="workbook.html">Excel風操作 (第3・4章)</a>
+      <a href="quiz.html">章別確認問題 (第1〜5章)</a>
+      <a href="sql.html">SQL Lab (第5章)</a>
+      <a href="python.html" class="active">Python補助・標本体験 (第4・5章)</a>
+    </nav>
+  </header>
+  <main>
+    <section class="card">
+      <i>第4章 p.103-106「推測統計学：母集団と標本・標本誤差と標準誤差」インタラクティブ体験</i>
+      <h2>🎲 標本抽出（サンプリング）と標準誤差シミュレーター</h2>
+      <p style="font-size:13.5px;margin:4px 0 12px;">テキスト p.104-106 で学ぶとおり、母集団から無作為抽出した<strong>標本平均</strong>は選ぶ標本によってばらつきますが、<strong>標本数（サンプルサイズ $n$）が大きくなるほど標準誤差（ばらつき）は小さくなり、母平均に近づきます</strong>。ボタンを押して実際の待ち時間データから無作為抽出を試してみましょう。</p>
+      <div style="margin-bottom:12px;">
+        <button type="button" id="btn-draw-sample">🎲 無作為抽出（n=5, n=20, n=100）を実行する</button>
+        <span id="pop-info" style="font-size:13.5px;font-weight:700;color:var(--navy);margin-left:8px;">母集団データを読み込み中...</span>
+      </div>
+      <div id="sim-results"></div>
+    </section>
+
+    <section class="card">
+      <div class="code-header">
+        <div>
+          <i>テキスト p.103-106</i>
+          <h2>1. データ確認（基本統計量と欠損値の確認）</h2>
+        </div>
+        <button type="button" class="secondary copy-btn" data-target="code1">コードをコピー</button>
+      </div>
+      <pre id="code1">import pandas as pd
+
 df = pd.read_csv("data/theme_park_wait_times_raw.csv")
-df["wait_time_min"].describe()
-df.isna().sum()</pre></section><section class="card"><i>テキスト p.103-106</i><h2>標本と標準誤差</h2><pre>for n in [5, 20, 100]:
-    print(n, df["wait_time_min"].sample(n).mean())</pre></section></main></body></html>
+print(df["wait_time_min"].describe())
+print(df.isna().sum())</pre>
+    </section>
+
+    <section class="card">
+      <div class="code-header">
+        <div>
+          <i>テキスト p.103-106</i>
+          <h2>2. 標本と標準誤差（Pythonによるランダムサンプリング）</h2>
+        </div>
+        <button type="button" class="secondary copy-btn" data-target="code2">コードをコピー</button>
+      </div>
+      <pre id="code2">for n in [5, 20, 100]:
+    print(n, df["wait_time_min"].dropna().sample(n).mean())</pre>
+    </section>
+
+    <section class="card">
+      <i>第5章 p.158「基本統計量の取得」連動</i>
+      <h2>📊 Excel関数・SQL・Python (pandas) 基本統計量 対照早見表</h2>
+      <p style="font-size:13.5px;margin:4px 0 10px;">テキスト p.158 の通り、基本統計量を求める関数名は Excel・SQL・Python で共通点が多く、対比して覚えるとDS検定対策にも実務にも役立ちます。</p>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>求めたい統計量 (p.83-85)</th>
+              <th>Excel 関数</th>
+              <th>SQL 集計関数</th>
+              <th>Python (pandas)</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>データ件数</strong></td>
+              <td><code>=COUNT(G2:G1126)</code></td>
+              <td><code>COUNT(wait_time_min)</code></td>
+              <td><code>df["wait_time_min"].count()</code></td>
+            </tr>
+            <tr>
+              <td><strong>合計値</strong></td>
+              <td><code>=SUM(G2:G1126)</code></td>
+              <td><code>SUM(wait_time_min)</code></td>
+              <td><code>df["wait_time_min"].sum()</code></td>
+            </tr>
+            <tr>
+              <td><strong>平均値（算術平均）</strong></td>
+              <td><code>=AVERAGE(G2:G1126)</code></td>
+              <td><code>AVG(wait_time_min)</code></td>
+              <td><code>df["wait_time_min"].mean()</code></td>
+            </tr>
+            <tr>
+              <td><strong>中央値（メディアン）</strong></td>
+              <td><code>=MEDIAN(G2:G1126)</code></td>
+              <td><code>PERCENTILE_CONT(0.5)</code></td>
+              <td><code>df["wait_time_min"].median()</code></td>
+            </tr>
+            <tr>
+              <td><strong>最小値 / 最大値</strong></td>
+              <td><code>=MIN(...)</code> / <code>=MAX(...)</code></td>
+              <td><code>MIN(...)</code> / <code>MAX(...)</code></td>
+              <td><code>df["wait_time_min"].min()</code> / <code>.max()</code></td>
+            </tr>
+            <tr>
+              <td><strong>分散（標本分散 / 不偏分散）</strong></td>
+              <td><code>=VAR.P(...)</code> / <code>=VAR.S(...)</code></td>
+              <td><code>VAR_POP(...)</code> / <code>VAR_SAMP(...)</code></td>
+              <td><code>df["wait_time_min"].var(ddof=0)</code> / <code>.var(ddof=1)</code></td>
+            </tr>
+            <tr>
+              <td><strong>標準偏差</strong></td>
+              <td><code>=STDEV.P(...)</code> / <code>=STDEV.S(...)</code></td>
+              <td><code>STDDEV_POP(...)</code> / <code>STDDEV_SAMP(...)</code></td>
+              <td><code>df["wait_time_min"].std(ddof=0)</code> / <code>.std(ddof=1)</code></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+  </main>
+  <footer>MACO029G ビジネスパーソンのためのデータリテラシー入門 | Python補助演習</footer>
+  <script>
+    (function () {
+      document.querySelectorAll(".copy-btn").forEach((btn) => {
+        btn.onclick = async () => {
+          const pre = document.getElementById(btn.dataset.target);
+          if (!pre) return;
+          await navigator.clipboard.writeText(pre.textContent);
+          const orig = btn.textContent;
+          btn.textContent = "✓ コピーしました";
+          setTimeout(() => (btn.textContent = orig), 1800);
+        };
+      });
+
+      let validWaits = [];
+      let popMean = 0;
+      let popStd = 0;
+
+      function sampleWithoutReplacement(arr, n) {
+        const copy = [...arr];
+        const out = [];
+        const count = Math.min(n, copy.length);
+        for (let i = 0; i < count; i++) {
+          const idx = Math.floor(Math.random() * (copy.length - i)) + i;
+          const tmp = copy[i];
+          copy[i] = copy[idx];
+          copy[idx] = tmp;
+          out.push(copy[i]);
+        }
+        return out;
+      }
+
+      function runSimulation() {
+        const container = document.getElementById("sim-results");
+        if (!container || !validWaits.length) return;
+        const sizes = [5, 20, 100];
+        const maxScale = Math.max(80, popMean * 1.6);
+        const targetPct = Math.min(100, (popMean / maxScale) * 100).toFixed(1);
+
+        const rowsHtml = sizes
+          .map((n) => {
+            const samp = sampleWithoutReplacement(validWaits, n);
+            const sMean = samp.reduce((a, b) => a + b, 0) / samp.length;
+            const diff = sMean - popMean;
+            const se = popStd / Math.sqrt(n);
+            const barPct = Math.min(100, Math.max(5, (sMean / maxScale) * 100)).toFixed(1);
+            return `
+              <div class="sim-row">
+                <div><strong>標本 n = ${n}</strong><br><small style="color:var(--muted);">標準誤差 SE=${se.toFixed(2)}</small></div>
+                <div class="sim-bar-wrap" title="赤線が母平均 (${popMean.toFixed(2)}分)">
+                  <div class="sim-target-line" style="left:${targetPct}%"></div>
+                  <div class="sim-bar" style="width:${barPct}%"></div>
+                </div>
+                <div style="text-align:right;">
+                  <strong>${sMean.toFixed(2)} 分</strong><br>
+                  <small style="color:${Math.abs(diff) < 3 ? "var(--good)" : "var(--bad)"};">母平均との差: ${diff >= 0 ? "+" : ""}${diff.toFixed(2)}分</small>
+                </div>
+              </div>`;
+          })
+          .join("");
+
+        container.innerHTML = rowsHtml + `<p style="font-size:12.5px;color:var(--muted);margin-top:6px;">※バー内の赤い縦線が母集団全体の平均値（母平均 ${popMean.toFixed(2)}分）です。何回かボタンを押すと、n=5 では大きくブレるのに対し、n=100 では赤線の近くに安定することが確認できます（p.105-106）。</p>`;
+      }
+
+      async function initSim() {
+        try {
+          const r = await fetch("data/theme_park_wait_times_raw.csv");
+          if (!r.ok) throw new Error(r.status);
+          const text = await r.text();
+          const lines = text.replace(/^\uFEFF/, "").trim().split(/\r?\n/);
+          const cols = lines.shift().split(",");
+          const wIdx = cols.indexOf("wait_time_min");
+          validWaits = lines
+            .map((l) => Number(l.split(",")[wIdx]))
+            .filter((v) => Number.isFinite(v) && v >= 0 && v < 180);
+          popMean = validWaits.reduce((a, b) => a + b, 0) / validWaits.length;
+          const variance = validWaits.reduce((acc, w) => acc + Math.pow(w - popMean, 2), 0) / validWaits.length;
+          popStd = Math.sqrt(variance);
+          const infoEl = document.getElementById("pop-info");
+          if (infoEl) {
+            infoEl.textContent = `母集団 (異常値除外後 N=${validWaits.length}件): 母平均 μ = ${popMean.toFixed(2)}分 / 母標準偏差 σ = ${popStd.toFixed(2)}分`;
+          }
+          runSimulation();
+        } catch (e) {
+          const infoEl = document.getElementById("pop-info");
+          if (infoEl) infoEl.textContent = "CSVの読み込みに失敗しました";
+        }
+      }
+
+      const btn = document.getElementById("btn-draw-sample");
+      if (btn) btn.onclick = runSimulation;
+      initSim();
+    })();
+  </script>
+</body>
+</html>

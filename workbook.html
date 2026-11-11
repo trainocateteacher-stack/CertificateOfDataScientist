@@ -1,1 +1,44 @@
-<!doctype html><html lang="ja"><meta charset="utf-8"><link rel="stylesheet" href="assets/excel.css"><title>Excel風演習</title><body><div class="top"><b>Excel風データ操作</b><a href="index.html">ホーム</a></div><div class="tabs">ファイル　 <b>ホーム</b>　 挿入　 データ　 数式</div><div class="ribbon"><div><small>並べ替えとフィルター</small><button id="asc">A→Z</button><button id="desc">Z→A</button><select id="weather"><option value="">天気:すべて</option><option value="sunny">晴れ</option><option value="cloudy">曇り</option><option value="rainy">雨</option></select></div><div><small>関数</small><button data-stat="mean">平均</button><button data-stat="median">中央値</button><button data-stat="sd">標準偏差</button></div><div><small>データ品質</small><button id="miss">欠損</button><button id="out">外れ値</button></div></div><div class="formula"><span id="cell">A1</span><b>fx</b><input id="fx" readonly></div><div class="sheet"><table id="tbl"></table></div><div class="bottom"><b>theme_park_raw</b>　｜　テキスト p.73-91：データ確認→理解→加工を実際に操作 <span id="status"></span></div><script src="assets/excel.js"></script></body></html>
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Excel風演習 (第3・4章連動) | ビジネスパーソンのためのデータリテラシー入門</title>
+  <link rel="stylesheet" href="assets/style.css">
+  <link rel="stylesheet" href="assets/excel.css">
+</head>
+<body>
+  <header>
+    <b>第3章・第4章 p.73-91 連動</b>
+    <h1>Excel風 データハンドリング・可視化・前処理演習</h1>
+    <nav>
+      <a href="index.html">ホーム</a>
+      <a href="workbook.html" class="active">Excel風操作 (第3・4章)</a>
+      <a href="quiz.html">章別確認問題 (第1〜5章)</a>
+      <a href="sql.html">SQL Lab (第5章)</a>
+      <a href="python.html">Python補助・標本体験 (第4・5章)</a>
+    </nav>
+  </header>
+  <div class="toolbar">
+    <button id="btn-raw" type="button" class="active">theme_park_raw</button>
+    <button id="btn-cleaned" type="button">theme_park_cleaned</button>
+    <button id="btn-q3" type="button">問3: フィルタ(ファミリー/ファンタジー)</button>
+    <button id="btn-q4" type="button">問4: ソート(待機時間・外れ値確認)</button>
+    <button id="btn-q5" type="button">問5: 異常値・欠損除外 (p.91)</button>
+    <button id="btn-reset" type="button" class="secondary">初期表示</button>
+  </div>
+  <div class="formula">
+    <span id="cell">A1</span>
+    <b>fx</b>
+    <input id="fx" readonly value="セルをクリックすると値や標準化zスコア・偏差値(p.86,90)が表示されます。">
+  </div>
+  <div class="sheet">
+    <table id="tbl"></table>
+  </div>
+  <div class="bottom">
+    <div><b>theme_park_raw / cleaned</b> | テキスト p.73-91 : データ確認(チェックリスト) → 理解(ヒストグラム・クロス集計・箱ひげ) → 加工(外れ値除外・標準化)</div>
+    <span id="status">データを読み込んでいます...</span>
+  </div>
+  <script src="assets/excel.js" defer></script>
+</body>
+</html>

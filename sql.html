@@ -1,1 +1,46 @@
-<!doctype html><html lang="ja"><meta charset="utf-8"><link rel="stylesheet" href="assets/sql2.css"><title>SQL Lab</title><body><header><b>SQL Lab｜テキスト p.152-157</b><a href="index.html">ホーム</a></header><main><section class="builder"><div id="zones"></div><pre id="query">SELECT *\nFROM theme_park;</pre><button id="run">実行 / アニメーション</button><button id="reset">リセット</button></section><aside><h3>theme_park｜項目一覧</h3><div id="fields"></div></aside><section class="preview"><b id="stage">元データ</b><table id="table"></table></section></main><script src="assets/sql2.js"></script></body></html>
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>SQL Lab (第5章 p.152-157連動) | ビジネスパーソンのためのデータリテラシー入門</title>
+  <link rel="stylesheet" href="assets/style.css">
+  <link rel="stylesheet" href="assets/sql2.css">
+</head>
+<body>
+  <header>
+    <b>第5章 p.152-158 / p.170 連動</b>
+    <h1>SQL Lab（ブラウザで動く簡易SQL演習：theme_park / students / club 対応）</h1>
+    <nav>
+      <a href="index.html">ホーム</a>
+      <a href="workbook.html">Excel風操作 (第3・4章)</a>
+      <a href="quiz.html">章別確認問題 (第1〜5章)</a>
+      <a href="sql.html" class="active">SQL Lab (第5章)</a>
+      <a href="python.html">Python補助・標本体験 (第4・5章)</a>
+    </nav>
+  </header>
+  <main>
+    <section class="panel">
+      <h2>SQL実行（SELECT / WHERE / ORDER BY / GROUP BY / INSERT / UPDATE 対応）</h2>
+      <p style="margin-top:0;font-size:13px;color:var(--muted);">共通題材 <code>theme_park</code> に加え、テキスト p.153-157 の <code>students</code> テーブル・<code>club</code> テーブルのSQL実行例もワンクリックで試せます。</p>
+      <textarea id="sql" rows="5">SELECT area, AVG(wait_time_min) FROM theme_park GROUP BY area</textarea>
+      <div>
+        <button id="run" type="button">▶ SQLを実行</button>
+        <button id="reset" type="button" class="secondary">初期状態にリセット</button>
+      </div>
+    </section>
+    <aside>
+      <h3>利用可能なテーブル・項目一覧</h3>
+      <div id="fields"></div>
+    </aside>
+    <section class="preview">
+      <b id="stage">元データ</b>
+      <div class="table-wrap">
+        <table id="table"></table>
+      </div>
+    </section>
+  </main>
+  <footer>MACO029G ビジネスパーソンのためのデータリテラシー入門 | 第5章 SQL Lab</footer>
+  <script src="assets/sql2.js" defer></script>
+</body>
+</html>

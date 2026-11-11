@@ -1,1 +1,179 @@
-<!doctype html><html lang="ja"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><link rel="stylesheet" href="assets/v2.css"><title>受講者演習ポータル</title><body><header><b>MAC0029G</b><h1>ビジネスパーソンのためのデータリテラシー入門</h1><nav><a href="index.html">ホーム</a><a href="workbook.html">Excel風操作</a><a href="quiz.html">章別確認問題</a><a href="sql.html">SQL Lab</a><a href="python.html">Python補助</a></nav></header><main><section class="card"><h2>テキストを進めながら、このサイトで演習します</h2><p>共通題材はテーマパーク待ち時間データです。</p></section><div class="grid"><section class="card"><i>第2章 p.21-32</i><h2>社会におけるデータ・AI利活用</h2><a href="quiz.html#ch2">確認問題</a></section><section class="card"><i>第3章 p.38-64</i><h2>ビジネス力</h2><a href="quiz.html#ch3">確認問題</a></section><section class="card"><i>第4章 p.72-129</i><h2>データサイエンス力</h2><a href="workbook.html">Excel風演習</a> <a href="quiz.html#ch4">確認問題</a></section><section class="card"><i>第5章 p.137-170</i><h2>データエンジニアリング力</h2><a href="sql.html">SQL Lab</a> <a href="quiz.html#ch5">確認問題</a></section></div></main></body></html>
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>受講者演習ポータル | ビジネスパーソンのためのデータリテラシー入門 (DS検定対応)</title>
+  <link rel="stylesheet" href="assets/style.css">
+  <link rel="stylesheet" href="assets/v2.css">
+</head>
+<body>
+  <header>
+    <b>MACO029G / MAC0029G-T1-03</b>
+    <h1>ビジネスパーソンのためのデータリテラシー入門 ～データサイエンティスト検定対応～</h1>
+    <nav>
+      <a href="index.html" class="active">ホーム</a>
+      <a href="workbook.html">Excel風操作 (第3・4章)</a>
+      <a href="quiz.html">章別確認問題 (第1〜5章)</a>
+      <a href="sql.html">SQL Lab (第5章)</a>
+      <a href="python.html">Python補助・標本体験 (第4・5章)</a>
+    </nav>
+  </header>
+  <main>
+    <section class="card">
+      <i>第1章 p.6-16 連動</i>
+      <h2>デジタルリテラシー（Di-Lite）とデータサイエンティスト検定の位置づけ</h2>
+      <p style="margin:6px 0 12px;">デジタルリテラシー協議会が定義する「Di-Lite」3領域のうち、本コースは<strong>数理・データサイエンス領域（DS検定 リテラシーレベル：アシスタントデータサイエンティスト相当）</strong>を中心に、共通題材「テーマパーク待ち時間データ」を用いて実践的に学びます。</p>
+      <div class="grid-3">
+        <div class="dilite-box">
+          <h3>💻 IT・ソフトウェア領域</h3>
+          <p style="font-size:13px;margin:4px 0;">推奨試験：<strong>ITパスポート試験</strong><br>システム・ネットワーク・セキュリティ・開発手法の基礎（第3章 p.57 / 第5章 p.164連動）</p>
+        </div>
+        <div class="dilite-box highlight">
+          <h3>📊 数理・データサイエンス領域（本コース主対象）</h3>
+          <p style="font-size:13px;margin:4px 0;">推奨試験：<strong>データサイエンティスト検定</strong><br>ビジネス力・データサイエンス力・データエンジニアリング力の3領域を総合習得</p>
+        </div>
+        <div class="dilite-box">
+          <h3>🤖 AI・ディープラーニング領域</h3>
+          <p style="font-size:13px;margin:4px 0;">推奨試験：<strong>G検定（ジェネラリスト）</strong><br>機械学習（教師あり/なし/強化学習）・ディープラーニング・生成AI/LLM（第4章 p.120-127連動）</p>
+        </div>
+      </div>
+      <div style="margin-top:14px;">
+        <a href="data/theme_park_wait_times_raw.csv" download class="secondary">📥 生データ(raw.csv)</a>
+        <a href="data/theme_park_wait_times_clean.csv" download class="secondary">📥 整形済みデータ(clean.csv)</a>
+        <a href="data/theme_park_training_data.xlsx" download class="secondary">📥 Excel演習ブック(.xlsx)</a>
+      </div>
+    </section>
+
+    <div class="grid">
+      <section class="card">
+        <i>第1章・第2章 p.6-33</i>
+        <h2>社会におけるデータ・AI利活用</h2>
+        <div class="badge-list">
+          <span class="badge">Di-Lite (p.10)</span>
+          <span class="badge">疑似相関・漢字と身長 (p.25)</span>
+          <span class="badge">個人情報保護法・GDPR (p.29)</span>
+          <span class="badge">AI社会原則 (p.29)</span>
+        </div>
+        <p style="font-size:13.5px;">データを適切に「読み解く・説明する・扱う」3つの力と、相関と因果の違い、法規制・倫理を確認します。</p>
+        <a href="quiz.html#ch1">第1章 問題</a>
+        <a href="quiz.html#ch2">第2章 練習問題 (p.32)</a>
+      </section>
+
+      <section class="card">
+        <i>第3章 p.34-65</i>
+        <h2>ビジネス力</h2>
+        <div class="badge-list">
+          <span class="badge">KGI/KPIツリー (p.43,47)</span>
+          <span class="badge">5フォース (p.48)</span>
+          <span class="badge">空・雨・傘 (p.49-50)</span>
+          <span class="badge">MECE (p.53)</span>
+          <span class="badge">準委任契約 (p.58)</span>
+          <span class="badge">捏造・改ざん・盗用 (p.61)</span>
+        </div>
+        <p style="font-size:13.5px;">目的設定から論理的思考（空・雨・傘、MECE）、アジャイル・契約形態、データ倫理までを演習します。</p>
+        <a href="#sru-builder">空・雨・傘ワーク</a>
+        <a href="quiz.html#ch3" class="secondary">第3章 練習問題 (p.64)</a>
+      </section>
+
+      <section class="card">
+        <i>第4章 p.66-130</i>
+        <h2>データサイエンス力</h2>
+        <div class="badge-list">
+          <span class="badge">チェックリスト (p.74)</span>
+          <span class="badge">ヒストグラム・箱ひげ・クロス集計 (p.78-81)</span>
+          <span class="badge">分散・標準偏差・偏差値 (p.83-86)</span>
+          <span class="badge">標準化・正規化・One-Hot (p.88-90)</span>
+          <span class="badge">順列・組合せ・条件付き確率・ベイズ (p.94-98)</span>
+        </div>
+        <p style="font-size:13.5px;">Excel風ツールで外れ値・欠損値の確認やヒストグラム・標準化を体験し、確率・統計の基礎を固めます。</p>
+        <a href="workbook.html">Excel風データ加工・可視化</a>
+        <a href="quiz.html#ch4" class="secondary">第4章 練習問題 (p.129)</a>
+      </section>
+
+      <section class="card">
+        <i>第5章 p.131-171</i>
+        <h2>データエンジニアリング力</h2>
+        <div class="badge-list">
+          <span class="badge">データレイク・DWH・BI (p.137-140)</span>
+          <span class="badge">RDBとNoSQL (p.142)</span>
+          <span class="badge">SQL: SELECT/WHERE/INSERT/UPDATE (p.152-157)</span>
+          <span class="badge">層化サンプリング (p.163)</span>
+          <span class="badge">機密性・完全性・可用性 (p.165)</span>
+        </div>
+        <p style="font-size:13.5px;">ブラウザ上のSQL Labで <code>theme_park</code> やテキスト掲載の <code>students</code> / <code>club</code> テーブルを操作します。</p>
+        <a href="sql.html">SQL Lab (p.153-157対応)</a>
+        <a href="python.html" class="secondary">Python・標本体験</a>
+        <a href="quiz.html#ch5" class="secondary">第5章 練習問題 (p.170)</a>
+      </section>
+    </div>
+
+    <section class="card" id="sru-builder">
+      <i>第3章 p.47-50「KPIツリー」＆「空・雨・傘」連動ワーク</i>
+      <h2>データドリブン改善提案シミュレーター（空・雨・傘フレームワーク）</h2>
+      <p style="font-size:13.5px;margin:4px 0 10px;">テキスト p.47-50 で学ぶ論理展開フレームワーク「<strong>空（事実：データから確認できた客観的数値）→ 雨（解釈：事実から考えられる原因・意味合い）→ 傘（判断・行動：具体的な改善アクション）</strong>」を使って、テーマパークの待ち時間改善提案を作成しましょう。</p>
+      <div class="sru-grid">
+        <div class="sru-step">
+          <strong>🌤️ 空（事実・Fact） p.50</strong>
+          <p style="font-size:12px;color:var(--muted);margin:4px 0;">Excel風操作やSQL Labで確認した客観的な数値・事実を記入</p>
+          <textarea id="sru-sky" placeholder="例：雨の日(rainy)は屋内系アトラクションに人が集中し、平均待ち時間が通常より18分長く、満足度が3.4に低下している（異常値240分を除く）。"></textarea>
+        </div>
+        <div class="sru-step">
+          <strong>🌧️ 雨（解釈・Interpretation） p.50</strong>
+          <p style="font-size:12px;color:var(--muted);margin:4px 0;">なぜその事実が起きているのか、KGI/KPIへの影響を解釈</p>
+          <textarea id="sru-rain" placeholder="例：雨天時に屋外アトラクションから屋内施設へ来園者が一斉移動するが、時間帯別の混雑予測案内が不足しているため特定施設に待機列が偏っている。"></textarea>
+        </div>
+        <div class="sru-step">
+          <strong>☂️ 傘（改善アクション・Action） p.50</strong>
+          <p style="font-size:12px;color:var(--muted);margin:4px 0;">KGI（満足度向上・売上維持）に向けた具体的な施策</p>
+          <textarea id="sru-umbrella" placeholder="例：雨天時はアプリ通知で屋内エリアの予測待ち時間を配信し、比較的空いている時間帯の飲食割引クーポン（food_sales_yen向上）を発行して需要を分散させる。"></textarea>
+        </div>
+      </div>
+      <div style="margin-top:12px;display:flex;align-items:center;gap:12px;flex-wrap:wrap;">
+        <button type="button" id="sru-save">提案シートをまとめる・保存</button>
+        <button type="button" class="secondary" id="sru-sample">記入例をセット</button>
+        <span id="sru-status" style="font-size:13px;font-weight:700;color:var(--good);"></span>
+      </div>
+      <pre id="sru-output" style="display:none;margin-top:12px;"></pre>
+    </section>
+  </main>
+  <footer>MACO029G ビジネスパーソンのためのデータリテラシー入門 ～データサイエンティスト検定対応～</footer>
+  <script>
+    (function(){
+      const sky = document.getElementById("sru-sky");
+      const rain = document.getElementById("sru-rain");
+      const umb = document.getElementById("sru-umbrella");
+      const out = document.getElementById("sru-output");
+      const st = document.getElementById("sru-status");
+
+      // Load saved from localStorage if available
+      try {
+        const saved = JSON.parse(localStorage.getItem("ds_sru_proposal") || "null");
+        if (saved) {
+          sky.value = saved.sky || "";
+          rain.value = saved.rain || "";
+          umb.value = saved.umb || "";
+        }
+      } catch(e) {}
+
+      document.getElementById("sru-sample").onclick = () => {
+        sky.value = "雨の日(rainy)はファミリー・屋内系アトラクションの平均待ち時間が晴れの日より長くなり、60分超の待ち時間発生時に満足度(satisfaction_1to5)が平均3.5未満へ低下している。";
+        rain.value = "雨天時に屋外スリル系から屋内系へ利用者が集中する一方、現地での案内や時間分散のインセンティブがないため、特定時間帯(13〜15時)にボトルネックが発生している。";
+        umb.value = "①雨天時の時間帯別待ち時間予測を園内表示・アプリで可視化し、②13〜15時にレストラン利用で使える飲食クーポンを配布して待機列のピークカットと飲食売上向上を同時に図る。";
+      };
+
+      document.getElementById("sru-save").onclick = () => {
+        const data = { sky: sky.value.trim(), rain: rain.value.trim(), umb: umb.value.trim() };
+        try { localStorage.setItem("ds_sru_proposal", JSON.stringify(data)); } catch(e) {}
+        out.style.display = "block";
+        out.textContent =
+          "【第3章 p.50 空・雨・傘 データドリブン改善提案書】\n" +
+          "■ 空（事実・データ根拠）：\n  " + (data.sky || "（未入力）") + "\n\n" +
+          "■ 雨（解釈・発生要因）：\n  " + (data.rain || "（未入力）") + "\n\n" +
+          "■ 傘（改善アクション・KPI目標）：\n  " + (data.umb || "（未入力）");
+        st.textContent = "✓ 提案シートを生成しブラウザに保存しました";
+      };
+    })();
+  </script>
+</body>
+</html>

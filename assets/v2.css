@@ -1,1 +1,463 @@
-body{font-family:Arial,sans-serif;margin:20px}nav a{margin-right:15px}.card{border:1px solid #ddd;padding:18px;margin:15px}i{color:#ef6b32}button{padding:8px}
+:root {
+  --navy: #112f4c;
+  --blue: #1677a8;
+  --sky: #e9f5fb;
+  --orange: #ffb44c;
+  --ink: #17212b;
+  --muted: #637381;
+  --line: #d8e1e8;
+  --white: #ffffff;
+  --good: #18794e;
+  --bad: #b42318;
+  --bg: #f4f7f9;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  font-family: "Yu Gothic UI", "Meiryo", "Hiragino Kaku Gothic ProN", system-ui, -apple-system, sans-serif;
+  background: var(--bg);
+  color: var(--ink);
+  line-height: 1.65;
+}
+
+header {
+  background: linear-gradient(125deg, var(--navy), #145b78);
+  color: var(--white);
+  padding: 22px max(4vw, 20px);
+  box-shadow: 0 3px 12px rgba(17, 47, 76, 0.15);
+}
+
+header b {
+  display: inline-block;
+  background: rgba(255, 255, 255, 0.16);
+  color: #8dd8f3;
+  font-size: 12.5px;
+  letter-spacing: 0.06em;
+  padding: 3px 10px;
+  border-radius: 6px;
+  margin-bottom: 4px;
+}
+
+header h1 {
+  font-size: clamp(20px, 3vw, 30px);
+  line-height: 1.25;
+  margin: 4px 0 12px;
+}
+
+header nav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 8px;
+}
+
+header nav a {
+  color: var(--white);
+  text-decoration: none;
+  font-weight: 700;
+  font-size: 13.5px;
+  padding: 6px 13px;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.12);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  transition: background 0.15s ease;
+}
+
+header nav a:hover,
+header nav a.active {
+  background: var(--white);
+  color: var(--navy);
+}
+
+main {
+  max-width: 1180px;
+  margin: 24px auto;
+  padding: 0 18px 40px;
+}
+
+.card,
+.panel {
+  background: var(--white);
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  padding: 22px 24px;
+  margin-bottom: 20px;
+  box-shadow: 0 4px 16px rgba(17, 47, 76, 0.05);
+}
+
+.card i,
+.eyebrow {
+  display: inline-block;
+  font-style: normal;
+  font-size: 12.5px;
+  font-weight: 700;
+  color: var(--blue);
+  background: var(--sky);
+  padding: 3px 10px;
+  border-radius: 999px;
+  margin-bottom: 6px;
+}
+
+.card h2,
+.panel h2 {
+  margin: 4px 0 10px;
+  color: var(--navy);
+  font-size: 20px;
+}
+
+.card h3,
+.panel h3 {
+  margin: 12px 0 8px;
+  color: var(--navy);
+  font-size: 16px;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 16px;
+  margin-bottom: 20px;
+}
+
+.grid-3 {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 14px;
+}
+
+button,
+.btn,
+.card a {
+  font: inherit;
+  font-size: 13.5px;
+  font-weight: 700;
+  border: 1px solid transparent;
+  border-radius: 8px;
+  background: var(--blue);
+  color: var(--white);
+  padding: 7px 14px;
+  cursor: pointer;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-right: 6px;
+  margin-top: 6px;
+  transition: filter 0.15s ease, background 0.15s ease;
+}
+
+button:hover,
+.btn:hover,
+.card a:hover {
+  filter: brightness(0.93);
+}
+
+button:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+button.secondary,
+.card a.secondary {
+  background: var(--sky);
+  color: var(--navy);
+  border-color: #bdddf0;
+}
+
+button.active {
+  background: var(--navy);
+  color: var(--white);
+  box-shadow: 0 0 0 2px #8dd8f3;
+}
+
+.table-wrap {
+  overflow: auto;
+  max-height: 480px;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: var(--white);
+}
+
+table {
+  border-collapse: collapse;
+  width: 100%;
+  font-size: 13.5px;
+}
+
+th,
+td {
+  padding: 8px 11px;
+  border-bottom: 1px solid #e8eef2;
+  text-align: left;
+  white-space: nowrap;
+}
+
+th {
+  position: sticky;
+  top: 0;
+  z-index: 2;
+  background: var(--navy);
+  color: var(--white);
+  cursor: pointer;
+  user-select: none;
+}
+
+th:hover {
+  background: #1b456d;
+}
+
+tbody tr:nth-child(even) {
+  background: #f8fafc;
+}
+
+tbody tr:hover {
+  background: #fff4db;
+}
+
+.outlier {
+  background: #ffd8d4 !important;
+  color: var(--bad);
+  font-weight: 700;
+}
+
+.missing {
+  background: #fff3cd !important;
+  color: #9a6700;
+  font-weight: 700;
+}
+
+pre {
+  overflow: auto;
+  background: #102536;
+  color: #d9f2ff;
+  padding: 15px 18px;
+  border-radius: 10px;
+  line-height: 1.6;
+  font-family: Consolas, Monaco, "Courier New", monospace;
+  font-size: 13.5px;
+  margin: 10px 0;
+}
+
+select,
+input,
+textarea {
+  font: inherit;
+  padding: 8px 10px;
+  border: 1px solid #aebdc8;
+  border-radius: 8px;
+  background: var(--white);
+}
+
+.badge-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin: 8px 0;
+}
+
+.badge {
+  font-size: 12px;
+  padding: 3px 9px;
+  border-radius: 6px;
+  background: #eef3f7;
+  color: var(--navy);
+  font-weight: 600;
+}
+
+footer {
+  text-align: center;
+  padding: 26px 16px;
+  color: var(--muted);
+  font-size: 13px;
+  border-top: 1px solid var(--line);
+  margin-top: 36px;
+}
+
+@media (max-width: 768px) {
+  main {
+    margin: 14px auto;
+    padding: 0 12px 28px;
+  }
+  .card,
+  .panel {
+    padding: 16px;
+  }
+}
+
+/* Di-Lite & Skill Checklist Cards */
+.dilite-box {
+  border: 2px solid #cbe4f2;
+  background: #f8fcff;
+  border-radius: 12px;
+  padding: 14px 16px;
+}
+
+.dilite-box.highlight {
+  border-color: var(--blue);
+  background: var(--sky);
+}
+
+.dilite-box h3 {
+  margin: 0 0 6px;
+  font-size: 15px;
+  color: var(--navy);
+}
+
+/* Sky-Rain-Umbrella & KPI Tree Builder */
+.sru-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 14px;
+  margin-top: 12px;
+}
+
+.sru-step {
+  background: #f8fafc;
+  border: 1px solid var(--line);
+  border-top: 4px solid var(--blue);
+  border-radius: 10px;
+  padding: 14px;
+}
+
+.sru-step textarea {
+  width: 100%;
+  min-height: 78px;
+  margin-top: 8px;
+  font-size: 13.5px;
+}
+
+/* Quiz Specific Styles */
+.chapter-section {
+  margin-bottom: 26px;
+}
+
+.chapter-header {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 2px solid var(--sky);
+  padding-bottom: 10px;
+  margin-bottom: 16px;
+  gap: 10px;
+}
+
+.question-box {
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  padding: 16px 18px;
+  margin: 14px 0;
+  background: #fcfdfe;
+}
+
+.question-box legend {
+  font-weight: 700;
+  color: var(--navy);
+  margin-bottom: 10px;
+  font-size: 15px;
+}
+
+.question-box label {
+  display: block;
+  padding: 7px 10px;
+  margin: 4px 0;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background 0.12s ease;
+}
+
+.question-box label:hover {
+  background: var(--sky);
+}
+
+.question-box.correct {
+  border-color: #6cc49a;
+  background: #effaf4;
+}
+
+.question-box.incorrect {
+  border-color: #e69a92;
+  background: #fff2f0;
+}
+
+.explanation {
+  display: none;
+  margin-top: 10px;
+  padding: 10px 12px;
+  border-radius: 8px;
+  font-size: 13.5px;
+  background: rgba(255, 255, 255, 0.9);
+  border-left: 4px solid var(--blue);
+}
+
+.question-box.correct .explanation,
+.question-box.incorrect .explanation {
+  display: block;
+}
+
+.score-banner {
+  position: sticky;
+  bottom: 14px;
+  z-index: 10;
+  background: var(--navy);
+  color: var(--white);
+  padding: 12px 20px;
+  border-radius: 12px;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+  box-shadow: 0 8px 24px rgba(17, 47, 76, 0.25);
+}
+
+.code-header {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 6px;
+}
+
+/* Sampling Simulator Bars */
+.sim-row {
+  display: grid;
+  grid-template-columns: 110px 1fr 130px;
+  align-items: center;
+  gap: 12px;
+  margin: 10px 0;
+  font-size: 13.5px;
+}
+
+.sim-bar-wrap {
+  height: 22px;
+  background: #eef3f7;
+  border-radius: 999px;
+  position: relative;
+  overflow: hidden;
+}
+
+.sim-bar {
+  height: 100%;
+  background: linear-gradient(90deg, var(--blue), #299fd6);
+  border-radius: 999px;
+  transition: width 0.25s ease;
+}
+
+.sim-target-line {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 2px;
+  background: var(--bad);
+  z-index: 2;
+}

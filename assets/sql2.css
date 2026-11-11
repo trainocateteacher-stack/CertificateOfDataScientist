@@ -1,0 +1,1 @@
+main{display:grid;grid-template-columns:1fr 280px;gap:12px}.field,.drop{border:1px solid #aaa;padding:8px;margin:6px}.preview{grid-column:1/3}.g0{background:#def}.g1{background:#fed}.g2{background:#dfd}

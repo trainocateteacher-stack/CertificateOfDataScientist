@@ -1,0 +1,5 @@
+<!doctype html><html lang="ja"><meta charset="utf-8"><link rel="stylesheet" href="assets/v2.css"><title>Python補助</title><body><header><b>Python補助演習</b><nav><a href="index.html">ホーム</a></nav></header><main><section class="card"><i>テキスト p.83-91</i><h2>基本統計量・欠損・外れ値</h2><pre>import pandas as pd
+df = pd.read_csv("data/theme_park_wait_times_raw.csv")
+df["wait_time_min"].describe()
+df.isna().sum()</pre></section><section class="card"><i>テキスト p.103-106</i><h2>標本と標準誤差</h2><pre>for n in [5, 20, 100]:
+    print(n, df["wait_time_min"].sample(n).mean())</pre></section></main></body></html>

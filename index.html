@@ -1,179 +1,2934 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="ja">
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>受講者演習ポータル | ビジネスパーソンのためのデータリテラシー入門 (DS検定対応)</title>
-  <link rel="stylesheet" href="assets/style.css">
-  <link rel="stylesheet" href="assets/v2.css">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>ビジネスパーソンのためのデータリテラシー入門 ～データサイエンティスト検定対応～ (MACO029G)</title>
+  <script src="https://cdn.tailwindcss.com/3.4.17"></script>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&family=Noto+Sans+JP:wght@400;500;700;800&display=swap');
+    :root {
+      --navy: #0f2942;
+      --blue: #1677a8;
+      --sky: #e9f5fb;
+      --orange: #ed6b27;
+      --good: #15803d;
+      --bad: #b91c1c;
+    }
+    body {
+      font-family: 'Noto Sans JP', 'Inter', system-ui, -apple-system, sans-serif;
+      background-color: #f1f5f9;
+      color: #0f172a;
+    }
+    .step-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.375rem;
+      padding: 0.25rem 0.75rem;
+      border-radius: 9999px;
+      font-size: 0.75rem;
+      font-weight: 800;
+      letter-spacing: 0.04em;
+    }
+    .slide-card {
+      background: linear-gradient(180deg, #ffffff 0%, #f8fafc 100%);
+      border: 1px solid #cbd5e1;
+      border-top: 5px solid #ed6b27;
+      border-radius: 0.75rem;
+      box-shadow: 0 4px 14px rgba(15, 41, 66, 0.06);
+    }
+    .option-btn {
+      transition: all 0.15s ease;
+    }
+    .option-btn:hover {
+      transform: translateY(-1px);
+    }
+    .custom-scroll::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    .custom-scroll::-webkit-scrollbar-thumb {
+      background: #cbd5e1;
+      border-radius: 3px;
+    }
+  </style>
 </head>
-<body>
-  <header>
-    <b>MACO029G / MAC0029G-T1-03</b>
-    <h1>ビジネスパーソンのためのデータリテラシー入門 ～データサイエンティスト検定対応～</h1>
-    <nav>
-      <a href="index.html" class="active">ホーム</a>
-      <a href="workbook.html">Excel風操作 (第3・4章)</a>
-      <a href="quiz.html">章別確認問題 (第1〜5章)</a>
-      <a href="sql.html">SQL Lab (第5章)</a>
-      <a href="python.html">Python補助・標本体験 (第4・5章)</a>
-    </nav>
-  </header>
-  <main>
-    <section class="card">
-      <i>第1章 p.6-16 連動</i>
-      <h2>デジタルリテラシー（Di-Lite）とデータサイエンティスト検定の位置づけ</h2>
-      <p style="margin:6px 0 12px;">デジタルリテラシー協議会が定義する「Di-Lite」3領域のうち、本コースは<strong>数理・データサイエンス領域（DS検定 リテラシーレベル：アシスタントデータサイエンティスト相当）</strong>を中心に、共通題材「テーマパーク待ち時間データ」を用いて実践的に学びます。</p>
-      <div class="grid-3">
-        <div class="dilite-box">
-          <h3>💻 IT・ソフトウェア領域</h3>
-          <p style="font-size:13px;margin:4px 0;">推奨試験：<strong>ITパスポート試験</strong><br>システム・ネットワーク・セキュリティ・開発手法の基礎（第3章 p.57 / 第5章 p.164連動）</p>
-        </div>
-        <div class="dilite-box highlight">
-          <h3>📊 数理・データサイエンス領域（本コース主対象）</h3>
-          <p style="font-size:13px;margin:4px 0;">推奨試験：<strong>データサイエンティスト検定</strong><br>ビジネス力・データサイエンス力・データエンジニアリング力の3領域を総合習得</p>
-        </div>
-        <div class="dilite-box">
-          <h3>🤖 AI・ディープラーニング領域</h3>
-          <p style="font-size:13px;margin:4px 0;">推奨試験：<strong>G検定（ジェネラリスト）</strong><br>機械学習（教師あり/なし/強化学習）・ディープラーニング・生成AI/LLM（第4章 p.120-127連動）</p>
+<body class="min-h-screen flex flex-col">
+
+  <!-- Top Navigation Header -->
+  <header class="bg-gradient-to-r from-[#0f2942] via-[#133b5c] to-[#166088] text-white sticky top-0 z-30 shadow-lg">
+    <div class="max-w-7xl mx-auto px-4 py-3 flex flex-wrap items-center justify-between gap-3">
+      <div class="flex items-center gap-3 select-none">
+        <span class="bg-orange-500 text-white text-xs font-extrabold px-2.5 py-1 rounded shadow-sm tracking-wider">TRAINOCATE / MACO029G</span>
+        <div>
+          <h1 id="app-main-title" class="text-base sm:text-xl font-extrabold tracking-tight cursor-pointer" title="タイトル">
+            ビジネスパーソンのためのデータリテラシー入門 ～DS検定対応～
+          </h1>
+          <p class="text-xs text-sky-200 hidden sm:block">共通題材：テーマパーク待ち時間・来園者データ分析（9:40〜17:00 全6時限 / 12モジュール）</p>
         </div>
       </div>
-      <div style="margin-top:14px;">
-        <a href="data/theme_park_wait_times_raw.csv" download class="secondary">📥 生データ(raw.csv)</a>
-        <a href="data/theme_park_wait_times_clean.csv" download class="secondary">📥 整形済みデータ(clean.csv)</a>
-        <a href="data/theme_park_training_data.xlsx" download class="secondary">📥 Excel演習ブック(.xlsx)</a>
+
+      <div class="flex items-center gap-2 flex-wrap">
+        <!-- Student Progress Pill -->
+        <div class="bg-white/10 border border-white/20 rounded-lg px-3 py-1.5 text-xs flex items-center gap-3">
+          <span>進捗: <strong id="hdr-progress" class="text-amber-300">0/12</strong></span>
+          <span class="border-l border-white/20 pl-2">Pre正答: <strong id="hdr-pre-score" class="text-sky-200">-</strong></span>
+          <span class="border-l border-white/20 pl-2">Post正答: <strong id="hdr-post-score" class="text-emerald-300">-</strong></span>
+        </div>
+
+        <!-- Student Name Badge -->
+        <button type="button" id="btn-open-profile" class="bg-sky-500/20 hover:bg-sky-500/30 border border-sky-300/40 text-white text-xs font-bold px-3 py-1.5 rounded-lg flex items-center gap-1.5">
+          <span>👤</span>
+          <span id="hdr-student-name">受講者名を設定</span>
+        </button>
+
+        <!-- Share / Export Code Button for Student -->
+        <button type="button" id="btn-open-sync-modal" class="bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold px-3 py-1.5 rounded-lg shadow-sm">
+          📤 回答提出・同期
+        </button>
+
+        <!-- Instructor Mode Button (Hidden until unlocked via 5 clicks on title + password 'teacher') -->
+        <button type="button" id="btn-instructor-toggle" class="hidden bg-amber-500 hover:bg-amber-400 text-slate-950 text-xs font-extrabold px-3 py-1.5 rounded-lg shadow">
+          👨‍🏫 講師ダッシュボード
+        </button>
       </div>
-    </section>
-
-    <div class="grid">
-      <section class="card">
-        <i>第1章・第2章 p.6-33</i>
-        <h2>社会におけるデータ・AI利活用</h2>
-        <div class="badge-list">
-          <span class="badge">Di-Lite (p.10)</span>
-          <span class="badge">疑似相関・漢字と身長 (p.25)</span>
-          <span class="badge">個人情報保護法・GDPR (p.29)</span>
-          <span class="badge">AI社会原則 (p.29)</span>
-        </div>
-        <p style="font-size:13.5px;">データを適切に「読み解く・説明する・扱う」3つの力と、相関と因果の違い、法規制・倫理を確認します。</p>
-        <a href="quiz.html#ch1">第1章 問題</a>
-        <a href="quiz.html#ch2">第2章 練習問題 (p.32)</a>
-      </section>
-
-      <section class="card">
-        <i>第3章 p.34-65</i>
-        <h2>ビジネス力</h2>
-        <div class="badge-list">
-          <span class="badge">KGI/KPIツリー (p.43,47)</span>
-          <span class="badge">5フォース (p.48)</span>
-          <span class="badge">空・雨・傘 (p.49-50)</span>
-          <span class="badge">MECE (p.53)</span>
-          <span class="badge">準委任契約 (p.58)</span>
-          <span class="badge">捏造・改ざん・盗用 (p.61)</span>
-        </div>
-        <p style="font-size:13.5px;">目的設定から論理的思考（空・雨・傘、MECE）、アジャイル・契約形態、データ倫理までを演習します。</p>
-        <a href="#sru-builder">空・雨・傘ワーク</a>
-        <a href="quiz.html#ch3" class="secondary">第3章 練習問題 (p.64)</a>
-      </section>
-
-      <section class="card">
-        <i>第4章 p.66-130</i>
-        <h2>データサイエンス力</h2>
-        <div class="badge-list">
-          <span class="badge">チェックリスト (p.74)</span>
-          <span class="badge">ヒストグラム・箱ひげ・クロス集計 (p.78-81)</span>
-          <span class="badge">分散・標準偏差・偏差値 (p.83-86)</span>
-          <span class="badge">標準化・正規化・One-Hot (p.88-90)</span>
-          <span class="badge">順列・組合せ・条件付き確率・ベイズ (p.94-98)</span>
-        </div>
-        <p style="font-size:13.5px;">Excel風ツールで外れ値・欠損値の確認やヒストグラム・標準化を体験し、確率・統計の基礎を固めます。</p>
-        <a href="workbook.html">Excel風データ加工・可視化</a>
-        <a href="quiz.html#ch4" class="secondary">第4章 練習問題 (p.129)</a>
-      </section>
-
-      <section class="card">
-        <i>第5章 p.131-171</i>
-        <h2>データエンジニアリング力</h2>
-        <div class="badge-list">
-          <span class="badge">データレイク・DWH・BI (p.137-140)</span>
-          <span class="badge">RDBとNoSQL (p.142)</span>
-          <span class="badge">SQL: SELECT/WHERE/INSERT/UPDATE (p.152-157)</span>
-          <span class="badge">層化サンプリング (p.163)</span>
-          <span class="badge">機密性・完全性・可用性 (p.165)</span>
-        </div>
-        <p style="font-size:13.5px;">ブラウザ上のSQL Labで <code>theme_park</code> やテキスト掲載の <code>students</code> / <code>club</code> テーブルを操作します。</p>
-        <a href="sql.html">SQL Lab (p.153-157対応)</a>
-        <a href="python.html" class="secondary">Python・標本体験</a>
-        <a href="quiz.html#ch5" class="secondary">第5章 練習問題 (p.170)</a>
-      </section>
     </div>
+  </header>
 
-    <section class="card" id="sru-builder">
-      <i>第3章 p.47-50「KPIツリー」＆「空・雨・傘」連動ワーク</i>
-      <h2>データドリブン改善提案シミュレーター（空・雨・傘フレームワーク）</h2>
-      <p style="font-size:13.5px;margin:4px 0 10px;">テキスト p.47-50 で学ぶ論理展開フレームワーク「<strong>空（事実：データから確認できた客観的数値）→ 雨（解釈：事実から考えられる原因・意味合い）→ 傘（判断・行動：具体的な改善アクション）</strong>」を使って、テーマパークの待ち時間改善提案を作成しましょう。</p>
-      <div class="sru-grid">
-        <div class="sru-step">
-          <strong>🌤️ 空（事実・Fact） p.50</strong>
-          <p style="font-size:12px;color:var(--muted);margin:4px 0;">Excel風操作やSQL Labで確認した客観的な数値・事実を記入</p>
-          <textarea id="sru-sky" placeholder="例：雨の日(rainy)は屋内系アトラクションに人が集中し、平均待ち時間が通常より18分長く、満足度が3.4に低下している（異常値240分を除く）。"></textarea>
+  <!-- Main Workspace Layout -->
+  <div class="flex-1 max-w-7xl w-full mx-auto px-3 sm:px-6 py-5 grid grid-cols-1 lg:grid-cols-12 gap-6">
+
+    <!-- Left Sidebar: 9:40-17:00 Timetable & 12 Modules Navigation -->
+    <aside class="lg:col-span-4 xl:col-span-3 space-y-4">
+      <div class="bg-white rounded-xl border border-slate-200 shadow-sm p-4 sticky top-20 max-h-[calc(100vh-6rem)] overflow-y-auto custom-scroll">
+        <div class="flex items-center justify-between border-b border-slate-100 pb-3 mb-3">
+          <div>
+            <h2 class="text-sm font-extrabold text-slate-800">🕘 本日の時間割 (9:40-17:00)</h2>
+            <p class="text-[11px] text-slate-500">毎時10分休憩 / 11:50-12:50 昼休憩</p>
+          </div>
+          <button type="button" id="btn-dataset-overview" class="text-xs bg-sky-50 hover:bg-sky-100 text-sky-800 font-bold px-2.5 py-1 rounded border border-sky-200">
+            🎢 データ一覧
+          </button>
         </div>
-        <div class="sru-step">
-          <strong>🌧️ 雨（解釈・Interpretation） p.50</strong>
-          <p style="font-size:12px;color:var(--muted);margin:4px 0;">なぜその事実が起きているのか、KGI/KPIへの影響を解釈</p>
-          <textarea id="sru-rain" placeholder="例：雨天時に屋外アトラクションから屋内施設へ来園者が一斉移動するが、時間帯別の混雑予測案内が不足しているため特定施設に待機列が偏っている。"></textarea>
+
+        <nav id="timetable-nav" class="space-y-3" aria-label="講義タイムテーブル">
+          <!-- Populated dynamically by JS -->
+        </nav>
+      </div>
+    </aside>
+
+    <!-- Right Content Area: Active Module (5-Step Flow) OR Dataset Explorer OR Instructor View -->
+    <main class="lg:col-span-8 xl:col-span-9 space-y-6">
+
+      <!-- View 1: Student 5-Step Module View -->
+      <div id="student-module-view" class="space-y-6">
+        <!-- Module Header Banner -->
+        <div id="module-header-card" class="bg-white rounded-xl border border-slate-200 shadow-sm p-5">
+          <!-- Populated by JS -->
         </div>
-        <div class="sru-step">
-          <strong>☂️ 傘（改善アクション・Action） p.50</strong>
-          <p style="font-size:12px;color:var(--muted);margin:4px 0;">KGI（満足度向上・売上維持）に向けた具体的な施策</p>
-          <textarea id="sru-umbrella" placeholder="例：雨天時はアプリ通知で屋内エリアの予測待ち時間を配信し、比較的空いている時間帯の飲食割引クーポン（food_sales_yen向上）を発行して需要を分散させる。"></textarea>
+
+        <!-- 5-Step Progress Stepper -->
+        <div class="bg-white rounded-xl border border-slate-200 shadow-sm p-3 sm:p-4">
+          <div class="grid grid-cols-5 gap-1.5 sm:gap-2 text-center text-xs font-bold">
+            <a href="#step1-section" class="p-2 rounded-lg bg-amber-50 text-amber-900 border border-amber-200 hover:bg-amber-100">
+              <span class="block text-[10px] text-amber-600">STEP 1</span>① 導入4択 (Pre)
+            </a>
+            <a href="#step2-section" class="p-2 rounded-lg bg-purple-50 text-purple-900 border border-purple-200 hover:bg-purple-100">
+              <span class="block text-[10px] text-purple-600">STEP 2</span>② かるい解説
+            </a>
+            <a href="#step3-section" class="p-2 rounded-lg bg-orange-50 text-orange-900 border border-orange-200 hover:bg-orange-100">
+              <span class="block text-[10px] text-orange-600">STEP 3</span>③ スライド解説
+            </a>
+            <a href="#step4-section" class="p-2 rounded-lg bg-sky-50 text-sky-900 border border-sky-200 hover:bg-sky-100">
+              <span class="block text-[10px] text-sky-600">STEP 4</span>④ データ演習
+            </a>
+            <a href="#step5-section" class="p-2 rounded-lg bg-emerald-50 text-emerald-900 border border-emerald-200 hover:bg-emerald-100">
+              <span class="block text-[10px] text-emerald-600">STEP 5</span>⑤ 類似4択 (Post)
+            </a>
+          </div>
+        </div>
+
+        <!-- STEP 1: Pre-Quiz (導入4択問題) -->
+        <section id="step1-section" class="bg-white rounded-xl border-2 border-amber-300 shadow-sm p-5 sm:p-6">
+          <div class="flex flex-wrap items-center justify-between gap-2 mb-3">
+            <span class="step-badge bg-amber-100 text-amber-900">STEP 1：まずは直観で挑戦！ DS検定 導入4択クイズ (Pre-Quiz)</span>
+            <span id="step1-status-badge" class="text-xs font-bold text-slate-500">未回答</span>
+          </div>
+          <div id="step1-content"></div>
+        </section>
+
+        <!-- STEP 2: Light Hook Explanation (かるい問題の解説) -->
+        <section id="step2-section" class="bg-white rounded-xl border border-purple-200 shadow-sm p-5 sm:p-6">
+          <div class="flex items-center justify-between gap-2 mb-3">
+            <span class="step-badge bg-purple-100 text-purple-900">STEP 2：かるい問題の解説 ＆ なぜここで引っかかる？</span>
+          </div>
+          <div id="step2-content"></div>
+        </section>
+
+        <!-- STEP 3: Slide Explanation (スライド解説) -->
+        <section id="step3-section" class="bg-white rounded-xl border border-orange-200 shadow-sm p-5 sm:p-6">
+          <div class="flex flex-wrap items-center justify-between gap-2 mb-4">
+            <span class="step-badge bg-orange-100 text-orange-900">STEP 3：スライド要点・図解解説（テキスト完全連動）</span>
+            <span id="step3-pages-badge" class="text-xs font-extrabold bg-slate-100 text-slate-700 px-2.5 py-1 rounded"></span>
+          </div>
+          <div id="step3-content" class="space-y-4"></div>
+        </section>
+
+        <!-- STEP 4: Interactive Theme Park Data Lab (テーマパーク実践演習) -->
+        <section id="step4-section" class="bg-white rounded-xl border-2 border-sky-400 shadow-sm p-5 sm:p-6">
+          <div class="flex flex-wrap items-center justify-between gap-2 mb-4">
+            <span class="step-badge bg-sky-100 text-sky-900">STEP 4：テーマパークデータで直観操作！インタラクティブ実践演習</span>
+            <span id="step4-status-badge" class="text-xs font-bold text-sky-700">操作してミッションを記録しよう</span>
+          </div>
+          <div id="step4-lab-container" class="space-y-4"></div>
+        </section>
+
+        <!-- STEP 5: Post-Quiz (仕上げ類似4択問題ふたたび) -->
+        <section id="step5-section" class="bg-white rounded-xl border-2 border-emerald-400 shadow-sm p-5 sm:p-6">
+          <div class="flex flex-wrap items-center justify-between gap-2 mb-3">
+            <span class="step-badge bg-emerald-100 text-emerald-900">STEP 5：理解度チェック！類似4択問題＆テキスト練習問題リベンジ (Post-Quiz)</span>
+            <span id="step5-status-badge" class="text-xs font-bold text-slate-500">未回答</span>
+          </div>
+          <div id="step5-content"></div>
+        </section>
+
+        <!-- Bottom Module Pager -->
+        <div class="flex items-center justify-between bg-white rounded-xl border border-slate-200 p-4 shadow-sm">
+          <button type="button" id="btn-prev-module" class="px-4 py-2 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-800 font-bold text-sm">
+            ◀ 前のモジュールへ
+          </button>
+          <span id="pager-module-indicator" class="text-xs font-bold text-slate-500">Module 1 / 12</span>
+          <button type="button" id="btn-next-module" class="px-4 py-2 rounded-lg bg-[#1677a8] hover:bg-[#125e85] text-white font-bold text-sm">
+            次のモジュールへ ▶
+          </button>
         </div>
       </div>
-      <div style="margin-top:12px;display:flex;align-items:center;gap:12px;flex-wrap:wrap;">
-        <button type="button" id="sru-save">提案シートをまとめる・保存</button>
-        <button type="button" class="secondary" id="sru-sample">記入例をセット</button>
-        <span id="sru-status" style="font-size:13px;font-weight:700;color:var(--good);"></span>
+
+      <!-- View 2: Full Dataset Explorer Modal/View -->
+      <div id="dataset-explorer-view" class="hidden bg-white rounded-xl border border-slate-200 shadow-sm p-5 sm:p-6 space-y-4">
+        <div class="flex flex-wrap items-center justify-between gap-3 border-b border-slate-200 pb-3">
+          <div>
+            <span class="step-badge bg-sky-100 text-sky-900">共通題材データベース</span>
+            <h2 class="text-lg font-extrabold text-slate-900 mt-1">🎢 テーマパーク待ち時間・来園者データ 自由に触れるスプレッドシート</h2>
+          </div>
+          <button type="button" id="btn-close-dataset-view" class="px-3 py-1.5 rounded-lg bg-slate-800 text-white text-xs font-bold">
+            ✕ 講義モジュールに戻る
+          </button>
+        </div>
+        <div class="flex flex-wrap gap-2 items-center bg-slate-50 p-3 rounded-lg border border-slate-200 text-xs">
+          <label class="font-bold">天気:
+            <select id="exp-weather" class="ml-1 border border-slate-300 rounded px-2 py-1 bg-white">
+              <option value="">すべて</option>
+              <option value="sunny">晴れ (sunny)</option>
+              <option value="cloudy">曇り (cloudy)</option>
+              <option value="rainy">雨 (rainy)</option>
+            </select>
+          </label>
+          <label class="font-bold">分類(area/category):
+            <select id="exp-category" class="ml-1 border border-slate-300 rounded px-2 py-1 bg-white">
+              <option value="">すべて</option>
+              <option value="thrill">絶叫系 (thrill)</option>
+              <option value="family">ファミリー/ファンタジー (family)</option>
+              <option value="kids">キッズ (kids)</option>
+            </select>
+          </label>
+          <label class="font-bold">異常値(240分等)・欠損:
+            <select id="exp-clean" class="ml-1 border border-slate-300 rounded px-2 py-1 bg-white">
+              <option value="raw">生データ（異常値・欠損あり）</option>
+              <option value="clean">クレンジング済み（除外後）</option>
+            </select>
+          </label>
+          <button type="button" id="btn-exp-reset" class="px-3 py-1 rounded bg-slate-200 hover:bg-slate-300 font-bold">条件リセット</button>
+        </div>
+        <div id="exp-metrics" class="grid grid-cols-2 sm:grid-cols-5 gap-2.5 text-xs"></div>
+        <div class="overflow-x-auto max-h-96 border border-slate-200 rounded-lg">
+          <table class="w-full text-xs text-left border-collapse">
+            <thead class="bg-slate-800 text-white sticky top-0">
+              <tr>
+                <th class="p-2">#</th>
+                <th class="p-2">日付 (date)</th>
+                <th class="p-2">天気 (weather)</th>
+                <th class="p-2">気温(℃)</th>
+                <th class="p-2">来園者数</th>
+                <th class="p-2">アトラクション</th>
+                <th class="p-2">分類(area)</th>
+                <th class="p-2">時間(hour)</th>
+                <th class="p-2">待ち時間(分)</th>
+                <th class="p-2">満足度</th>
+                <th class="p-2">飲食売上(円)</th>
+              </tr>
+            </thead>
+            <tbody id="exp-tbody" class="divide-y divide-slate-200"></tbody>
+          </table>
+        </div>
       </div>
-      <pre id="sru-output" style="display:none;margin-top:12px;"></pre>
-    </section>
-  </main>
-  <footer>MACO029G ビジネスパーソンのためのデータリテラシー入門 ～データサイエンティスト検定対応～</footer>
+
+      <!-- View 3: Hidden Instructor Real-Time Monitoring Dashboard -->
+      <div id="instructor-dashboard-view" class="hidden space-y-6">
+        <div class="bg-slate-900 text-white rounded-xl p-5 shadow-lg border border-amber-400/40">
+          <div class="flex flex-wrap items-center justify-between gap-3">
+            <div>
+              <span class="bg-amber-400 text-slate-950 text-xs font-extrabold px-2.5 py-0.5 rounded">INSTRUCTOR ONLY (Password: teacher)</span>
+              <h2 class="text-xl font-extrabold mt-1">👨‍🏫 講師専用 リアルタイム受講者モニタリング画面</h2>
+              <p class="text-xs text-slate-300 mt-0.5">誰が・どの4択（Pre/Post）に何番を選んだか・演習で何を入力したかをリアルタイム集計します。</p>
+            </div>
+            <div class="flex flex-wrap gap-2">
+              <button type="button" id="btn-inst-refresh" class="bg-sky-600 hover:bg-sky-500 text-white text-xs font-bold px-3 py-2 rounded-lg">
+                🔄 最新データを同期
+              </button>
+              <button type="button" id="btn-inst-seed-demo" class="bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-bold px-3 py-2 rounded-lg">
+                🧪 デモ受講者5名を投入
+              </button>
+              <button type="button" id="btn-inst-export-csv" class="bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold px-3 py-2 rounded-lg">
+                📥 全回答CSV出力
+              </button>
+              <button type="button" id="btn-inst-clear-all" class="bg-rose-700 hover:bg-rose-600 text-white text-xs font-bold px-3 py-2 rounded-lg">
+                🗑️ 履歴初期化
+              </button>
+              <button type="button" id="btn-inst-close" class="bg-slate-700 hover:bg-slate-600 text-white text-xs font-bold px-3 py-2 rounded-lg">
+                ✕ 受講者画面へ戻る
+              </button>
+            </div>
+          </div>
+
+          <!-- Instructor Summary KPIs -->
+          <div id="inst-kpi-row" class="grid grid-cols-2 sm:grid-cols-4 gap-3 mt-4"></div>
+        </div>
+
+        <!-- Instructor Tabs -->
+        <div class="bg-white rounded-xl border border-slate-200 shadow-sm p-5 space-y-4">
+          <div class="flex flex-wrap gap-2 border-b border-slate-200 pb-3">
+            <button type="button" id="tab-inst-matrix" class="px-4 py-2 rounded-lg bg-slate-900 text-white text-xs font-extrabold">
+              👥 1. 受講者別 回答マトリクス (Pre/Post選択番号・正誤)
+            </button>
+            <button type="button" id="tab-inst-dist" class="px-4 py-2 rounded-lg bg-slate-100 text-slate-700 hover:bg-slate-200 text-xs font-extrabold">
+              📊 2. 問題別 選択肢の分布 (ライブ解説用)
+            </button>
+            <button type="button" id="tab-inst-labs" class="px-4 py-2 rounded-lg bg-slate-100 text-slate-700 hover:bg-slate-200 text-xs font-extrabold">
+              📝 3. 演習・記述回答ボード (空・雨・傘 / SQL等)
+            </button>
+            <button type="button" id="tab-inst-import" class="px-4 py-2 rounded-lg bg-slate-100 text-slate-700 hover:bg-slate-200 text-xs font-extrabold">
+              📥 4. 受講者回答コード一括取込
+            </button>
+          </div>
+
+          <!-- Tab Content 1: Student Matrix -->
+          <div id="inst-panel-matrix" class="space-y-4">
+            <p class="text-xs text-slate-500">各セルの左側が<strong>導入4択(Pre)</strong>、右側が<strong>類似4択(Post)</strong>の選択番号（①〜④）と正誤です。受講者名をクリックすると記述回答の全詳細を表示します。</p>
+            <div class="overflow-x-auto border border-slate-200 rounded-lg">
+              <table class="w-full text-xs text-left border-collapse">
+                <thead class="bg-slate-800 text-white">
+                  <tr id="inst-matrix-thead"></tr>
+                </thead>
+                <tbody id="inst-matrix-tbody" class="divide-y divide-slate-200"></tbody>
+              </table>
+            </div>
+            <div id="inst-student-detail-box" class="hidden bg-sky-50 border border-sky-200 rounded-xl p-4 space-y-2"></div>
+          </div>
+
+          <!-- Tab Content 2: Question Option Distribution -->
+          <div id="inst-panel-dist" class="hidden space-y-4">
+            <div class="flex flex-wrap items-center justify-between gap-2">
+              <label class="text-xs font-bold text-slate-700">集計表示するモジュールを選択:
+                <select id="inst-dist-module-select" class="ml-2 border border-slate-300 rounded-lg px-3 py-1.5 bg-white font-bold"></select>
+              </label>
+              <label class="text-xs font-bold flex items-center gap-1.5 cursor-pointer">
+                <input type="checkbox" id="inst-dist-show-answer" checked class="rounded">
+                <span>正解マークを表示する（画面共有時はOFFにするとネタバレ防止になります）</span>
+              </label>
+            </div>
+            <div id="inst-dist-cards" class="grid grid-cols-1 md:grid-cols-2 gap-4"></div>
+          </div>
+
+          <!-- Tab Content 3: Written Lab Submissions -->
+          <div id="inst-panel-labs" class="hidden space-y-3">
+            <div id="inst-labs-list" class="grid grid-cols-1 md:grid-cols-2 gap-4"></div>
+          </div>
+
+          <!-- Tab Content 4: Manual Code Import -->
+          <div id="inst-panel-import" class="hidden space-y-3">
+            <p class="text-xs text-slate-600">Cloudflare Pages Functions が有効な場合は自動同期されますが、Zoom/Teamsチャット等で受講者から共有された「回答コード（JSON文字列）」をここに貼り付けて手動合算することも可能です。</p>
+            <textarea id="inst-import-textarea" rows="4" class="w-full border border-slate-300 rounded-lg p-3 text-xs font-mono" placeholder="受講者の回答コードをここに貼り付け（複数行可）"></textarea>
+            <div class="flex items-center gap-3">
+              <button type="button" id="btn-inst-do-import" class="bg-sky-600 hover:bg-sky-500 text-white text-xs font-bold px-4 py-2 rounded-lg">回答コードを取り込む</button>
+              <span id="inst-import-msg" class="text-xs font-bold text-emerald-700"></span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </main>
+  </div>
+
+  <!-- Modal 1: First-Time Student Name Entry -->
+  <div id="student-name-modal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-xs z-50 hidden items-center justify-center p-4">
+    <div class="bg-white rounded-2xl max-w-md w-full p-6 shadow-2xl border border-slate-200 space-y-4">
+      <div class="flex items-center gap-2">
+        <span class="bg-sky-100 text-sky-800 text-xs font-extrabold px-2.5 py-1 rounded-full">WELCOME</span>
+        <span class="text-xs text-slate-500 font-bold">ビジネスパーソンのためのデータリテラシー入門</span>
+      </div>
+      <h2 class="text-lg font-extrabold text-slate-900">👤 受講者ネームプレートの設定</h2>
+      <p class="text-xs text-slate-600 leading-relaxed">
+        本日の講義では、各単元の「導入4択クイズ」「テーマパークデータ演習」「仕上げ類似4択クイズ」の回答を記録しながら進めます。あなたのお名前（または受講番号・ニックネーム）を入力してください。
+      </p>
+      <div>
+        <label for="input-student-name" class="block text-xs font-bold text-slate-700 mb-1">お名前（例：山田 太郎 / 受講番号01）</label>
+        <input id="input-student-name" type="text" placeholder="山田 太郎" class="w-full border-2 border-slate-300 focus:border-sky-600 rounded-xl px-3.5 py-2.5 text-sm font-bold outline-none">
+      </div>
+      <div>
+        <label for="input-student-dept" class="block text-xs font-bold text-slate-700 mb-1">所属・メモ（任意）</label>
+        <input id="input-student-dept" type="text" placeholder="例：営業企画部 / データ分析初学者" class="w-full border border-slate-300 rounded-xl px-3.5 py-2 text-xs outline-none">
+      </div>
+      <p id="name-modal-error" class="text-xs font-bold text-rose-600 hidden">お名前を入力してください。</p>
+      <div class="flex justify-end gap-2 pt-2">
+        <button type="button" id="btn-save-student-name" class="w-full bg-[#1677a8] hover:bg-[#125e85] text-white font-extrabold text-sm py-2.5 rounded-xl shadow">
+          この名前で講義を開始する ▶
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal 2: Hidden Teacher Password Modal (Triggered by 5 clicks on #app-main-title) -->
+  <div id="teacher-auth-modal" class="fixed inset-0 bg-slate-900/70 backdrop-blur-xs z-50 hidden items-center justify-center p-4">
+    <div class="bg-white rounded-2xl max-w-sm w-full p-6 shadow-2xl border-2 border-amber-400 space-y-4">
+      <div class="flex items-center justify-between">
+        <span class="bg-amber-100 text-amber-900 text-xs font-extrabold px-2.5 py-1 rounded-full">👨‍🏫 講師認証</span>
+        <button type="button" id="btn-close-teacher-modal" class="text-slate-400 hover:text-slate-700 text-sm font-bold">✕</button>
+      </div>
+      <h2 class="text-base font-extrabold text-slate-900">講師用ダッシュボード ロック解除</h2>
+      <p class="text-xs text-slate-600">講師用パスワードを入力してください。</p>
+      <div>
+        <input id="teacher-password-input" type="password" placeholder="パスワードを入力" class="w-full border-2 border-slate-300 focus:border-amber-500 rounded-xl px-3.5 py-2 text-sm font-bold outline-none">
+        <p id="teacher-auth-error" class="text-xs font-bold text-rose-600 mt-1 hidden">パスワードが違います。</p>
+      </div>
+      <div class="flex justify-end gap-2">
+        <button type="button" id="btn-cancel-teacher-login" class="px-4 py-2 rounded-xl bg-slate-100 text-slate-700 text-xs font-bold">キャンセル</button>
+        <button type="button" id="btn-submit-teacher-login" class="px-5 py-2 rounded-xl bg-amber-500 hover:bg-amber-400 text-slate-950 text-xs font-extrabold">ロック解除</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal 3: Student Answer Sync / Export Code Modal -->
+  <div id="student-sync-modal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-xs z-50 hidden items-center justify-center p-4">
+    <div class="bg-white rounded-2xl max-w-lg w-full p-6 shadow-2xl border border-slate-200 space-y-4">
+      <div class="flex items-center justify-between">
+        <h2 class="text-base font-extrabold text-slate-900">📤 回答データのクラウド同期・提出コード</h2>
+        <button type="button" id="btn-close-sync-modal" class="text-slate-400 hover:text-slate-700 text-sm font-bold">✕</button>
+      </div>
+      <p class="text-xs text-slate-600 leading-relaxed">
+        回答を選択・保存するたびに自動記録されています。講師から「回答コードの提出」を求められた場合は、下のボタンでコピーしてチャット等に貼り付けてください。
+      </p>
+      <textarea id="student-export-code" rows="4" readonly class="w-full border border-slate-300 rounded-lg p-2.5 text-[11px] font-mono bg-slate-50"></textarea>
+      <div class="flex items-center justify-between gap-2">
+        <span id="sync-copy-status" class="text-xs font-bold text-emerald-700"></span>
+        <div class="flex gap-2">
+          <button type="button" id="btn-copy-sync-code" class="bg-[#1677a8] hover:bg-[#125e85] text-white text-xs font-bold px-4 py-2 rounded-lg">📋 回答コードをコピー</button>
+          <button type="button" id="btn-sync-now" class="bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold px-4 py-2 rounded-lg">☁️ サーバーへ再送信</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <footer class="bg-white border-t border-slate-200 py-4 px-6 text-center text-xs text-slate-500 mt-8">
+    MACO029G ビジネスパーソンのためのデータリテラシー入門 ～データサイエンティスト検定対応～ (MAC0029G-T1-03準拠)
+  </footer>
+
   <script>
-    (function(){
-      const sky = document.getElementById("sru-sky");
-      const rain = document.getElementById("sru-rain");
-      const umb = document.getElementById("sru-umbrella");
-      const out = document.getElementById("sru-output");
-      const st = document.getElementById("sru-status");
+  (function () {
+    "use strict";
 
-      // Load saved from localStorage if available
-      try {
-        const saved = JSON.parse(localStorage.getItem("ds_sru_proposal") || "null");
-        if (saved) {
-          sky.value = saved.sky || "";
-          rain.value = saved.rain || "";
-          umb.value = saved.umb || "";
+    // =========================================================================
+    // 1. EMBEDDED THEME PARK DATASET (Real records from repository + rich rows)
+    // =========================================================================
+    const THEME_PARK_DATA = [
+      { id: 1, date: "2026-04-01", dow: "Wed", weather: "sunny", temp: 21.2, weekend: 0, event: 0, visitors: 8206, attraction: "Sky Coaster", category: "thrill", hour: 10, wait: 44, sat: 3.8, sales: 317716 },
+      { id: 2, date: "2026-04-01", dow: "Wed", weather: "sunny", temp: 22.0, weekend: 0, event: 0, visitors: 8206, attraction: "Sky Coaster", category: "thrill", hour: 11, wait: 34, sat: 3.9, sales: 313048 },
+      { id: 3, date: "2026-04-01", dow: "Wed", weather: "sunny", temp: 23.1, weekend: 0, event: 0, visitors: 8206, attraction: "Sky Coaster", category: "thrill", hour: 13, wait: 27, sat: 4.2, sales: 241232 },
+      { id: 4, date: "2026-04-01", dow: "Wed", weather: "sunny", temp: 23.4, weekend: 0, event: 0, visitors: 8206, attraction: "Sky Coaster", category: "thrill", hour: 14, wait: 29, sat: 4.2, sales: 365470 },
+      { id: 5, date: "2026-04-01", dow: "Wed", weather: "sunny", temp: 22.5, weekend: 0, event: 0, visitors: 8206, attraction: "Fantasy Castle", category: "family", hour: 11, wait: 35, sat: 4.3, sales: 295100 },
+      { id: 6, date: "2026-04-01", dow: "Wed", weather: "sunny", temp: 23.0, weekend: 0, event: 0, visitors: 8206, attraction: "Kids Train", category: "kids", hour: 12, wait: 18, sat: 4.5, sales: 210400 },
+      { id: 7, date: "2026-04-02", dow: "Thu", weather: "cloudy", temp: 18.5, weekend: 0, event: 0, visitors: 8924, attraction: "Sky Coaster", category: "thrill", hour: 10, wait: 38, sat: 3.7, sales: 170673 },
+      { id: 8, date: "2026-04-02", dow: "Thu", weather: "cloudy", temp: 19.2, weekend: 0, event: 0, visitors: 8924, attraction: "Sky Coaster", category: "thrill", hour: 11, wait: 46, sat: 3.9, sales: 189431 },
+      { id: 9, date: "2026-04-02", dow: "Thu", weather: "cloudy", temp: 20.1, weekend: 0, event: 0, visitors: 8924, attraction: "Fantasy Castle", category: "family", hour: 13, wait: 52, sat: 3.8, sales: 259257 },
+      { id: 10, date: "2026-04-02", dow: "Thu", weather: "cloudy", temp: 19.8, weekend: 0, event: 0, visitors: 8924, attraction: "Jungle River", category: "family", hour: 14, wait: 41, sat: 4.0, sales: 234900 },
+      { id: 11, date: "2026-04-03", dow: "Fri", weather: "rainy", temp: 14.2, weekend: 0, event: 0, visitors: 6420, attraction: "Fantasy Castle", category: "family", hour: 11, wait: 75, sat: 3.1, sales: 165200 },
+      { id: 12, date: "2026-04-03", dow: "Fri", weather: "rainy", temp: 13.8, weekend: 0, event: 0, visitors: 6420, attraction: "Space Odyssey", category: "thrill", hour: 13, wait: 68, sat: 3.3, sales: 178900 },
+      { id: 13, date: "2026-04-03", dow: "Fri", weather: "rainy", temp: 13.5, weekend: 0, event: 0, visitors: 6420, attraction: "Sky Coaster", category: "thrill", hour: 14, wait: 22, sat: 3.6, sales: 142000 },
+      { id: 14, date: "2026-04-03", dow: "Fri", weather: "rainy", temp: 13.0, weekend: 0, event: 0, visitors: 6420, attraction: "Kids Train", category: "kids", hour: 15, wait: null, sat: 3.5, sales: 138000 },
+      { id: 15, date: "2026-04-04", dow: "Sat", weather: "sunny", temp: 28.4, weekend: 1, event: 1, visitors: 14850, attraction: "Sky Coaster", category: "thrill", hour: 11, wait: 95, sat: 3.2, sales: 542000 },
+      { id: 16, date: "2026-04-04", dow: "Sat", weather: "sunny", temp: 29.6, weekend: 1, event: 1, visitors: 14850, attraction: "Space Odyssey", category: "thrill", hour: 13, wait: 110, sat: 2.9, sales: 598000 },
+      { id: 17, date: "2026-04-04", dow: "Sat", weather: "sunny", temp: 30.1, weekend: 1, event: 1, visitors: 14850, attraction: "Fantasy Castle", category: "family", hour: 14, wait: 85, sat: 3.4, sales: 612000 },
+      { id: 18, date: "2026-04-04", dow: "Sat", weather: "sunny", temp: 29.2, weekend: 1, event: 1, visitors: 14850, attraction: "Kids Train", category: "kids", hour: 15, wait: 45, sat: 4.0, sales: 489000 },
+      { id: 19, date: "2026-04-05", dow: "Sun", weather: "sunny", temp: 27.5, weekend: 1, event: 1, visitors: 13900, attraction: "Sky Coaster", category: "thrill", hour: 12, wait: 240, sat: 1.8, sales: 515000 },
+      { id: 20, date: "2026-04-05", dow: "Sun", weather: "sunny", temp: 28.0, weekend: 1, event: 1, visitors: 13900, attraction: "Jungle River", category: "family", hour: 13, wait: 78, sat: 3.5, sales: 530000 },
+      { id: 21, date: "2026-04-05", dow: "Sun", weather: "cloudy", temp: 21.0, weekend: 1, event: 0, visitors: 11200, attraction: "Pirate Ship", category: "thrill", hour: 15, wait: 64, sat: 3.7, sales: 389000 },
+      { id: 22, date: "2026-04-06", dow: "Mon", weather: "rainy", temp: 15.1, weekend: 0, event: 0, visitors: 5800, attraction: "Fantasy Castle", category: "family", hour: 12, wait: 82, sat: 3.0, sales: 159000 },
+      { id: 23, date: "2026-04-06", dow: "Mon", weather: "rainy", temp: 14.8, weekend: 0, event: 0, visitors: 5800, attraction: "Space Odyssey", category: "thrill", hour: 14, wait: -10, sat: null, sales: 149000 },
+      { id: 24, date: "2026-04-07", dow: "Tue", weather: "sunny", temp: 24.0, weekend: 0, event: 0, visitors: 9400, attraction: "Jungle River", category: "family", hour: 11, wait: 48, sat: 4.1, sales: 342000 }
+    ];
+
+    // Textbook p.153 exact students & club tables
+    const INITIAL_STUDENTS = [
+      { student_id: 101, l_name: "Suzuki", f_name: "Ichiro", birth_date: "2001/10/03", pref: "Osaka", height: 172.5, club_id: 30 },
+      { student_id: 102, l_name: "Takahashi", f_name: "Jiro", birth_date: "1995/06/10", pref: "Hyogo", height: 181.7, club_id: 20 },
+      { student_id: 103, l_name: "Tanaka", f_name: "Akiko", birth_date: "1997/02/19", pref: "Osaka", height: 161.8, club_id: 20 },
+      { student_id: 104, l_name: "Yamamoto", f_name: "Hikari", birth_date: "1996/05/08", pref: "Nara", height: 148.2, club_id: 10 },
+      { student_id: 105, l_name: "Ito", f_name: "Hiroshi", birth_date: "1995/09/10", pref: "Kyoto", height: 165.1, club_id: 20 },
+      { student_id: 106, l_name: "Suzuki", f_name: "Akiko", birth_date: "1996/05/01", pref: "Hyogo", height: 171.8, club_id: 30 },
+      { student_id: 107, l_name: "Tanaka", f_name: "Tsubasa", birth_date: "1997/03/31", pref: "Nara", height: 183.7, club_id: 10 },
+      { student_id: 108, l_name: "Kitajima", f_name: "Kota", birth_date: "1995/12/20", pref: "Osaka", height: 176.3, club_id: 20 },
+      { student_id: 109, l_name: "Suzuki", f_name: "Haruka", birth_date: "1996/10/10", pref: "Kyoto", height: 163.0, club_id: 10 }
+    ];
+
+    const INITIAL_CLUB = [
+      { club_id: 10, club_name: "Tennis" },
+      { club_id: 20, club_name: "Baseball" },
+      { club_id: 30, club_name: "Swimming" },
+      { club_id: 40, club_name: "Judo" }
+    ];
+
+    let sqlStudents = JSON.parse(JSON.stringify(INITIAL_STUDENTS));
+    let sqlClub = JSON.parse(JSON.stringify(INITIAL_CLUB));
+
+    // =========================================================================
+    // 2. 6-PERIOD TIMETABLE & 12 MODULES (5-STEP FLOW)
+    // =========================================================================
+    const PERIODS = [
+      {
+        periodId: "p1",
+        time: "1限目 09:40 - 10:40 (60分)",
+        breakAfter: "☕ 休憩 10:40 - 10:50 (10分)",
+        modules: ["m1", "m2"]
+      },
+      {
+        periodId: "p2",
+        time: "2限目 10:50 - 11:50 (60分)",
+        breakAfter: "🍱 昼休憩 11:50 - 12:50 (60分)",
+        modules: ["m3", "m4"]
+      },
+      {
+        periodId: "p3",
+        time: "3限目 12:50 - 13:50 (60分)",
+        breakAfter: "☕ 休憩 13:50 - 14:00 (10分)",
+        modules: ["m5", "m6"]
+      },
+      {
+        periodId: "p4",
+        time: "4限目 14:00 - 15:00 (60分)",
+        breakAfter: "☕ 休憩 15:00 - 15:10 (10分)",
+        modules: ["m7", "m8"]
+      },
+      {
+        periodId: "p5",
+        time: "5限目 15:10 - 16:10 (60分)",
+        breakAfter: "☕ 休憩 16:10 - 16:20 (10分)",
+        modules: ["m9", "m10"]
+      },
+      {
+        periodId: "p6",
+        time: "6限目 16:20 - 17:00 (40分)",
+        breakAfter: "🎓 17:00 講義終了・お疲れ様でした！",
+        modules: ["m11", "m12"]
+      }
+    ];
+
+    const MODULES = [
+      // ---------------- M1 ----------------
+      {
+        id: "m1",
+        code: "Module 1",
+        chapter: "第1章 デジタルリテラシーとDS検定",
+        slides: "p.1 - p.16",
+        duration: "30分 (09:40-10:10)",
+        title: "Di-Lite 3領域とデータサイエンティストの3大スキル",
+        goal: "デジタルリテラシー（Di-Lite）の3試験と、DS検定が定義する3つのスキルセット（ビジネス力・データサイエンス力・データエンジニアリング力）をテーマパークの課題と結びつけて説明できる。",
+        preQuiz: {
+          q: "【導入4択】テーマパークの「待ち時間が長くて顧客満足度が下がっている」という問題を解決したいとき、最初に「どのアトラクションの目標待ち時間を何分にするか（KGI/KPI）」を定義する力は、DS検定の3つのスキルセットのうちどれに該当するでしょうか？",
+          options: [
+            "1. データエンジニアリング力（環境構築・SQL・プログラミング）",
+            "2. ビジネス力（課題背景を理解し、ビジネス課題を整理・解決する力）",
+            "3. データサイエンス力（統計数理・機械学習・データ可視化）",
+            "4. ハードウェア保守力（遊具の物理的な点検・修理スキル）"
+          ],
+          answer: 1,
+          hookTitle: "「データ分析＝数学やプログラミング」だけではありません！",
+          hookText: "DS検定では、いきなり計算やAI開発を始めるのではなく、まず『課題背景を理解してビジネス課題を整理する＝ビジネス力（159項目）』、次に『統計やAIで分析する＝データサイエンス力（309項目）』、そして『データベースやシステムとして実装・運用する＝データエンジニアリング力（182項目）』の3つが揃って初めて価値が出ると定義しています（スライド p.15-16）。"
+        },
+        slidePoints: [
+          {
+            page: "p.10 - p.12",
+            title: "デジタルリテラシー協議会「Di-Lite」の3領域",
+            body: "すべてのビジネスパーソンが持つべきデジタルリテラシー（Di-Lite）は以下の3領域・3試験で構成されます。<br>・<strong>IT・ソフトウェア領域</strong> ➔ <strong>ITパスポート試験</strong><br>・<strong>数理・データサイエンス領域</strong> ➔ <strong>データサイエンティスト検定（本コースの対象！）</strong><br>・<strong>AI・ディープラーニング領域</strong> ➔ <strong>G検定</strong>"
+          },
+          {
+            page: "p.14 - p.16",
+            title: "DS検定（リテラシーレベル）の対象とスキルチェックリスト650項目",
+            body: "DS検定リテラシーレベルは4段階のスキルレベルのうち<strong>「★ アシスタントデータサイエンティスト（見習いレベル：プロジェクトの担当テーマに対応できる）」</strong>を対象としています。<br>スキルチェックリスト ver5.00（計650項目）の内訳：<br>① <strong>ビジネス力（159個）</strong>：行動規範、論理的思考、課題の定義、契約・権利保護など<br>② <strong>データサイエンス力（309個）</strong>：数学的理解、データ準備、データ可視化、モデル化など<br>③ <strong>データエンジニアリング力（182個）</strong>：環境構築、データ収集・蓄積・加工、SQL/プログラミング、ITセキュリティなど"
+          }
+        ],
+        labType: "m1_skill_sorter",
+        postQuiz: {
+          q: "【類似4択リベンジ】デジタルリテラシー協議会が定義する「Di-Lite」の3領域と、DS検定リテラシーレベルの対象レベルに関する記述として、最も適切なものはどれか？（p.10, p.14）",
+          options: [
+            "1. Di-LiteはITパスポート・DS検定・G検定の3試験を推奨しており、DS検定リテラシーレベルは「★ アシスタントデータサイエンティスト（見習いレベル）」を対象としている",
+            "2. Di-Liteはプログラミング言語Pythonの文法のみを扱う試験であり、DS検定は「★★★★ シニアデータサイエンティスト（業界代表レベル）」のみを対象としている",
+            "3. DS検定のスキルセットには「ビジネス力」は含まれず、数学とサーバー構築のみが出題される",
+            "4. G検定はデータベースのバックアップ手法のみを証明する試験である"
+          ],
+          answer: 0,
+          explanation: "正解は1です。Di-LiteはITパスポート・DS検定・G検定の3つで構成され（p.10）、DS検定リテラシーレベルは「★ アシスタントデータサイエンティスト（見習いレベル）」を対象としています（p.14）。"
         }
-      } catch(e) {}
+      },
 
-      document.getElementById("sru-sample").onclick = () => {
-        sky.value = "雨の日(rainy)はファミリー・屋内系アトラクションの平均待ち時間が晴れの日より長くなり、60分超の待ち時間発生時に満足度(satisfaction_1to5)が平均3.5未満へ低下している。";
-        rain.value = "雨天時に屋外スリル系から屋内系へ利用者が集中する一方、現地での案内や時間分散のインセンティブがないため、特定時間帯(13〜15時)にボトルネックが発生している。";
-        umb.value = "①雨天時の時間帯別待ち時間予測を園内表示・アプリで可視化し、②13〜15時にレストラン利用で使える飲食クーポンを配布して待機列のピークカットと飲食売上向上を同時に図る。";
+      // ---------------- M2 ----------------
+      {
+        id: "m2",
+        code: "Module 2",
+        chapter: "第2章 社会におけるデータ・AI利活用（前半）",
+        slides: "p.17 - p.27, p.32",
+        duration: "30分 (10:10-10:40)",
+        title: "データリテラシー3要素と「疑似相関」「誇張グラフ」の罠",
+        goal: "データを「読み解く・説明する・扱う」3つの力を理解し、テーマパークのデータから「疑似相関（交絡因子）」と「グラフの縦軸誇張」を見抜くことができる。",
+        preQuiz: {
+          q: "【導入4択（スライド p.32 練習問題1）】次のデータの組み合わせのうち、「相関関係はあるが、因果関係は無い（疑似相関）」と考えられるものはどれか？",
+          options: [
+            "1. 数学のテストの点数と理科のテストの点数",
+            "2. 気温とアイスクリームの販売数",
+            "3. 月間平均気温と人口",
+            "4. ある商品の仕入れ価格と販売価格"
+          ],
+          answer: 0,
+          hookTitle: "2つの数字が一緒に増えていても「原因と結果」とは限りません！",
+          hookText: "スライド p.25 の『小学校で学ぶ漢字の数が増えると身長が伸びる』と同じく、数学の点数が高いから理科の点数が上がるのではなく、背後に『学習習慣・基礎学力』という共通の第3要因があります（p.32, p.173 正解：1）。テーマパークでも『飲食（アイス）が売れる日ほど待ち時間が長い』というデータが出ますが、アイス禁止にしたら待ち時間は減るでしょうか？下の演習で確かめてみましょう！"
+        },
+        slidePoints: [
+          {
+            page: "p.21 - p.24",
+            title: "ビッグデータ×4つのAI類型と、データリテラシー3つの力",
+            body: "・<strong>4つのAI類型（p.22）</strong>：認識型AI（画像・音声認識）、会話型AI（チャットボット・翻訳）、予測型AI（需要予測・異常検知）、実行型AI（自動運転・制御）<br>・<strong>データリテラシーの3要素（p.24）</strong>：<br>① <strong>適切に読み解く力（p.25）</strong>：分布・ばらつき、相関と因果、母集団を意識する<br>② <strong>適切に説明する力（p.26）</strong>：縦軸を途中で切って誇張しない、条件を揃えた比較対象を設定する<br>③ <strong>適切に扱う力（p.27）</strong>：スプレッドシート等で並べ替えやクロス集計を行う"
+          }
+        ],
+        labType: "m2_spurious_and_axis",
+        postQuiz: {
+          q: "【類似4択リベンジ】テーマパークのデータ分析において、「飲食売上（アイスクリーム等）が多い日ほどアトラクションの平均待ち時間が長い」という強い正の相関が見られた。このデータの解釈とグラフ表現として最も適切なものはどれか？（p.25-26）",
+          options: [
+            "1. アイスクリームの販売が待ち時間増加の直接の原因（因果関係）であるため、アイスの販売を中止すれば待ち時間は短くなる",
+            "2. 「気温や週末の来園者数増加」という共通要因によって両方とも増えている疑似相関の可能性が高いため、天候や来園者数で条件を揃えて比較する",
+            "3. グラフで報告する際は、少しの差でも劇的に見えるよう縦軸の最小値を意図的に切り取って強調するのが適切である",
+            "4. 相関関係が確認できた場合は、いかなる場合でも100%因果関係があると断定してよい"
+          ],
+          answer: 1,
+          explanation: "正解は2です。「気温・来園者数」という第3の要因が飲食売上と待ち時間の双方を押し上げているため、条件を揃えた比較（層別化）が必要です（p.25-26）。また、縦軸を切り取って誇張するグラフは不適切です（p.26）。"
+        }
+      },
+
+      // ---------------- M3 ----------------
+      {
+        id: "m3",
+        code: "Module 3",
+        chapter: "第2章 社会におけるデータ・AI利活用（後半）",
+        slides: "p.28 - p.33, p.61 - p.62",
+        duration: "25分 (10:50-11:15)",
+        title: "個人情報保護法・GDPR・AI社会原則とデータ倫理",
+        goal: "顧客のアクセスログや行動データを活用する際の法規制（個人情報保護法・GDPR・CCPA）、匿名加工情報、AI社会原則を正しく判断できる。",
+        preQuiz: {
+          q: "【導入4択（スライド p.32 練習問題2）】自社のサイトにアクセスした顧客の情報を活用する際に、最も適切なものはどれか？",
+          options: [
+            "1. 顧客がサイトにアクセスした際に得られた顧客データを分析の対象として自由に利用する。",
+            "2. 取得したデータに対し、個人を特定できないように匿名加工した上で利用する。",
+            "3. 削除要請があった日付以降のデータを削除したうえで、それ以外のデータを利用する。",
+            "4. 適切に匿名加工したデータが漏洩した場合、どのようなデータが漏洩したかという情報は社内に留めておく。"
+          ],
+          answer: 1,
+          hookTitle: "「自社サイトに集まったデータだから何をしても自由」は大間違い！",
+          hookText: "個人を特定できる顧客データを無断で目的外利用することは個人情報保護法やGDPRに抵触します。特定の個人を識別できないよう適切に『匿名加工情報』に変換して活用すること、また万一漏洩が起きた場合は社内に隠蔽せず適切に報告・公表することが求められます（スライド p.29, p.32, p.173 正解：2）。"
+        },
+        slidePoints: [
+          {
+            page: "p.29 - p.30, p.61 - p.62",
+            title: "データ・AIを扱う上での法規制とAI社会原則",
+            body: "・<strong>国内外の法規制（p.29, p.62）</strong>：改正個人情報保護法（日本・2022年）、<strong>GDPR</strong>（EU一般データ保護規則・2018年）、<strong>CCPA</strong>（カリフォルニア州消費者プライバシー法・2020年）<br>・<strong>AI社会原則（p.29）</strong>：公平性、説明責任、透明性、人間中心の判断<br>・<strong>先進技術と倫理の論点（p.30）</strong>：自動運転事故の責任、防犯カメラとプライバシー、購買・行動ログの扱い、生成AI創作物の権利"
+          }
+        ],
+        labType: "m3_ethics_judge",
+        postQuiz: {
+          q: "【類似4択リベンジ】テーマパークが海外観光客を含む来園者アプリの位置情報・購買ログをAI分析に活用する際のコンプライアンスとAI社会原則に関する記述として、適切なものはどれか？（p.29, p.62）",
+          options: [
+            "1. 日本国内のテーマパークであれば、EU在住者のデータを扱っていてもGDPR（EU一般データ保護規則）やCCPAを意識する必要は一切ない",
+            "2. AI社会原則では「公平性・説明責任・透明性・人間中心の判断」が重視されており、顧客データは個人を特定できないよう匿名加工や暗号化を施して安全に管理する",
+            "3. 園内の防犯カメラ映像や顔認証データは個人情報に該当しないため、SNSに無断公開してよい",
+            "4. AIが出した予測結果については、人間は一切確認せず100%無条件に従うのが「人間中心のAI社会原則」である"
+          ],
+          answer: 1,
+          explanation: "正解は2です。データは国境をまたいで活用されるためGDPRやCCPAも押さえる必要があり（p.62）、AI社会原則（公平性・説明責任・透明性・人間中心）と匿名加工・暗号化による保護が不可欠です（p.29）。"
+        }
+      },
+
+      // ---------------- M4 ----------------
+      {
+        id: "m4",
+        code: "Module 4",
+        chapter: "第3章 ビジネス力（前半）",
+        slides: "p.34 - p.50",
+        duration: "35分 (11:15-11:50)",
+        title: "データドリブン思考・KPIツリー分解と「空・雨・傘」",
+        goal: "ビジネスの目的（KGI）をKPIツリーで要素分解し、データから得た事実を「空・雨・傘」や「WHYの並び立て」で論理的な提案ストーリーに組み立てられる。",
+        preQuiz: {
+          q: "【導入4択】テーマパークのプロジェクトマネージャーから「今年のパーク全体の売上高を前年比+10%達成したい」という目標が示された。このとき、最終目標である「売上高+10%」と、それを達成するために中間管理する「1日あたり来園者数」「飲食購買率」などの指標の呼び方の組み合わせとして正しいものはどれか？（p.43, p.47）",
+          options: [
+            "1. 最終目標：KPI ／ 中間指標：KGI",
+            "2. 最終目標：KGI（重要目標達成指標） ／ 中間指標：KPI（重要業績評価指標）",
+            "3. 最終目標：5フォース ／ 中間指標：スコーピング",
+            "4. 最終目標：サブクエリ ／ 中間指標：正規化"
+          ],
+          answer: 1,
+          hookTitle: "目的（KGI）を見失うと、分析の「手戻り」が発生します！",
+          hookText: "スライド p.44 にあるように、PMが『売上を上げたい』と思っているのに、データサイエンティストが勝手に『コスト削減のために仕入れデータを分析しました』と報告すると大きな手戻りになります。まずゴールである KGI（Goal）を定め、それを KPIツリー（p.47）で『来園者数 × 客単価』のように分解して認識を合わせることがデータドリブンの第一歩です。"
+        },
+        slidePoints: [
+          {
+            page: "p.40 - p.47",
+            title: "データドリブンとKPIツリーによる目的の明確化",
+            body: "・<strong>役割分担（p.40-41）</strong>：ビジネスリーダー（領域特定・活用）⇄ PM（ビジネス課題を分析課題へ翻訳・品質管理）⇄ データサイエンティスト（理解・収集・分析・評価）<br>・<strong>KGIとKPIツリー（p.43, p.47）</strong>：<code>売上(KGI) ＝ 購買者数 × 客単価 ＝ (のべ来園者数 × 購買率) × 客単価</code> のように要素分解し、どこを何%改善するか道筋を具体化する。"
+          },
+          {
+            page: "p.48 - p.50",
+            title: "スコーピング（5フォース）とストーリーライン（WHYの並び立て / 空・雨・傘）",
+            body: "・<strong>スコーピング（p.48）</strong>：「要求（やりたいこと）」を洗い出し、「要件（できること）」を絞る。現状分析には<strong>5フォース分析</strong>（業界内競争、新規参入者、代替品、買い手の交渉力、売り手の交渉力）を活用。<br>・<strong>空・雨・傘（p.50）</strong>：<strong>「空（事実・課題の確認）」➔「雨（解釈・課題の深堀）」➔「傘（結論・アクション）」</strong>の順序で論理を組み立てる。"
+          }
+        ],
+        labType: "m4_kpi_and_sru",
+        postQuiz: {
+          q: "【類似4択リベンジ】論理的思考のアプローチである「スコーピング」「5フォース分析」「空・雨・傘」に関する記述として、最も適切なものはどれか？（p.48-50）",
+          options: [
+            "1. スコーピングとは、予算や期限を一切無視して、思いつくすべての要求を無制限に全部実装することである",
+            "2. 「空・雨・傘」では、「空（課題・事実の確認）➔ 雨（課題の深堀・解釈）➔ 傘（結論・打ち手）」の順序でストーリーを組み立てる",
+            "3. 5フォース分析の5つの脅威とは、「晴・曇・雨・雪・風」の5つの気象条件のことである",
+            "4. ステークホルダーとの認識齟齬による手戻りを防ぐには、最終報告の日まで分析内容を一切共有しないのがよい"
+          ],
+          answer: 1,
+          explanation: "正解は2です。「空（事実確認）→雨（深堀・解釈）→傘（結論）」で論理を構成し（p.50）、定期的に関係者レビューを行って認識齟齬や手戻りを防ぎます（p.44）。"
+        }
+      },
+
+      // ---------------- M5 ----------------
+      {
+        id: "m5",
+        code: "Module 5",
+        chapter: "第3章 ビジネス力（後半）",
+        slides: "p.51 - p.65",
+        duration: "25分 (12:50-13:15)",
+        title: "MECE・データ入手後の姿勢・契約形態（請負/準委任）・データ不正",
+        goal: "漏れなくダブりない分類（MECE）、データ受領時の確認プロセス、AI開発に適したアジャイル・準委任契約、一次情報とデータ不正3類型（捏造・改ざん・盗用）を判断できる。",
+        preQuiz: {
+          q: "【導入4択（スライド p.64 練習問題1）】あなたはデータサイエンティストとして、新商品の営業支援を行うためのプロジェクトに参画した。商品開発部よりいくつかのデータを受け取ったとき、次に行うべき行動として「適切でないもの」はどれか？",
+          options: [
+            "1. 受け取ったデータを結合し、分析を進める",
+            "2. 営業支援として何ができるか、営業部の社員にヒアリングする",
+            "3. 顧客への営業活動から、納品・請求までの業務プロセスを確認する",
+            "4. 受け取ったデータがどのようなものか内容を確認し、必要に応じて社内でヒアリングする"
+          ],
+          answer: 0,
+          hookTitle: "データを受け取って「いきなり結合・集計を始める」のが一番危険です！",
+          hookText: "現場で最も多い失敗が、ビジネス目的や業務プロセス、各データの定義を確認しないまま『とりあえず手元のデータを結合して分析を始めてしまうこと（選択肢1）』です（スライド p.64, p.174 正解：1）。また、アンケート設計では『MECE（漏れなく・ダブりなく）』になっているかが極めて重要です。"
+        },
+        slidePoints: [
+          {
+            page: "p.52 - p.55",
+            title: "MECE（漏れなくダブりなく）と、仮説と異なる結果が出たときの対応",
+            body: "・<strong>MECE（p.53）</strong>：Mutually Exclusive and Collectively Exhaustive（互いに重複せず、全体として漏れがない）。<br>・<strong>仮説と分析結果が異なったら？（p.54）</strong>：①まずデータ処理やロジックにミスがないか疑う ➔ ②ミスがなければ、<strong>データを書き換えるのではなく、データから新しい知見を受け入れる</strong>。<br>・<strong>事業展開後のモニタリング（p.55）</strong>：現場データで検証時と乖離が起きていないか定期監視する。"
+          },
+          {
+            page: "p.57 - p.61",
+            title: "アジャイル開発・準委任契約・一次情報・不正行為（捏造/改ざん/盗用）",
+            body: "・<strong>開発手法と契約（p.57-58）</strong>：AI・データ分析は事前の性能保証が難しく探索的に進めるため、<strong>アジャイル開発</strong>の考え方と<strong>準委任契約</strong>（仕事の完成ではなく事務処理の遂行を委託）が多く用いられる。<br>・<strong>情報の種類（p.60）</strong>：<strong>一次情報</strong>（自社アンケート・実測＝信頼度高）＞ 二次情報（他者の書籍・論文）＞ 三次情報（噂話）。<br>・<strong>絶対NGの不正行為（p.61）</strong>：<strong>捏造</strong>（存在しないデータ作成）、<strong>改ざん</strong>（データの変造・偽造）、<strong>盗用</strong>（引用なしの無断使用）。"
+          }
+        ],
+        labType: "m5_mece_and_contract",
+        postQuiz: {
+          q: "【類似4択リベンジ（スライド p.64 練習問題2）】MECE（Mutually Exclusive, Collectively Exhaustive：漏れも重複もない）を意識したアンケートの設問として、適切なものはどれか？",
+          options: [
+            "1. 「知っている衣料品ブランド名」「近所で販売している衣料品ブランド名」「近所では販売していない衣料品ブランド名」",
+            "2. 「住居の形態（持ち家、アパート等）」「居住している都道府県」「居住している地域（関東、関西等）」",
+            "3. 「おすすめする衣料品ブランドをすべて」「おすすめしない衣料品ブランドをすべて」",
+            "4. 「生年月日」「性別」「未既婚」「年代」"
+          ],
+          answer: 2,
+          explanation: "正解は3です。「おすすめするブランド」と「おすすめしないブランド」は互いに重複せず（Exclusive）、対象ブランド全体を二分するためMECEを意識した対比になっています（他の選択肢は「都道府県と地域」「生年月日と年代」など同じ属性が重複しています。スライド p.64, p.174 正解：3）。"
+        }
+      },
+
+      // ---------------- M6 ----------------
+      {
+        id: "m6",
+        code: "Module 6",
+        chapter: "第4章 データサイエンス力①（データ確認と4大可視化）",
+        slides: "p.66 - p.82, p.129",
+        duration: "35分 (13:15-13:50)",
+        title: "データチェックリストと4大グラフ（ヒストグラム・クロス集計・箱ひげ・散布図）",
+        goal: "データの偏り（常連客アンケート等）や異常値を点検し、ヒストグラム・クロス集計表・箱ひげ図（四分位数）・散布図（相関係数 r）を正しく使い分けられる。",
+        preQuiz: {
+          q: "【導入4択（スライド p.129 練習問題2）】2変数または3変数のデータの分布（関係性）を把握するために利用する可視化表現として適切なものはどれか？",
+          options: [
+            "1. 棒グラフ",
+            "2. 散布図",
+            "3. 円グラフ",
+            "4. 折れ線グラフ"
+          ],
+          answer: 1,
+          hookTitle: "「1つの変数のばらつき」を見るのか、「2つの変数の関係」を見るのかでグラフが変わります！",
+          hookText: "2つの量的データ（例：来園者数と待ち時間、家の広さと家賃）の関係性・相関を見るには『散布図』（3変数なら円の大きさを加えたバブルチャート）を使います（p.81, p.129, p.175 正解：2）。一方、1つの変数の分布を見るなら『ヒストグラム（p.78）』や『箱ひげ図（p.80）』を使います。"
+        },
+        slidePoints: [
+          {
+            page: "p.73 - p.76",
+            title: "データハンドリング3段階と「データが示す意味・背景」の罠",
+            body: "・<strong>データハンドリング（p.73）</strong>：①データ確認 ➔ ②データ理解（可視化・基本統計量） ➔ ③データ加工。<br>・<strong>データ確認の具体例（p.75-76）</strong>：<br>① <em>常連客のみの満足度アンケート</em>：常連客は元々満足度が高い偏りがあり、1回しか来なかった不満客が漏れている。<br>② <em>1か月間まったく同じ出退勤時刻のデータ</em>：システム不具合または人為的に加工された疑いがある。"
+          },
+          {
+            page: "p.78 - p.82",
+            title: "4つの可視化手法と相関係数 r (-1 〜 +1)",
+            body: "・<strong>ヒストグラム（p.78）</strong>：区間（ビン）ごとの度数分布。区間幅の設定（10分幅 vs 5分幅）で見える情報が変わる。<br>・<strong>クロス集計表（p.79）</strong>：2つのカテゴリ因子（例：天気 × エリア）を掛け合わせて平均や件数を集計。<br>・<strong>箱ひげ図（p.80）</strong>：最小値・<strong>第1四分位数(Q1)</strong>・<strong>中央値</strong>・<strong>第3四分位数(Q3)</strong>・最大値・外れ値で散らばりを表現。<br>・<strong>散布図と相関係数 r（p.81-82）</strong>：$-1 \le r \le +1$。$+1$に近いほど強い正の相関、$-1$に近いほど強い負の相関、$0$に近いほど無相関。"
+          }
+        ],
+        labType: "m6_four_charts",
+        postQuiz: {
+          q: "【類似4択リベンジ】9個のデータ「 1, 2, 6, 7, 10, 12, 15, 18, 19 」の箱ひげ図を作成したとき、「第1四分位数」「中央値」「第3四分位数」の組み合わせとして正しいものはどれか？（スライド p.80）",
+          options: [
+            "1. 第1四分位数 = 2 ／ 中央値 = 10 ／ 第3四分位数 = 18",
+            "2. 第1四分位数 = 4 ／ 中央値 = 10 ／ 第3四分位数 = 16.5",
+            "3. 第1四分位数 = 6 ／ 中央値 = 12 ／ 第3四分位数 = 15",
+            "4. 第1四分位数 = 1 ／ 中央値 = 10 ／ 第3四分位数 = 19"
+          ],
+          answer: 1,
+          explanation: "正解は2です（スライド p.80 の図解そのまま！）。9個の中央（5番目）が 中央値 = 10。中央値より小さい4個 {1, 2, 6, 7} の中央値は (2+6)÷2 = 4（第1四分位数）。大きい4個 {12, 15, 18, 19} の中央値は (15+18)÷2 = 16.5（第3四分位数）となります。"
+        }
+      },
+
+      // ---------------- M7 ----------------
+      {
+        id: "m7",
+        code: "Module 7",
+        chapter: "第4章 データサイエンス力②（基本統計量とデータ加工）",
+        slides: "p.83 - p.91, p.129",
+        duration: "30分 (14:00-14:30)",
+        title: "平均・中央値・分散・標準偏差・偏差値と4大データ加工",
+        goal: "分散・標準偏差・偏差値を手で計算でき、質的データの数値化（One-Hot/Label）・離散化・スケーリング（標準化/正規化）・外れ値処理（3σ基準）を使い分けられる。",
+        preQuiz: {
+          q: "【導入4択（スライド p.129 練習問題1）】4つのデータ「 -2, 1, 4, 5 」の分散の値として、適切なものはどれか？",
+          options: [
+            "1. 2",
+            "2. 18",
+            "3. 7.5",
+            "4. -2"
+          ],
+          answer: 2,
+          hookTitle: "平均値は「2」ですが、分散は「平均からのズレの2乗の平均」です！",
+          hookText: "4つのデータ {-2, 1, 4, 5} の平均は (-2+1+4+5)÷4 = 2 です（選択肢1は平均値のひっかけ！）。各データと平均2との差を2乗すると (-4)²=16, (-1)²=1, 2²=4, 3²=9。合計すると 16+1+4+9 = 30。これを個数4で割るので、分散 s² = 30 ÷ 4 = 7.5 となります（p.84, p.129, p.175 正解：3）。"
+        },
+        slidePoints: [
+          {
+            page: "p.83 - p.86",
+            title: "基本統計量（平均・中央値・最頻値・分散・標準偏差）と偏差値",
+            body: "・<strong>代表値（p.83）</strong>：平均値（合計÷個数）、中央値（昇順の中央、外れ値に強い）、最頻値（最も頻度が高い値）。<br>・<strong>分散 $s^2$ と標準偏差 $s$（p.84）</strong>：$s = \sqrt{s^2}$。標準偏差は元のデータと単位が同じため扱いやすい。<br>・<strong>偏差値（p.85-86）</strong>：<code>偏差値 ＝ (個人の値 － 平均) ÷ 標準偏差 × 10 ＋ 50</code>。数学(平均79, Aさん90, s=4.5 ➔ 偏差値74.4) と 英語(平均79, Aさん90, s=13.4 ➔ 偏差値58.2) のように異なる分布でも比較可能！"
+          },
+          {
+            page: "p.87 - p.91",
+            title: "代表的な4つのデータ加工手法",
+            body: "① <strong>質的データの数値化（p.88）</strong>：Labelエンコーディング（0,1,2,3）と <strong>One-Hotエンコーディング（ダミー変数化：1,0,0,0）</strong><br>② <strong>量的データの離散化（p.89）</strong>：細かい年齢（20, 26, 27歳…）を「20代、30代…」の質的データへまとめる<br>③ <strong>スケーリング（p.90）</strong>：<strong>標準化（z変換：平均0、標準偏差1）</strong>と <strong>正規化（主に0〜1の範囲に変換）</strong><br>④ <strong>外れ値・異常値・欠損値（p.91）</strong>：平均から<strong>標準偏差の3倍（3σ）以上</strong>離れた値は外れ値と判断されることが多い。"
+          }
+        ],
+        labType: "m7_stats_and_scaling",
+        postQuiz: {
+          q: "【類似4択リベンジ】テーマパークの2つのアトラクションで、どちらも本日の待ち時間が「60分」だった。Sky Coasterは「平均50分・標準偏差5分」、Fantasy Castleは「平均50分・標準偏差20分」であるとき、普段と比べてどちらがより異常に混雑していると言えるか（偏差値・標準化の観点）？（p.86, p.90）",
+          options: [
+            "1. 平均も現在の待ち時間も同じなので、混雑の珍しさ（偏差値）は全く同じである",
+            "2. 標準偏差が小さい Sky Coaster の方が標準化zスコア（+2.0 / 偏差値70）が高く、普段より異常に混雑している",
+            "3. 標準偏差が大きい Fantasy Castle の方が偏差値が高い",
+            "4. 待ち時間を0〜1に変換する処理を「One-Hotエンコーディング」と呼ぶ"
+          ],
+          answer: 1,
+          explanation: "正解は2です。Sky Coasterは (60-50)÷5 = +2.0σ（偏差値70）、Fantasy Castleは (60-50)÷20 = +0.5σ（偏差値55）となり、普段のばらつき（標準偏差）が小さいSky Coasterでの60分待ちの方がはるかに珍しい混雑です（p.85-86, p.90）。"
+        }
+      },
+
+      // ---------------- M8 ----------------
+      {
+        id: "m8",
+        code: "Module 8",
+        chapter: "第4章 データサイエンス力③（確率・ベイズ・推測統計）",
+        slides: "p.92 - p.106",
+        duration: "30分 (14:30-15:00)",
+        title: "順列・組合せ・条件付き確率・ベイズの定理・正規分布・標本と標準誤差",
+        goal: "順列と組合せ、条件付き確率とベイズの定理、正規分布の68-95-99.8%ルール、母集団と標本（不偏分散・標準誤差）を直観的に理解し計算できる。",
+        preQuiz: {
+          q: "【導入4択（スライド p.96 例題）】1, 2, 3の目が赤、4, 5, 6の目が青で塗られているサイコロがある。このサイコロを振って「青色の目が出たとき」、この目が「偶数」である条件付き確率 P(偶数|青色) はいくつか？",
+          options: [
+            "1. 1/6",
+            "2. 1/3",
+            "3. 1/2",
+            "4. 2/3"
+          ],
+          answer: 3,
+          hookTitle: "「全体6通り」ではなく、「青色が出た世界（3通り）」の中に絞って考えます！",
+          hookText: "青色の目は {4, 5, 6} の3通りです。その3通りの中で偶数は {4, 6} の2通りなので、条件付き確率は 2/3 になります（スライド p.96）。テーマパークでも『雨の日（条件B）に絞ったとき、屋内アトラクションが60分以上待つ（事象A）確率』のように毎日使われています！"
+        },
+        slidePoints: [
+          {
+            page: "p.94 - p.98",
+            title: "順列・組合せ・条件付き確率・ベイズの定理",
+            body: "・<strong>順列 $_nP_r$ と組合せ $_nC_r$（p.94）</strong>：5枚から3枚選んで並べる順列は $_5P_3 = 5\times 4\times 3 = 60$通り。順番を問わず選ぶだけの組合せは $_5C_3 = 60 \div 6 = 10$通り。<br>・<strong>条件付き確率とベイズの定理（p.96-98）</strong>：$P(B|A) = \frac{P(B)P(A|B)}{P(B)P(A|B) + P(\bar{B})P(A|\bar{B})}$。<br>p.97-98例題：IT適性あり(0.3)×検査陽性(0.9) ＝ 0.27、適性なし(0.7)×誤陽性(0.15) ＝ 0.105 ➔ 陽性のうち本当に適性ありの確率は $0.27 \div (0.27 + 0.105) = 0.72$ (72%)！"
+          },
+          {
+            page: "p.99 - p.106",
+            title: "確率分布（離散/連続）・正規分布の特徴・不偏分散と標準誤差",
+            body: "・<strong>離散型確率分布（p.99-101）</strong>：ベルヌーイ分布（結果が2通り）、二項分布（ベルヌーイ試行を$n$回）、ポアソン分布。<br>・<strong>連続型確率分布（p.99, p.102）</strong>：<strong>正規分布</strong>（平均$\mu \pm 1\sigma$に<strong>68.2%</strong>、$\pm 2\sigma$に<strong>95.4%</strong>、$\pm 3\sigma$に<strong>99.8%</strong>が収まる）、指数分布、カイ二乗分布。<br>・<strong>不偏分散と標準誤差（p.105-106）</strong>：標本分散は母分散より小さくなる傾向があるため <strong>$n-1$ で割る不偏分散</strong>を使う。<strong>サンプルサイズ $n$ が大きくなると標準誤差 $\sigma_X = \sigma/\sqrt{n}$ は小さくなる</strong>。"
+          }
+        ],
+        labType: "m8_bayes_and_sampling",
+        postQuiz: {
+          q: "【類似4択リベンジ】正規分布の特徴（p.102）および母集団と標本・不偏分散・標準誤差（p.104-106）に関する記述として、最も適切なものはどれか？",
+          options: [
+            "1. 正規分布では平均値±1σの範囲に約68.2%、±2σの範囲に約95.4%のデータが収まり、標本のサンプルサイズ n が大きくなるほど標準誤差は小さくなる",
+            "2. 標本分散から母分散を推定する際、n+100 で割った値を不偏分散と呼ぶ",
+            "3. ある試行の結果が「成功・失敗」の2通りである離散型確率分布を「カイ二乗分布」と呼ぶ",
+            "4. 5枚のカードから3枚を選ぶ組合せ（5C3）は60通りである"
+          ],
+          answer: 0,
+          explanation: "正解は1です。正規分布の±1σ(68.2%)・±2σ(95.4%)・±3σ(99.8%)の割合（p.102）、不偏分散は n-1 で割ること（p.105）、サンプルサイズ n が大きくなると標準誤差が小さくなること（p.106）は超重要ポイントです。"
+        }
+      },
+
+      // ---------------- M9 ----------------
+      {
+        id: "m9",
+        code: "Module 9",
+        chapter: "第4章 データサイエンス力④（線形代数・微積分・機械学習・生成AI）",
+        slides: "p.107 - p.130",
+        duration: "30分 (15:10-15:40)",
+        title: "ベクトル・行列・微積分と機械学習3分類・生成AI (LLM)",
+        goal: "ベクトルや行列の演算、AIの誤差最小化に使われる微分、および機械学習の3分類（教師あり・教師なし・強化学習）と生成AIの仕組みを説明できる。",
+        preQuiz: {
+          q: "【導入4択】テーマパークにおいて「過去の天気・気温・来園者数と実際の待ち時間（正解データ）のペアを学習し、明日の待ち時間（連続する数値）を予測するAI」を作る場合、機械学習のどの分類・課題に該当するか？（p.120-122）",
+          options: [
+            "1. 教師あり学習 の「回帰 (Regression)」",
+            "2. 教師あり学習 の「分類 (Classification)」",
+            "3. 教師なし学習 の「クラスタリング (Clustering)」",
+            "4. 強化学習 の「ロボット制御」"
+          ],
+          answer: 0,
+          hookTitle: "「正解ラベルがあるか？」「予測したいのが数値かカテゴリか？」で見分けます！",
+          hookText: "過去の実績という『正解データ』をペアで与えるので『教師あり学習』です。そして予測したい待ち時間や売上金額のような『連続する数値』を予測する課題を『回帰（Regression）』、スパム判定や画像識別のように『カテゴリ』を予測する課題を『分類（Classification）』と呼びます（p.120-122）。"
+        },
+        slidePoints: [
+          {
+            page: "p.107 - p.118",
+            title: "線形代数（ベクトル・行列・Word2vec・固有値）と解析学（微分・偏微分・積分）",
+            body: "・<strong>ベクトルとWord2vec（p.107-109）</strong>：内積 $\vec{a}\cdot\vec{b} = a_1b_1 + a_2b_2$。自然言語のベクトル化（Word2vec）により <code>King - Man + Woman = Queen</code> のような意味演算が可能。<br>・<strong>行列と固有値（p.110-112）</strong>：単位行列 $E$（対角が1）、逆行列 $AA^{-1}=E$。固有値・固有ベクトル（$A\vec{x}=\lambda\vec{x}$）は主成分分析（次元削減）などで活躍。<br>・<strong>微分とAI学習（p.113-118）</strong>：微分は「接線の傾き」を求め、ディープラーニングの<strong>予測誤差が最小となるパラメータ探索</strong>に使われる（p.116）。積分は逆演算で「区間の面積」を求める（$\int_0^1 3x^2 dx = [x^3]_0^1 = 1$、p.118）。"
+          },
+          {
+            page: "p.120 - p.127",
+            title: "機械学習の3大分類と生成AI（LLM）",
+            body: "① <strong>教師あり学習（p.121-122）</strong>：正解付きデータで学習 ➔ <strong>回帰</strong>（数値予測）・<strong>分類</strong>（カテゴリ予測）<br>② <strong>教師なし学習（p.123-124）</strong>：正解なしでデータ構造を把握 ➔ <strong>特徴抽出</strong>・<strong>クラスタリング</strong>（顧客グループ分け等）<br>③ <strong>強化学習（p.125-126）</strong>：エージェントが「状態(State)」を観測し「報酬(Reward)」を最大化する「行動(Action)」を学習（自動運転・ゲームAI等）<br>④ <strong>生成AI / LLM（p.127）</strong>：大量の文章を<strong>教師なし学習</strong>した基盤モデルに、<strong>教師あり学習や強化学習</strong>を重ねて対話能力を獲得。"
+          }
+        ],
+        labType: "m9_math_and_ml",
+        postQuiz: {
+          q: "【類似4択リベンジ】線形代数・微積分・機械学習・生成AI（LLM）に関する記述として、最も適切なものはどれか？（p.108-127）",
+          options: [
+            "1. 関数 f(x) = 2x² + 2 を微分した導関数は f'(x) = 4x であり、x = 1 における接線の傾きは 4 である（またAIの教師あり学習では誤差最小化に微分が使われる）",
+            "2. 潜在的な顧客グループを正解ラベルなしでグループ分けする「クラスタリング」は、強化学習の代表例である",
+            "3. 対角線上の要素が1で他の要素が0である行列を「ゼロ行列」と呼ぶ",
+            "4. ChatGPTなどの大規模言語モデル（LLM）は、ルールを手作業でif文として書き並べただけであり機械学習は使われていない"
+          ],
+          answer: 0,
+          explanation: "正解は1です（スライド p.113, p.116）。クラスタリングは教師なし学習（p.124）、対角成分が1の行列は単位行列（p.111）、ChatGPTは教師なし学習＋教師あり学習＋強化学習を組み合わせて学習されています（p.127）。"
+        }
+      },
+
+      // ---------------- M10 ----------------
+      {
+        id: "m10",
+        code: "Module 10",
+        chapter: "第5章 データエンジニアリング力（前半：分析基盤）",
+        slides: "p.131 - p.148, p.170",
+        duration: "30分 (15:40-16:10)",
+        title: "データレイク・DWH・BIとデータベース（RDB/NoSQL・クラスタ・バックアップ）",
+        goal: "データレイク・DWH・BIの役割分担、構造化/非構造化データ、RDBとNoSQL、拡張性と可用性（ホット/ウォーム/コールドスタンバイ）、バックアップ3方式を説明できる。",
+        preQuiz: {
+          q: "【導入4択（スライド p.170 練習問題1）】RDB（リレーショナルデータベース）に関する記述として、適切なものはどれか？",
+          options: [
+            "1. NoSQLは、RDBを管理するためのシステムである",
+            "2. RDBでは、行と列によって構成された非構造化データを扱う",
+            "3. RDBでは、SQLなどのデータベース言語を用いることができる",
+            "4. 音声や画像データを扱うためのデータベースである"
+          ],
+          answer: 2,
+          hookTitle: "構造化データ（表形式）をSQLで操作するのがRDBです！",
+          hookText: "列と行の2次元の表形式で表現できるデータを『構造化データ（Excel, CSV, RDBなど）』と呼び、音声・画像・動画などを『非構造化データ』と呼びます（p.141）。RDBは構造化データを表形式で扱い、SQLを使って検索・集計を行います（p.142, p.170, p.176 正解：3）。"
+        },
+        slidePoints: [
+          {
+            page: "p.137 - p.142",
+            title: "データレイク ➔ DWH ➔ BI の流れと RDB vs NoSQL",
+            body: "・<strong>データレイク（p.138）</strong>：各部門の生データ（非構造化含む）をそのまま一元集約するオブジェクトストレージ。<br>・<strong>データウェアハウス / DWH（p.139）</strong>：分析用に加工・整理し、ペタバイト規模のデータをSQLで高速分析（BigQuery, Redshift等）。<br>・<strong>BIツール（p.140）</strong>：DWHのデータをグラフやダッシュボードで可視化・共有。<br>・<strong>RDB vs NoSQL（p.142）</strong>：RDBはSQLによる検索・集計向き。NoSQL（＆分散処理基盤 <strong>Hadoop / HDFS</strong> p.147）は大容量データの高速・分散処理や高拡張性向き。"
+          },
+          {
+            page: "p.143 - p.148",
+            title: "クラスタ構成（スタンバイ3方式）・バックアップ3方式・クラウドとWeb API",
+            body: "・<strong>拡張性（Scalability）と可用性（Availability）（p.143）</strong>：<br><strong>ホットスタンバイ</strong>（本番機と常時同期・即座切替・高コスト/高可用性）＞ <strong>ウォームスタンバイ</strong>（OSのみ起動）＞ <strong>コールドスタンバイ</strong>（予備機停止・低コスト/切替遅い）。<br>・<strong>バックアップ3方式（p.144）</strong>：<strong>フルバックアップ</strong>（全体・時間長いが復旧簡便）、<strong>差分バックアップ</strong>（フル以降の更新分）、<strong>増分バックアップ</strong>（前回以降の更新分・時間短いが復旧複雑）。<br>・<strong>Web API（p.146）</strong>：軽量な検索等に向く <strong>REST</strong> と、厳密な入出力チェックに向く <strong>SOAP</strong>。"
+          }
+        ],
+        labType: "m10_infra_simulator",
+        postQuiz: {
+          q: "【類似4択リベンジ】データ分析基盤（データレイク・DWH・BI）、サーバースタンバイ構成、バックアップ手法に関する記述として、最も適切なものはどれか？（p.137-144）",
+          options: [
+            "1. 生データをそのまま集約・保管する環境を「データレイク」、分析用に加工してSQL等で分析する環境を「DWH」、分析結果をグラフ等で可視化するツールを「BI」と呼ぶ",
+            "2. 障害発生時に停止状態の予備機をゼロから起動して切り替える方式を「ホットスタンバイ」と呼び、最も可用性とコストが高い",
+            "3. 前回のバックアップ以降に更新されたデータのみを毎回保存する最も時間が短い方式を「フルバックアップ」と呼ぶ",
+            "4. 音声ファイルや監視カメラ動画は、列と行の関係性が明確な「構造化データ」の代表例である"
+          ],
+          answer: 0,
+          explanation: "正解は1です（p.137-140）。即座に切り替えるのがホットスタンバイ（停止状態からはコールドスタンバイ p.143）、前回以降の更新分のみは増分バックアップ（p.144）、音声・動画は非構造化データです（p.141）。"
+        }
+      },
+
+      // ---------------- M11 ----------------
+      {
+        id: "m11",
+        code: "Module 11",
+        chapter: "第5章 データエンジニアリング力（後半：SQLとサンプリング）",
+        slides: "p.149 - p.163, p.170",
+        duration: "20分 (16:20-16:40)",
+        title: "SQLデータ操作（DML）実践とデータクレンジング・5大サンプリング",
+        goal: "SQLの代表的な構文（SELECT, WHERE, GROUP BY, ORDER BY, INSERT, UPDATE, DELETE）とExcel/Pythonの対応を理解し、5つのサンプリング手法を使い分けられる。",
+        preQuiz: {
+          q: "【導入4択（スライド p.170 練習問題2）】データベース内のデータを「更新」するためのSQL文として、適切なものはどれか？",
+          options: [
+            "1. INSERT文",
+            "2. UPDATE文",
+            "3. SELECT文",
+            "4. DELETE文"
+          ],
+          answer: 1,
+          hookTitle: "英語の意味そのまま！参照(SELECT)・挿入(INSERT)・更新(UPDATE)・削除(DELETE)",
+          hookText: "SQLのデータ操作言語（DML：p.152, p.157）では、データの参照が『SELECT』、新規データの挿入（追加）が『INSERT』、既存データの更新が『UPDATE』、削除が『DELETE』です（p.170, p.176 正解：2）。下のSQL Labで実際に動かして確かめましょう！"
+        },
+        slidePoints: [
+          {
+            page: "p.150 - p.158",
+            title: "R / Python / SQL / Excel の特徴と SQL構文・基本統計量関数",
+            body: "・<strong>言語の特徴（p.151）</strong>：<strong>R</strong>（統計解析特化・RStudio）、<strong>Python</strong>（文法が簡単でWebから機械学習まで幅広い・Jupyter）、<strong>SQL</strong>（RDBのテーブル操作言語・MySQL等）。<br>・<strong>SQL構文（p.152-157）</strong>：<code>SELECT 列 FROM 表 WHERE 条件 GROUP BY 集計列 ORDER BY 整列列;</code> ／ 追加 <code>INSERT INTO</code> ／ 更新 <code>UPDATE 表 SET 列=値 WHERE 条件</code> ／ 削除 <code>DELETE FROM</code>。<br>・<strong>Excel関数（p.158）</strong>：<code>SUM</code>(合計), <code>AVERAGE</code>(平均), <code>MEDIAN</code>(中央値), <code>MODE</code>(最頻値), <code>VAR.P</code>(分散), <code>STDEV.P</code>(標準偏差), <code>COUNT</code>(件数)。"
+          },
+          {
+            page: "p.161 - p.163",
+            title: "データクレンジングと5つのサンプリング手法",
+            body: "・<strong>5つのサンプリング手法（p.162-163）</strong>：<br>① <strong>単純無作為サンプリング</strong>：全体から完全ランダム抽出<br>② <strong>系統サンプリング</strong>：3人おき・5人おきなど一定間隔で抽出<br>③ <strong>層別サンプリング</strong>：母集団を事前にグループ分けし比率に合わせて抽出（例：<strong>男女比8:2の大学1000人から男80人・女20人を抽出</strong> p.163）<br>④ <strong>集落サンプリング</strong>：グループ（例：特定のA市）を無作為に選び、その中は<strong>全数調査</strong>する（p.163）<br>⑤ <strong>多段サンプリング</strong>：グループを選び、さらにそこからランダム抽出する"
+          }
+        ],
+        labType: "m11_sql_and_sampling",
+        postQuiz: {
+          q: "【類似4択リベンジ】あるテーマパークの年間パスポート会員10,000人（ファミリー層80%、学生層20%）から100人を選んで満足度調査を行う際、あらかじめファミリー層80人・学生層20人となるようにグループ分けして抽出するサンプリング手法はどれか？（p.162-163）",
+          options: [
+            "1. 単純無作為サンプリング",
+            "2. 系統サンプリング",
+            "3. 層別サンプリング",
+            "4. 集落サンプリング"
+          ],
+          answer: 2,
+          explanation: "正解は3（層別サンプリング）です。母集団の属性比率（8:2）に合わせて各層から抽出することで母集団の傾向を正確に把握できます。なお、特定の地域や店舗を選んでその中を全数調査するのが「集落サンプリング」です（p.162-163）。"
+        }
+      },
+
+      // ---------------- M12 ----------------
+      {
+        id: "m12",
+        code: "Module 12",
+        chapter: "第5章 終盤（情報セキュリティ）＆ 全章総仕上げ",
+        slides: "p.164 - p.177",
+        duration: "20分 (16:40-17:00)",
+        title: "情報セキュリティ3要素・マルウェア・認証認可・暗号化と総仕上げ",
+        goal: "セキュリティの3要素（機密性・完全性・可用性）、マルウェア6種、認証の3要素と認可、共通鍵と公開鍵暗号方式を完全にマスターし、1日の学習成果を確認する。",
+        preQuiz: {
+          q: "【導入4択（スライド p.170 練習問題3 改）】情報セキュリティの「3要素」には含まれない（誤っている）ものは、次の4つのうちどれか？（※スライドp.170「1.機密性 2.完全性 3.可用性 4.秘匿性」に対応）",
+          options: [
+            "1. 機密性（認可されたユーザーだけがアクセスできること）",
+            "2. 完全性（データが不正に改ざんされておらず正確・完全であること）",
+            "3. 可用性（許可されたユーザーが要求したとき、いつでも利用できること）",
+            "4. 秘匿性（※セキュリティの3要素には含まれないダミー選択肢）"
+          ],
+          answer: 3,
+          hookTitle: "情報セキュリティの3要素（CIA）は「機密性・完全性・可用性」の3つです！",
+          hookText: "スライド p.165, p.170, p.176 の練習問題3にある通り、情報セキュリティの3要素は『1.機密性 (Confidentiality)』『2.完全性 (Integrity)』『3.可用性 (Availability)』の3つであり、『4.秘匿性』は含まれません。それぞれの対策例（暗号化、電子署名/ハッシュ関数、二重化/バックアップ）とセットで覚えましょう！"
+        },
+        slidePoints: [
+          {
+            page: "p.165 - p.166",
+            title: "セキュリティの3要素（機密性・完全性・可用性）とマルウェア6種",
+            body: "・<strong>機密性（p.165）</strong>：許可された人だけアクセス可能（対策：パスワード認証、アクセス権限制御、暗号化）<br>・<strong>完全性（p.165）</strong>：改ざんされておらず正確（対策：<strong>電子署名、ハッシュ関数</strong>）<br>・<strong>可用性（p.165）</strong>：いつでも利用可能（対策：<strong>システムの二重化、バックアップ</strong>）<br>・<strong>マルウェア（p.166）</strong>：ウイルス（他プログラムに寄生）、ワーム（単独でネットワーク伝染）、トロイの木馬（有用ソフトに偽装）、スパイウェア（情報収集）、<strong>ランサムウェア（勝手に暗号化し身代金要求）</strong>、ボット（乗っ取り遠隔操作）。"
+          },
+          {
+            page: "p.167 - p.168",
+            title: "認証（知識・生体・所有）と認可、共通鍵暗号と公開鍵暗号",
+            body: "・<strong>認証（ユーザー特定）の3情報（p.167）</strong>：①<strong>知識情報</strong>（パスワード）、②<strong>生体情報</strong>（指紋・虹彩・静脈）、③<strong>所有情報</strong>（スマホ・IDカード）。<strong>認可</strong>は特定アクションの権利付与。<br>・<strong>共通鍵暗号方式（p.168）</strong>：暗号鍵と復号鍵が<strong>同一</strong>（送信者と受信者で1つの共通鍵を共有）。<br>・<strong>公開鍵暗号方式（p.168）</strong>：暗号鍵と復号鍵が<strong>異なる</strong>（公開鍵を公開して暗号化してもらい、<strong>秘密鍵（復号鍵）</strong>で復号する）。"
+          }
+        ],
+        labType: "m12_security_and_summary",
+        postQuiz: {
+          q: "【類似4択リベンジ】情報セキュリティ対策・マルウェア・認証・暗号化に関する記述として、最も適切なものはどれか？（p.165-168）",
+          options: [
+            "1. データが改ざんされていないことを保証する「完全性」の対策として電子署名やハッシュ関数が用いられ、勝手にファイルを暗号化して身代金を要求するマルウェアを「ランサムウェア」と呼ぶ",
+            "2. 指紋や静脈を使った認証は「所有情報」による認証に分類される",
+            "3. 公開鍵暗号方式では、復号に使う「秘密鍵（復号鍵）」をインターネット上に誰でも見られるよう公開する",
+            "4. システムの二重化やバックアップは、誰にもデータを見せないようにする「機密性」のみを高める対策である"
+          ],
+          answer: 0,
+          explanation: "正解は1です（p.165-166）。指紋・静脈は「生体情報」（p.167）、公開鍵暗号では公開鍵を公開し復号鍵（秘密鍵）は厳重に管理します（p.168）。二重化・バックアップは「可用性」の対策です（p.165）。"
+        }
+      }
+    ];
+
+    // =========================================================================
+    // 3. STATE MANAGEMENT & STORAGE / CLOUD SYNC
+    // =========================================================================
+    const STORAGE_KEY_STUDENT = "ds_v3_student_record";
+    const STORAGE_KEY_ALL_RECORDS = "ds_v3_all_class_records";
+
+    let currentModuleIdx = 0;
+    let isInstructorUnlocked = false;
+    let titleClickCount = 0;
+    let titleClickTimer = null;
+
+    function createBlankStudent(name = "", dept = "") {
+      return {
+        studentId: "stu_" + Math.random().toString(36).slice(2, 9),
+        name: name,
+        dept: dept,
+        currentModule: "m1",
+        updatedAt: new Date().toLocaleTimeString("ja-JP", { hour: "2-digit", minute: "2-digit" }),
+        preAnswers: {},   // { m1: { choice: 1, correct: true } }
+        postAnswers: {},  // { m1: { choice: 0, correct: true } }
+        labResponses: {}  // { m1: "text..." }
+      };
+    }
+
+    let studentState = createBlankStudent();
+    let classRecords = {}; // keyed by studentName or studentId
+
+    function loadLocalState() {
+      try {
+        const rawStu = localStorage.getItem(STORAGE_KEY_STUDENT);
+        if (rawStu) {
+          const parsed = JSON.parse(rawStu);
+          if (parsed && typeof parsed === "object") {
+            studentState = Object.assign(createBlankStudent(), parsed);
+          }
+        }
+        const rawAll = localStorage.getItem(STORAGE_KEY_ALL_RECORDS);
+        if (rawAll) {
+          const parsedAll = JSON.parse(rawAll);
+          if (parsedAll && typeof parsedAll === "object") {
+            classRecords = parsedAll;
+          }
+        }
+      } catch (e) {}
+      if (studentState.name) {
+        classRecords[studentState.name] = studentState;
+      }
+    }
+
+    function saveLocalState() {
+      studentState.updatedAt = new Date().toLocaleTimeString("ja-JP", { hour: "2-digit", minute: "2-digit" });
+      if (studentState.name) {
+        classRecords[studentState.name] = JSON.parse(JSON.stringify(studentState));
+      }
+      try {
+        localStorage.setItem(STORAGE_KEY_STUDENT, JSON.stringify(studentState));
+        localStorage.setItem(STORAGE_KEY_ALL_RECORDS, JSON.stringify(classRecords));
+      } catch (e) {}
+      updateHeaderStats();
+      syncToCloudServer();
+    }
+
+    // Optional Cloudflare Pages Function sync (graceful no-op in Canvas)
+    async function syncToCloudServer() {
+      if (!studentState.name) return;
+      if (location.protocol === "file:" || location.hostname.includes("googleusercontent")) return;
+      try {
+        const apiPath = ["", "api", "records"].join("/");
+        await fetch(apiPath, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(studentState)
+        });
+      } catch (e) {}
+    }
+
+    async function fetchCloudRecords() {
+      if (location.protocol === "file:" || location.hostname.includes("googleusercontent")) return;
+      try {
+        const apiPath = ["", "api", "records"].join("/");
+        const res = await fetch(apiPath);
+        if (res.ok) {
+          const remoteMap = await res.json();
+          if (remoteMap && typeof remoteMap === "object") {
+            Object.assign(classRecords, remoteMap);
+            try {
+              localStorage.setItem(STORAGE_KEY_ALL_RECORDS, JSON.stringify(classRecords));
+            } catch (e) {}
+          }
+        }
+      } catch (e) {}
+    }
+
+    // =========================================================================
+    // 4. HEADER STATS & TIMETABLE SIDEBAR RENDERING
+    // =========================================================================
+    function calcStudentScores(rec) {
+      let preTotal = 0, preCorrect = 0;
+      let postTotal = 0, postCorrect = 0;
+      let completedCount = 0;
+      MODULES.forEach((m) => {
+        const pre = rec.preAnswers && rec.preAnswers[m.id];
+        const post = rec.postAnswers && rec.postAnswers[m.id];
+        if (pre) {
+          preTotal++;
+          if (pre.correct) preCorrect++;
+        }
+        if (post) {
+          postTotal++;
+          if (post.correct) postCorrect++;
+        }
+        if (pre && post) completedCount++;
+      });
+      return {
+        preTotal,
+        preCorrect,
+        prePct: preTotal ? Math.round((preCorrect / preTotal) * 100) : null,
+        postTotal,
+        postCorrect,
+        postPct: postTotal ? Math.round((postCorrect / postTotal) * 100) : null,
+        completedCount
+      };
+    }
+
+    function updateHeaderStats() {
+      const s = calcStudentScores(studentState);
+      const progEl = document.getElementById("hdr-progress");
+      const preEl = document.getElementById("hdr-pre-score");
+      const postEl = document.getElementById("hdr-post-score");
+      const nameEl = document.getElementById("hdr-student-name");
+
+      if (progEl) progEl.textContent = `${s.completedCount}/${MODULES.length}`;
+      if (preEl) preEl.textContent = s.prePct !== null ? `${s.prePct}% (${s.preCorrect}/${s.preTotal})` : "未回答";
+      if (postEl) postEl.textContent = s.postPct !== null ? `${s.postPct}% (${s.postCorrect}/${s.postTotal})` : "未回答";
+      if (nameEl) nameEl.textContent = studentState.name ? `${studentState.name} さん` : "受講者名を設定";
+    }
+
+    function renderTimetableNav() {
+      const nav = document.getElementById("timetable-nav");
+      if (!nav) return;
+
+      const activeMod = MODULES[currentModuleIdx];
+      nav.innerHTML = PERIODS.map((p) => {
+        const modButtons = p.modules
+          .map((mId) => {
+            const mIdx = MODULES.findIndex((x) => x.id === mId);
+            const m = MODULES[mIdx];
+            const isActive = m.id === activeMod.id;
+            const preDone = Boolean(studentState.preAnswers[m.id]);
+            const postDone = Boolean(studentState.postAnswers[m.id]);
+            const labDone = Boolean(studentState.labResponses[m.id]);
+            let statusIcon = "⚪";
+            if (preDone && postDone) statusIcon = "✅";
+            else if (preDone || labDone) statusIcon = "⏳";
+
+            return `
+              <button type="button" data-mod-idx="${mIdx}" class="nav-mod-btn w-full text-left p-2.5 rounded-lg border transition flex items-start gap-2 ${
+                isActive
+                  ? "bg-[#0f2942] text-white border-[#0f2942] shadow-xs"
+                  : "bg-slate-50 hover:bg-sky-50 text-slate-800 border-slate-200"
+              }">
+                <span class="text-xs mt-0.5">${statusIcon}</span>
+                <div class="flex-1 min-w-0">
+                  <div class="flex items-center justify-between gap-1">
+                    <span class="text-[10px] font-extrabold ${isActive ? "text-amber-300" : "text-sky-700"}">${m.code} (${m.slides})</span>
+                    <span class="text-[10px] ${isActive ? "text-sky-200" : "text-slate-400"}">${m.duration.split(" ")[0]}</span>
+                  </div>
+                  <div class="text-xs font-bold truncate mt-0.5">${m.title}</div>
+                </div>
+              </button>
+            `;
+          })
+          .join("");
+
+        return `
+          <div class="border border-slate-200 rounded-xl p-2.5 bg-white space-y-2">
+            <div class="text-xs font-extrabold text-slate-900 bg-slate-100 px-2.5 py-1 rounded flex items-center justify-between">
+              <span>${p.time}</span>
+            </div>
+            <div class="space-y-1.5">${modButtons}</div>
+            <div class="text-[11px] font-bold text-amber-800 bg-amber-50/80 border border-amber-200/70 px-2.5 py-1 rounded text-center">
+              ${p.breakAfter}
+            </div>
+          </div>
+        `;
+      }).join("");
+
+      nav.querySelectorAll(".nav-mod-btn").forEach((btn) => {
+        btn.addEventListener("click", () => {
+          currentModuleIdx = Number(btn.dataset.modIdx);
+          studentState.currentModule = MODULES[currentModuleIdx].id;
+          saveLocalState();
+          showStudentView();
+          renderActiveModule();
+          window.scrollTo({ top: 0, behavior: "smooth" });
+        });
+      });
+    }
+
+    // =========================================================================
+    // 5. RENDER ACTIVE MODULE (5-STEP LEARNING CYCLE)
+    // =========================================================================
+    function renderActiveModule() {
+      renderTimetableNav();
+      const m = MODULES[currentModuleIdx];
+
+      // Header Card
+      const hdrCard = document.getElementById("module-header-card");
+      if (hdrCard) {
+        hdrCard.innerHTML = `
+          <div class="flex flex-wrap items-center justify-between gap-2 mb-2">
+            <div class="flex items-center gap-2">
+              <span class="bg-[#0f2942] text-white text-xs font-extrabold px-3 py-1 rounded-full">${m.code}</span>
+              <span class="bg-orange-100 text-orange-900 text-xs font-extrabold px-3 py-1 rounded-full">📖 スライド ${m.slides}</span>
+              <span class="text-xs font-bold text-slate-500">⏱️ 目安 ${m.duration}</span>
+            </div>
+            <span class="text-xs font-bold text-sky-800 bg-sky-50 px-2.5 py-1 rounded border border-sky-200">${m.chapter}</span>
+          </div>
+          <h2 class="text-xl sm:text-2xl font-extrabold text-slate-900">${m.title}</h2>
+          <p class="text-xs sm:text-sm text-slate-600 mt-1.5 bg-slate-50 border-l-4 border-[#1677a8] p-2.5 rounded-r-lg">
+            <strong>🎯 この単元のゴール：</strong> ${m.goal}
+          </p>
+        `;
+      }
+
+      // STEP 1: Pre-Quiz
+      renderQuizStep("pre", m);
+
+      // STEP 2: Light Hook Explanation
+      renderStep2Hook(m);
+
+      // STEP 3: Slide Sync Points
+      const s3Badge = document.getElementById("step3-pages-badge");
+      if (s3Badge) s3Badge.textContent = `対応スライド: ${m.slides}`;
+      const s3Content = document.getElementById("step3-content");
+      if (s3Content) {
+        s3Content.innerHTML = m.slidePoints
+          .map(
+            (sp) => `
+            <div class="slide-card p-4 sm:p-5">
+              <div class="flex items-center justify-between mb-2">
+                <span class="text-xs font-extrabold text-orange-700 bg-orange-50 border border-orange-200 px-2.5 py-0.5 rounded">スライド ${sp.page}</span>
+                <span class="text-[11px] text-slate-400 font-bold">TRAINOCATE Slide Sync</span>
+              </div>
+              <h3 class="text-base font-extrabold text-slate-900 mb-2">${sp.title}</h3>
+              <div class="text-xs sm:text-sm text-slate-700 leading-relaxed">${sp.body}</div>
+            </div>
+          `
+          )
+          .join("");
+      }
+
+      // STEP 4: Interactive Hands-On Lab
+      renderStep4Lab(m);
+
+      // STEP 5: Post-Quiz
+      renderQuizStep("post", m);
+
+      // Pager buttons
+      const prevBtn = document.getElementById("btn-prev-module");
+      const nextBtn = document.getElementById("btn-next-module");
+      const indEl = document.getElementById("pager-module-indicator");
+      if (prevBtn) prevBtn.disabled = currentModuleIdx <= 0;
+      if (nextBtn) nextBtn.disabled = currentModuleIdx >= MODULES.length - 1;
+      if (indEl) indEl.textContent = `${m.code} (${currentModuleIdx + 1} / ${MODULES.length})`;
+    }
+
+    function renderQuizStep(stage, m) {
+      const isPre = stage === "pre";
+      const quizObj = isPre ? m.preQuiz : m.postQuiz;
+      const savedMap = isPre ? studentState.preAnswers : studentState.postAnswers;
+      const saved = savedMap[m.id];
+
+      const container = document.getElementById(isPre ? "step1-content" : "step5-content");
+      const badge = document.getElementById(isPre ? "step1-status-badge" : "step5-status-badge");
+      if (!container) return;
+
+      if (badge) {
+        if (saved) {
+          badge.innerHTML = saved.correct
+            ? `<span class="text-emerald-700 bg-emerald-50 border border-emerald-200 px-2.5 py-1 rounded">⭕ 回答済（選択肢${saved.choice + 1}：正解！）</span>`
+            : `<span class="text-rose-700 bg-rose-50 border border-rose-200 px-2.5 py-1 rounded">❌ 回答済（選択肢${saved.choice + 1}を選択）</span>`;
+        } else {
+          badge.innerHTML = `<span class="text-slate-500">選択肢を選んで「回答を記録」を押してください</span>`;
+        }
+      }
+
+      const optsHtml = quizObj.options
+        .map((opt, idx) => {
+          const isSelected = saved && saved.choice === idx;
+          const isCorrectChoice = idx === quizObj.answer;
+          let cls = "border-slate-200 bg-slate-50 hover:bg-sky-50 text-slate-800";
+          if (saved) {
+            if (isCorrectChoice) cls = "border-emerald-500 bg-emerald-50 text-emerald-950 font-bold";
+            else if (isSelected && !saved.correct) cls = "border-rose-400 bg-rose-50 text-rose-950";
+          }
+          return `
+            <button type="button" data-stage="${stage}" data-idx="${idx}" class="quiz-opt-btn option-btn w-full text-left p-3.5 rounded-xl border-2 text-xs sm:text-sm flex items-center justify-between gap-2 ${cls}">
+              <span>${opt}</span>
+              <span class="text-xs font-extrabold shrink-0">
+                ${saved ? (isCorrectChoice ? "⭕ 正解" : isSelected ? "◀ あなたの選択" : "") : "選択する ▶"}
+              </span>
+            </button>
+          `;
+        })
+        .join("");
+
+      let feedbackHtml = "";
+      if (!isPre && saved) {
+        const preSaved = studentState.preAnswers[m.id];
+        const growthMsg =
+          preSaved && !preSaved.correct && saved.correct
+            ? "🎉 素晴らしい！Step 1の導入クイズでは惜しくも不正解でしたが、演習を経て見事リベンジ正解を達成しました！"
+            : saved.correct
+            ? "✅ バッチリ正解です！この単元のDS検定ポイントをしっかり習得できています。"
+            : "💡 解説を確認して、もう1度選択肢を見直してみましょう（何度でも選び直せます）。";
+        feedbackHtml = `
+          <div class="mt-4 p-4 rounded-xl border ${saved.correct ? "bg-emerald-50 border-emerald-300 text-emerald-950" : "bg-amber-50 border-amber-300 text-amber-950"} text-xs sm:text-sm space-y-1">
+            <div class="font-extrabold">${growthMsg}</div>
+            <div>${quizObj.explanation}</div>
+          </div>
+        `;
+      }
+
+      container.innerHTML = `
+        <p class="text-sm sm:text-base font-bold text-slate-900 mb-3 leading-relaxed">${quizObj.q}</p>
+        <div class="space-y-2">${optsHtml}</div>
+        ${feedbackHtml}
+      `;
+
+      container.querySelectorAll(".quiz-opt-btn").forEach((btn) => {
+        btn.addEventListener("click", () => {
+          const choiceIdx = Number(btn.dataset.idx);
+          const isOk = choiceIdx === quizObj.answer;
+          savedMap[m.id] = {
+            choice: choiceIdx,
+            correct: isOk,
+            time: new Date().toLocaleTimeString("ja-JP", { hour: "2-digit", minute: "2-digit" })
+          };
+          saveLocalState();
+          renderActiveModule();
+        });
+      });
+    }
+
+    function renderStep2Hook(m) {
+      const s2 = document.getElementById("step2-content");
+      if (!s2) return;
+      const preSaved = studentState.preAnswers[m.id];
+      const statusBanner = preSaved
+        ? `<div class="mb-2 inline-block text-xs font-extrabold px-2.5 py-1 rounded ${
+            preSaved.correct ? "bg-emerald-100 text-emerald-900" : "bg-amber-100 text-amber-900"
+          }">
+            Step 1 のあなたの回答：選択肢 ${preSaved.choice + 1} （${preSaved.correct ? "⭕ 正解！" : "💡 引っかかりやすいポイントを確認しましょう"}）
+           </div>`
+        : `<div class="mb-2 text-xs text-purple-700 font-bold">👆 まずは上の Step 1 で直観で1つ選択肢をクリックしてみましょう！</div>`;
+
+      s2.innerHTML = `
+        ${statusBanner}
+        <h3 class="text-base font-extrabold text-purple-950 mb-1.5">💡 ${m.preQuiz.hookTitle}</h3>
+        <p class="text-xs sm:text-sm text-slate-700 leading-relaxed">${m.preQuiz.hookText}</p>
+      `;
+    }
+
+    // =========================================================================
+    // 6. STEP 4 INTERACTIVE HANDS-ON LABS (ALL 12 MODULES)
+    // =========================================================================
+    function renderLabSaveBox(m, promptLabel, placeholder, defaultTextFn) {
+      const savedText = studentState.labResponses[m.id] || "";
+      return `
+        <div class="bg-slate-50 border border-slate-200 rounded-xl p-4 mt-4 space-y-2">
+          <div class="flex flex-wrap items-center justify-between gap-2">
+            <label for="lab-input-${m.id}" class="text-xs font-extrabold text-slate-800">✍️ 演習ミッション記録（講師画面へ共有されます）：${promptLabel}</label>
+            <button type="button" id="btn-lab-autofill-${m.id}" class="text-xs bg-white hover:bg-sky-50 text-sky-700 border border-sky-200 font-bold px-2.5 py-1 rounded">
+              💡 現在の操作結果から下書きを自動入力
+            </button>
+          </div>
+          <textarea id="lab-input-${m.id}" rows="2" placeholder="${placeholder}" class="w-full border border-slate-300 rounded-lg p-2.5 text-xs bg-white">${savedText}</textarea>
+          <div class="flex items-center justify-between">
+            <span id="lab-save-msg-${m.id}" class="text-xs font-bold text-emerald-700">${savedText ? "✓ 記録済み" : ""}</span>
+            <button type="button" id="btn-lab-save-${m.id}" class="bg-[#1677a8] hover:bg-[#125e85] text-white text-xs font-bold px-4 py-1.5 rounded-lg">
+              演習結果を保存・講師へ送信
+            </button>
+          </div>
+        </div>
+      `;
+    }
+
+    function wireLabSaveBox(m, defaultTextFn) {
+      const inputEl = document.getElementById(`lab-input-${m.id}`);
+      const saveBtn = document.getElementById(`btn-lab-save-${m.id}`);
+      const autoBtn = document.getElementById(`btn-lab-autofill-${m.id}`);
+      const msgEl = document.getElementById(`lab-save-msg-${m.id}`);
+      const badgeEl = document.getElementById("step4-status-badge");
+
+      if (studentState.labResponses[m.id] && badgeEl) {
+        badgeEl.innerHTML = `<span class="text-emerald-700 bg-emerald-50 border border-emerald-200 px-2.5 py-1 rounded">✓ 演習記録済</span>`;
+      }
+
+      if (autoBtn && inputEl) {
+        autoBtn.addEventListener("click", () => {
+          inputEl.value = defaultTextFn();
+        });
+      }
+      if (saveBtn && inputEl) {
+        saveBtn.addEventListener("click", () => {
+          const val = inputEl.value.trim() || defaultTextFn();
+          inputEl.value = val;
+          studentState.labResponses[m.id] = val;
+          saveLocalState();
+          if (msgEl) msgEl.textContent = "✓ 演習結果を保存しました！";
+          if (badgeEl) badgeEl.innerHTML = `<span class="text-emerald-700 bg-emerald-50 border border-emerald-200 px-2.5 py-1 rounded">✓ 演習記録済</span>`;
+          renderTimetableNav();
+        });
+      }
+    }
+
+    function renderStep4Lab(m) {
+      const box = document.getElementById("step4-lab-container");
+      if (!box) return;
+
+      // ---- M1 Lab: Theme Park Challenge x 3 Skills Sorter ----
+      if (m.labType === "m1_skill_sorter") {
+        box.innerHTML = `
+          <div class="bg-sky-50/70 border border-sky-200 rounded-xl p-4 space-y-3">
+            <h4 class="text-sm font-extrabold text-slate-900">🎢 演習：テーマパークの現場課題を「3つのスキルセット（p.15-16）」に仕分けよう！</h4>
+            <p class="text-xs text-slate-600">下の3つの現場タスクについて、最も深く関わるスキルセットを選んでクリックしてください。</p>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-3 text-xs">
+              <div class="bg-white p-3 rounded-lg border border-slate-200 space-y-2">
+                <div class="font-bold text-slate-900">タスクA：「雨の日の満足度低下を防ぐため、どの指標（KPI）を目標にするか企画会議で合意する」</div>
+                <select id="m1-task-a" class="w-full border border-slate-300 rounded p-1.5 font-bold">
+                  <option value="">-- スキルを選択 --</option>
+                  <option value="biz">ビジネス力 (159項目)</option>
+                  <option value="ds">データサイエンス力 (309項目)</option>
+                  <option value="de">データエンジニアリング力 (182項目)</option>
+                </select>
+                <div id="m1-res-a" class="text-[11px] font-bold"></div>
+              </div>
+              <div class="bg-white p-3 rounded-lg border border-slate-200 space-y-2">
+                <div class="font-bold text-slate-900">タスクB：「待ち時間データのヒストグラムや相関係数を算出し、機械学習で予測モデルを作る」</div>
+                <select id="m1-task-b" class="w-full border border-slate-300 rounded p-1.5 font-bold">
+                  <option value="">-- スキルを選択 --</option>
+                  <option value="biz">ビジネス力 (159項目)</option>
+                  <option value="ds">データサイエンス力 (309項目)</option>
+                  <option value="de">データエンジニアリング力 (182項目)</option>
+                </select>
+                <div id="m1-res-b" class="text-[11px] font-bold"></div>
+              </div>
+              <div class="bg-white p-3 rounded-lg border border-slate-200 space-y-2">
+                <div class="font-bold text-slate-900">タスクC：「各アトラクションのセンサーデータをDWHに蓄積し、SQLで抽出しアクセス権限を守る」</div>
+                <select id="m1-task-c" class="w-full border border-slate-300 rounded p-1.5 font-bold">
+                  <option value="">-- スキルを選択 --</option>
+                  <option value="biz">ビジネス力 (159項目)</option>
+                  <option value="ds">データサイエンス力 (309項目)</option>
+                  <option value="de">データエンジニアリング力 (182項目)</option>
+                </select>
+                <div id="m1-res-c" class="text-[11px] font-bold"></div>
+              </div>
+            </div>
+          </div>
+          ${renderLabSaveBox(m, "あなたが業務で最も伸ばしたいスキル領域（ビジネス力 / DS力 / DE力）とその理由", "例：ビジネス力。データの集計結果を他部署への提案につなげたいため。")}
+        `;
+
+        const checkM1 = () => {
+          const a = document.getElementById("m1-task-a").value;
+          const b = document.getElementById("m1-task-b").value;
+          const c = document.getElementById("m1-task-c").value;
+          document.getElementById("m1-res-a").innerHTML = a ? (a === "biz" ? "<span class='text-emerald-700'>⭕ 正解！目的定義・合意形成はビジネス力です。</span>" : "<span class='text-rose-600'>💡 課題整理・目標設定は「ビジネス力」です。</span>") : "";
+          document.getElementById("m1-res-b").innerHTML = b ? (b === "ds" ? "<span class='text-emerald-700'>⭕ 正解！統計・可視化・AIモデリングはDS力です。</span>" : "<span class='text-rose-600'>💡 統計・機械学習・可視化は「データサイエンス力」です。</span>") : "";
+          document.getElementById("m1-res-c").innerHTML = c ? (c === "de" ? "<span class='text-emerald-700'>⭕ 正解！DB構築・SQL・セキュリティはDE力です。</span>" : "<span class='text-rose-600'>💡 基盤・SQL・セキュリティは「データエンジニアリング力」です。</span>") : "";
+        };
+        ["m1-task-a", "m1-task-b", "m1-task-c"].forEach((id) => {
+          document.getElementById(id).addEventListener("change", checkM1);
+        });
+        wireLabSaveBox(m, () => "タスクA=ビジネス力、タスクB=データサイエンス力、タスクC=データエンジニアリング力の3領域の役割分担を確認完了。");
+        return;
+      }
+
+      // ---- M2 Lab: Spurious Correlation & Exaggerated Graph ----
+      if (m.labType === "m2_spurious_and_axis") {
+        box.innerHTML = `
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="bg-sky-50/70 border border-sky-200 rounded-xl p-4 space-y-3">
+              <div class="flex items-center justify-between">
+                <h4 class="text-xs sm:text-sm font-extrabold text-slate-900">① 疑似相関シミュレーター (p.25)</h4>
+                <button type="button" id="btn-m2-stratify" class="bg-amber-500 hover:bg-amber-400 text-slate-950 text-xs font-extrabold px-3 py-1 rounded-lg shadow-xs">
+                  🌡️ 「気温・天候」で色分け表示する
+                </button>
+              </div>
+              <p class="text-xs text-slate-600">「飲食売上(円)」と「待ち時間(分)」の関係です。ボタンを押して背後の要因（気温・天候）を表示してみてください。</p>
+              <div id="m2-scatter-box" class="bg-white border border-slate-200 rounded-lg p-3"></div>
+              <p id="m2-scatter-caption" class="text-xs font-bold text-slate-700"></p>
+            </div>
+
+            <div class="bg-orange-50/70 border border-orange-200 rounded-xl p-4 space-y-3">
+              <div class="flex items-center justify-between">
+                <h4 class="text-xs sm:text-sm font-extrabold text-slate-900">② 誇張されたグラフの修正体験 (p.26)</h4>
+                <span id="m2-axis-label" class="text-xs font-extrabold text-rose-700 bg-rose-100 px-2 py-0.5 rounded">縦軸の最小値: 80万円 (誇張状態)</span>
+              </div>
+              <p class="text-xs text-slate-600">スライダーで縦軸（Y軸）の最小値を <code>80</code> から <code>0</code> に戻し、見た目の印象がどう変わるか比較しましょう。</p>
+              <input id="m2-axis-slider" type="range" min="0" max="80" step="10" value="80" class="w-full">
+              <div id="m2-bar-box" class="bg-white border border-slate-200 rounded-lg p-3 h-40 flex items-end justify-around gap-4"></div>
+            </div>
+          </div>
+          ${renderLabSaveBox(m, "疑似相関と誇張グラフから気づいたこと", "例：飲食売上と待ち時間の相関は気温・来園者数による疑似相関であり、グラフは縦軸を0起点にしないと変化が誇張される。")}
+        `;
+
+        let stratified = false;
+        const renderScatter = () => {
+          const svgBox = document.getElementById("m2-scatter-box");
+          const cap = document.getElementById("m2-scatter-caption");
+          const pts = THEME_PARK_DATA.filter((d) => d.wait !== null && d.wait > 0 && d.wait < 180);
+          const circles = pts
+            .map((d) => {
+              const cx = 30 + ((d.sales - 120000) / 520000) * 240;
+              const cy = 135 - (d.wait / 120) * 115;
+              let color = "#1677a8";
+              if (stratified) {
+                color = d.temp >= 26 ? "#dc2626" : d.temp >= 20 ? "#16a34a" : "#2563eb";
+              }
+              return `<circle cx="${cx.toFixed(1)}" cy="${cy.toFixed(1)}" r="5" fill="${color}" opacity="0.85"><title>${d.date} (${d.attraction}): 気温${d.temp}℃ / 売上${d.sales.toLocaleString()}円 / 待ち${d.wait}分</title></circle>`;
+            })
+            .join("");
+
+          svgBox.innerHTML = `
+            <svg viewBox="0 0 290 155" class="w-full h-36">
+              <line x1="28" y1="10" x2="28" y2="138" stroke="#94a3b8" stroke-width="1.5"/>
+              <line x1="28" y1="138" x2="280" y2="138" stroke="#94a3b8" stroke-width="1.5"/>
+              <text x="150" y="152" font-size="9" text-anchor="middle" fill="#475569">横軸：飲食売上 (food_sales_yen)</text>
+              <text x="10" y="75" font-size="9" text-anchor="middle" fill="#475569" transform="rotate(-90 10 75)">待ち時間(分)</text>
+              ${!stratified ? `<line x1="40" y1="120" x2="265" y2="25" stroke="#f59e0b" stroke-width="2" stroke-dasharray="4 2"/>` : ""}
+              ${circles}
+            </svg>
+          `;
+          if (cap) {
+            cap.innerHTML = stratified
+              ? "🔍 <strong>層別化ON：</strong> 🔴高温・週末(26℃〜) / 🟢適温(20〜25℃) / 🔵低温・雨(〜19℃) に分けると、<strong>『気温・来園者数』が両方（飲食売上と待ち時間）を増やしていた疑似相関</strong>だと分かります！"
+              : "👀 <strong>全体表示：</strong> 一見すると『飲食売上が増えるほど待ち時間が伸びる』右肩上がりの直線に見えますが…？";
+          }
+        };
+
+        const renderBars = () => {
+          const minVal = Number(document.getElementById("m2-axis-slider").value);
+          const lbl = document.getElementById("m2-axis-label");
+          const barBox = document.getElementById("m2-bar-box");
+          if (lbl) {
+            lbl.textContent = minVal === 0 ? "縦軸の最小値: 0万円 (適正なグラフ p.26)" : `縦軸の最小値: ${minVal}万円 (差が誇張された状態 p.26)`;
+            lbl.className = minVal === 0 ? "text-xs font-extrabold text-emerald-800 bg-emerald-100 px-2 py-0.5 rounded" : "text-xs font-extrabold text-rose-700 bg-rose-100 px-2 py-0.5 rounded";
+          }
+          const data = [
+            { yr: "2020年", val: 87 },
+            { yr: "2021年", val: 95 },
+            { yr: "2022年", val: 112 }
+          ];
+          const maxScale = 120;
+          barBox.innerHTML = data
+            .map((d) => {
+              const ratio = Math.max(0.05, (d.val - minVal) / (maxScale - minVal));
+              const hPct = Math.min(100, Math.round(ratio * 100));
+              return `
+                <div class="flex flex-col items-center justify-end h-full w-16">
+                  <span class="text-[11px] font-extrabold text-slate-700 mb-1">${d.val}万</span>
+                  <div class="w-12 bg-orange-400 rounded-t transition-all" style="height:${hPct}%"></div>
+                  <span class="text-[11px] font-bold text-slate-600 mt-1">${d.yr}</span>
+                </div>
+              `;
+            })
+            .join("");
+        };
+
+        document.getElementById("btn-m2-stratify").addEventListener("click", () => {
+          stratified = !stratified;
+          renderScatter();
+        });
+        document.getElementById("m2-axis-slider").addEventListener("input", renderBars);
+        renderScatter();
+        renderBars();
+        wireLabSaveBox(m, () => "飲食売上と待ち時間の関係は「気温・来園者数」を共通要因とする疑似相関であり、また売上グラフの縦軸起点を0万円に戻すことで誇張を防げることを確認した。");
+        return;
+      }
+
+      // ---- M3 Lab: Privacy / GDPR / AI Ethics Judge ----
+      if (m.labType === "m3_ethics_judge") {
+        const cases = [
+          { id: "c1", title: "ケース1：パーク公式アプリのGPS移動履歴を、個人IDを削除し復元不可能な統計・匿名加工情報にした上で混雑分析に利用する", ans: "ok", exp: "⭕ 適切です（p.29, p.32）。個人を特定できないよう適切に匿名加工した上での分析活用は適法です。" },
+          { id: "c2", title: "ケース2：EU在住の観光客がオンラインチケットを購入した際の個人データを、同意やGDPR対応なしで第三者へ販売する", ans: "ng", exp: "❌ 不適切（違法）です（p.29, p.62）。国境をまたぐデータ活用ではGDPR（EU一般データ保護規則）やCCPA等の遵守が必須です。" },
+          { id: "c3", title: "ケース3：AIによる入園ゲート顔認証システムで、特定の人種や年齢層だけエラー率が高い状態を放置して運用を続ける", ans: "ng", exp: "❌ 不適切です（p.29）。AI社会原則の「公平性」「透明性」「人間中心の判断」に反します。" }
+        ];
+        box.innerHTML = `
+          <div class="bg-sky-50/70 border border-sky-200 rounded-xl p-4 space-y-3">
+            <h4 class="text-sm font-extrabold text-slate-900">🛡️ 演習：テーマパークのデータ・AI利活用コンプライアンス判定 (p.29-30, p.62)</h4>
+            <div class="space-y-2.5">
+              ${cases
+                .map(
+                  (c) => `
+                <div class="bg-white p-3 rounded-lg border border-slate-200 flex flex-wrap items-center justify-between gap-2">
+                  <p class="text-xs font-bold text-slate-800 flex-1">${c.title}</p>
+                  <div class="flex gap-1.5">
+                    <button type="button" data-cid="${c.id}" data-pick="ok" class="m3-judge-btn px-3 py-1 rounded bg-emerald-100 hover:bg-emerald-200 text-emerald-900 text-xs font-extrabold">⭕ 適切</button>
+                    <button type="button" data-cid="${c.id}" data-pick="ng" class="m3-judge-btn px-3 py-1 rounded bg-rose-100 hover:bg-rose-200 text-rose-900 text-xs font-extrabold">❌ 不適切(NG)</button>
+                  </div>
+                  <div id="m3-exp-${c.id}" class="w-full text-xs font-bold mt-1 hidden"></div>
+                </div>`
+                )
+                .join("")}
+            </div>
+          </div>
+          ${renderLabSaveBox(m, "顧客データを扱う際に最も気をつけるべきルール（匿名加工・GDPR・AI原則など）", "例：顧客の位置情報や購買ログは必ず利用目的を明示し、個人を特定できないよう匿名加工・暗号化して扱う。")}
+        `;
+        box.querySelectorAll(".m3-judge-btn").forEach((btn) => {
+          btn.addEventListener("click", () => {
+            const cObj = cases.find((x) => x.id === btn.dataset.cid);
+            const expEl = document.getElementById(`m3-exp-${cObj.id}`);
+            const isRight = btn.dataset.pick === cObj.ans;
+            expEl.classList.remove("hidden");
+            expEl.className = `w-full text-xs font-bold mt-1 p-2 rounded ${isRight ? "bg-emerald-50 text-emerald-800" : "bg-amber-50 text-rose-800"}`;
+            expEl.textContent = (isRight ? "【正解！】 " : "【再確認】 ") + cObj.exp;
+          });
+        });
+        wireLabSaveBox(m, () => "個人情報保護法・GDPRに基づき、アプリ位置情報や購買履歴は個人を特定できないよう匿名加工・暗号化し、AI社会原則（公平性・透明性・説明責任）を守って運用する。");
+        return;
+      }
+
+      // ---- M4 Lab: KPI Tree & Sky-Rain-Umbrella Builder ----
+      if (m.labType === "m4_kpi_and_sru") {
+        box.innerHTML = `
+          <div class="bg-sky-50/70 border border-sky-200 rounded-xl p-4 space-y-4">
+            <h4 class="text-sm font-extrabold text-slate-900">🌳 演習1：動くKPIツリー分解シミュレーター（スライド p.47 連動）</h4>
+            <p class="text-xs text-slate-600">KGI「1日あたり飲食売上高 400万円（現状比+15%）」を達成するために、どのKPI（来園者数・購買率・客単価）を伸ばすかスライダーを動かしてシミュレーションしましょう。</p>
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 bg-white p-3.5 rounded-xl border border-slate-200 text-xs">
+              <div>
+                <label class="font-bold block">① のべ来園者数: <strong id="m4-vis-val" class="text-sky-700">10,000</strong> 人</label>
+                <input id="m4-vis" type="range" min="6000" max="15000" step="500" value="10000" class="w-full mt-1">
+              </div>
+              <div>
+                <label class="font-bold block">② 飲食購買率: <strong id="m4-rate-val" class="text-sky-700">35</strong> %</label>
+                <input id="m4-rate" type="range" min="20" max="60" step="1" value="35" class="w-full mt-1">
+              </div>
+              <div>
+                <label class="font-bold block">③ 平均客単価: <strong id="m4-unit-val" class="text-sky-700">1,000</strong> 円</label>
+                <input id="m4-unit" type="range" min="800" max="1500" step="50" value="1000" class="w-full mt-1">
+              </div>
+            </div>
+            <div id="m4-kgi-result" class="bg-[#0f2942] text-white p-3 rounded-xl text-xs sm:text-sm font-bold text-center"></div>
+
+            <h4 class="text-sm font-extrabold text-slate-900 pt-2">☂️ 演習2：「空・雨・傘」ストーリーライン作成（スライド p.50 連動）</h4>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-3 text-xs">
+              <div class="bg-white p-3 rounded-lg border border-slate-200">
+                <strong class="text-sky-800 block mb-1">🌤️ 空（事実・課題の確認）</strong>
+                <textarea id="m4-sky" rows="3" class="w-full border border-slate-300 rounded p-2" placeholder="例：雨の日は屋内アトラクション(Fantasy Castle)の待ち時間が75分以上に急増し満足度が3.1に低下している。">雨の日は屋内系アトラクションの待ち時間が75分以上に急増し、満足度が3.1へ低下している。</textarea>
+              </div>
+              <div class="bg-white p-3 rounded-lg border border-slate-200">
+                <strong class="text-sky-800 block mb-1">🌧️ 雨（解釈・課題の深堀）</strong>
+                <textarea id="m4-rain" rows="3" class="w-full border border-slate-300 rounded p-2" placeholder="例：雨天時に屋外から屋内へ人が集中する一方、空いている時間帯やレストランへの誘導がないため待ち疲れが起きている。">雨天時に屋外から屋内へ来園者が集中する一方、時間帯別の混雑案内やレストラン誘導がなく待機列が偏っている。</textarea>
+              </div>
+              <div class="bg-white p-3 rounded-lg border border-slate-200">
+                <strong class="text-sky-800 block mb-1">☂️ 傘（結論・アクション）</strong>
+                <textarea id="m4-umb" rows="3" class="w-full border border-slate-300 rounded p-2" placeholder="例：雨天限定でピーク時間帯(11-14時)に使える飲食割引クーポンをアプリ配信し、待機列分散と飲食購買率(KPI)向上を同時達成する。">雨天時のピーク時間帯に使える飲食クーポンをアプリ配信し、屋内待ち時間の分散と飲食購買率(KPI)向上を同時達成する。</textarea>
+              </div>
+            </div>
+          </div>
+          ${renderLabSaveBox(m, "あなたの『空・雨・傘』改善提案まとめ（下の保存ボタンで講師画面へ提出されます）", "空・雨・傘の提案を入力")}
+        `;
+
+        const updateKpi = () => {
+          const v = Number(document.getElementById("m4-vis").value);
+          const r = Number(document.getElementById("m4-rate").value);
+          const u = Number(document.getElementById("m4-unit").value);
+          document.getElementById("m4-vis-val").textContent = v.toLocaleString();
+          document.getElementById("m4-rate-val").textContent = r;
+          document.getElementById("m4-unit-val").textContent = u.toLocaleString();
+          const buyers = Math.round(v * (r / 100));
+          const sales = buyers * u;
+          const achieved = sales >= 4000000;
+          document.getElementById("m4-kgi-result").innerHTML = `
+            KGI 売上高 ＝ 購買者数 ${buyers.toLocaleString()}人 (来園${v.toLocaleString()}×購買率${r}%) × 客単価 ${u.toLocaleString()}円 ＝ <span class="text-amber-300 text-base">${(sales / 10000).toFixed(1)} 万円</span>
+            ${achieved ? "🎉 【目標400万円 達成！】" : "（目標400万円まであと " + ((4000000 - sales) / 10000).toFixed(1) + " 万円）"}
+          `;
+        };
+        ["m4-vis", "m4-rate", "m4-unit"].forEach((id) => document.getElementById(id).addEventListener("input", updateKpi));
+        updateKpi();
+
+        wireLabSaveBox(m, () => {
+          const s = document.getElementById("m4-sky").value.trim();
+          const r = document.getElementById("m4-rain").value.trim();
+          const u = document.getElementById("m4-umb").value.trim();
+          return `【空】${s} ➔ 【雨】${r} ➔ 【傘】${u}`;
+        });
+        return;
+      }
+
+      // ---- M5 Lab: MECE & Contract / Ethics ----
+      if (m.labType === "m5_mece_and_contract") {
+        box.innerHTML = `
+          <div class="bg-sky-50/70 border border-sky-200 rounded-xl p-4 space-y-3">
+            <h4 class="text-sm font-extrabold text-slate-900">🧩 演習：テーマパーク来園者アンケートの「MECE（漏れ・ダブり）」診断 (p.53)</h4>
+            <p class="text-xs text-slate-600">次の3つのアンケート設問案のうち、どれが「重複あり」で、どれが「漏れあり」で、どれが「MECE（適切）」か判定してみましょう。</p>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-3 text-xs">
+              <div class="bg-white p-3 rounded-lg border border-slate-200 space-y-1.5">
+                <div class="font-bold">案A：「①10代以下 ②20歳〜30歳 ③30歳〜40歳 ④40歳以上」</div>
+                <p class="text-rose-700 font-bold">➔ ❌ 重複あり（30歳と40歳の人がどちらを選ぶか迷う！）</p>
+              </div>
+              <div class="bg-white p-3 rounded-lg border border-slate-200 space-y-1.5">
+                <div class="font-bold">案B：「①家族連れ ②カップル ③友人グループ」（※1人客がいない）</div>
+                <p class="text-amber-700 font-bold">➔ ❌ 漏れあり（おひとり様・ビジネス利用などが漏れている！）</p>
+              </div>
+              <div class="bg-white p-3 rounded-lg border-2 border-emerald-400 space-y-1.5">
+                <div class="font-bold">案C：「①初回来園 ②2回目〜4回目 ③5回目以上」</div>
+                <p class="text-emerald-700 font-bold">➔ ⭕ MECE！（すべての来園者が必ず1つだけに当てはまる）</p>
+              </div>
+            </div>
+            <div class="bg-white p-3 rounded-lg border border-slate-200 text-xs space-y-2">
+              <div class="font-extrabold text-slate-900">🔍 ミニ確認：外部ベンダーに「AIによる待ち時間予測モデルの探索的検証」を委託する場合、適した開発手法と契約形態は？（p.57-58）</div>
+              <div class="flex flex-wrap gap-2">
+                <button type="button" id="m5-btn-agile" class="px-3 py-1.5 rounded bg-sky-100 hover:bg-sky-200 text-sky-900 font-bold">① アジャイル開発 × 準委任契約</button>
+                <button type="button" id="m5-btn-wf" class="px-3 py-1.5 rounded bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold">② ウォーターフォール × 請負契約</button>
+              </div>
+              <p id="m5-contract-feedback" class="text-xs font-bold"></p>
+            </div>
+          </div>
+          ${renderLabSaveBox(m, "仮説と異なる分析結果が出たときにデータサイエンティストが取るべき正しい行動 (p.54, p.61)", "例：処理ミスがないか確認し、ミスがなければデータを改ざんせず新しい知見として受け入れる。")}
+        `;
+        document.getElementById("m5-btn-agile").addEventListener("click", () => {
+          document.getElementById("m5-contract-feedback").innerHTML = "<span class='text-emerald-700'>⭕ 正解！AI開発は事前の性能保証が困難で探索的アプローチが望ましいため、アジャイル型の進行と「準委任契約」が多く採用されます（p.57-58）。</span>";
+        });
+        document.getElementById("m5-btn-wf").addEventListener("click", () => {
+          document.getElementById("m5-contract-feedback").innerHTML = "<span class='text-rose-700'>💡 従来のシステム開発では請負契約が主流ですが、AIの探索的検証では「アジャイル × 準委任契約」が適しています（p.57-58）。</span>";
+        });
+        wireLabSaveBox(m, () => "データ受領時はまず背景・定義を確認し、アンケートはMECEに設計する。仮説と異なる結果が出ても改ざんせず、ミス確認のうえで新たな知見として受け入れる。");
+        return;
+      }
+
+      // ---- M6 Lab: 4 Major Visualizations (Histogram / Cross-tab / Boxplot / Scatter) ----
+      if (m.labType === "m6_four_charts") {
+        box.innerHTML = `
+          <div class="bg-sky-50/70 border border-sky-200 rounded-xl p-4 space-y-4">
+            <div class="flex flex-wrap items-center justify-between gap-2">
+              <h4 class="text-sm font-extrabold text-slate-900">📊 演習：4大グラフ（ヒストグラム・クロス集計・箱ひげ図・散布図）切り替えラボ (p.78-82)</h4>
+              <div class="flex flex-wrap gap-1.5">
+                <button type="button" data-tab="hist" class="m6-tab-btn px-3 py-1 rounded-lg bg-[#0f2942] text-white text-xs font-bold">① ヒストグラム (p.78)</button>
+                <button type="button" data-tab="cross" class="m6-tab-btn px-3 py-1 rounded-lg bg-white text-slate-700 border border-slate-300 text-xs font-bold">② クロス集計表 (p.79)</button>
+                <button type="button" data-tab="box" class="m6-tab-btn px-3 py-1 rounded-lg bg-white text-slate-700 border border-slate-300 text-xs font-bold">③ 箱ひげ図 (p.80)</button>
+                <button type="button" data-tab="corr" class="m6-tab-btn px-3 py-1 rounded-lg bg-white text-slate-700 border border-slate-300 text-xs font-bold">④ 相関係数 r (p.81-82)</button>
+              </div>
+            </div>
+            <div id="m6-chart-stage" class="bg-white border border-slate-200 rounded-xl p-4"></div>
+          </div>
+          ${renderLabSaveBox(m, "4つのグラフを触って確認したテーマパーク待ち時間の特徴", "例：雨の日はファミリー系(屋内)の平均待ち時間が78.5分と長く、来園者数と待ち時間には正の相関がある。")}
+        `;
+
+        const stageEl = document.getElementById("m6-chart-stage");
+        const cleanWaits = THEME_PARK_DATA.filter((d) => d.wait !== null && d.wait >= 0 && d.wait < 180);
+
+        const renderM6Tab = (tabName, binSize = 20) => {
+          if (tabName === "hist") {
+            const bins = [];
+            for (let b = 0; b < 120; b += binSize) {
+              const cnt = cleanWaits.filter((d) => d.wait >= b && d.wait < b + binSize).length;
+              bins.push({ label: `${b}〜${b + binSize - 1}分`, cnt });
+            }
+            const maxCnt = Math.max(1, ...bins.map((x) => x.cnt));
+            stageEl.innerHTML = `
+              <div class="flex flex-wrap items-center justify-between gap-2 mb-3">
+                <strong class="text-xs sm:text-sm text-slate-900">ヒストグラム（p.78：区間幅を変えると分布の見え方が変化します）</strong>
+                <div class="flex gap-1.5 text-xs">
+                  <button type="button" data-bin="10" class="m6-bin-btn px-2.5 py-1 rounded border ${binSize === 10 ? "bg-sky-600 text-white" : "bg-slate-100"} font-bold">区間幅 10分</button>
+                  <button type="button" data-bin="20" class="m6-bin-btn px-2.5 py-1 rounded border ${binSize === 20 ? "bg-sky-600 text-white" : "bg-slate-100"} font-bold">区間幅 20分</button>
+                  <button type="button" data-bin="30" class="m6-bin-btn px-2.5 py-1 rounded border ${binSize === 30 ? "bg-sky-600 text-white" : "bg-slate-100"} font-bold">区間幅 30分</button>
+                </div>
+              </div>
+              <div class="space-y-1.5 text-xs">
+                ${bins
+                  .map(
+                    (b) => `
+                  <div class="grid grid-cols-12 items-center gap-2">
+                    <span class="col-span-3 sm:col-span-2 font-mono text-slate-600">${b.label}</span>
+                    <div class="col-span-7 sm:col-span-8 bg-slate-100 h-5 rounded overflow-hidden">
+                      <div class="bg-[#1677a8] h-full" style="width:${((b.cnt / maxCnt) * 100).toFixed(1)}%"></div>
+                    </div>
+                    <strong class="col-span-2 text-right text-slate-800">${b.cnt} 件</strong>
+                  </div>`
+                  )
+                  .join("")}
+              </div>
+            `;
+            stageEl.querySelectorAll(".m6-bin-btn").forEach((b) => {
+              b.addEventListener("click", () => renderM6Tab("hist", Number(b.dataset.bin)));
+            });
+          } else if (tabName === "cross") {
+            const weathers = ["sunny", "cloudy", "rainy"];
+            const cats = ["thrill", "family", "kids"];
+            const rows = weathers
+              .map((w) => {
+                const cells = cats
+                  .map((c) => {
+                    const sub = cleanWaits.filter((d) => d.weather === w && d.category === c);
+                    if (!sub.length) return `<td class="p-2 border text-slate-400">-</td>`;
+                    const avg = (sub.reduce((a, b) => a + b.wait, 0) / sub.length).toFixed(1);
+                    const bg = avg >= 65 ? "bg-rose-50 text-rose-900 font-extrabold" : avg >= 40 ? "bg-amber-50 text-amber-900 font-bold" : "bg-emerald-50 text-emerald-900";
+                    return `<td class="p-2 border ${bg}">${avg} 分 <span class="text-[11px] font-normal">(${sub.length}件)</span></td>`;
+                  })
+                  .join("");
+                return `<tr><th class="p-2 border bg-slate-100 text-slate-800">${w}</th>${cells}</tr>`;
+              })
+              .join("");
+            stageEl.innerHTML = `
+              <strong class="text-xs sm:text-sm text-slate-900 block mb-2">クロス集計表（p.79：天気 × エリア分類ごとの平均待ち時間）</strong>
+              <p class="text-xs text-slate-600 mb-2">2つの因子を掛け合わせると、「晴れの日は絶叫系(thrill)が混むが、雨の日(rainy)はファミリー・屋内系(family)が78.5分と突出して混む」傾向が一目で分かります。</p>
+              <table class="w-full text-xs border-collapse border border-slate-300">
+                <thead><tr class="bg-slate-800 text-white"><th class="p-2 border">天気 ＼ 分類</th><th class="p-2 border">絶叫系 (thrill)</th><th class="p-2 border">ファミリー (family)</th><th class="p-2 border">キッズ (kids)</th></tr></thead>
+                <tbody>${rows}</tbody>
+              </table>
+            `;
+          } else if (tabName === "box") {
+            stageEl.innerHTML = `
+              <strong class="text-xs sm:text-sm text-slate-900 block mb-2">箱ひげ図と四分位数（スライド p.80 例題データ：1, 2, 6, 7, 10, 12, 15, 18, 19）</strong>
+              <p class="text-xs text-slate-600 mb-3">データを昇順に並べたとき、小さい集団の中央値が<strong>第1四分位数(Q1 = 4)</strong>、全体の中央が<strong>中央値(10)</strong>、大きい集団の中央値が<strong>第3四分位数(Q3 = 16.5)</strong>です。</p>
+              <svg viewBox="0 0 420 110" class="w-full h-28 bg-slate-50 rounded-lg border border-slate-200">
+                <line x1="30" y1="85" x2="390" y2="85" stroke="#64748b" stroke-width="1.5"/>
+                <!-- Scale ticks 0 to 20 -->
+                <text x="30" y="100" font-size="10" text-anchor="middle">0</text>
+                <text x="48" y="100" font-size="10" text-anchor="middle">1(最小)</text>
+                <text x="102" y="100" font-size="10" text-anchor="middle" fill="#1677a8" font-weight="bold">4(Q1)</text>
+                <text x="210" y="100" font-size="10" text-anchor="middle" fill="#b91c1c" font-weight="bold">10(中央値)</text>
+                <text x="327" y="100" font-size="10" text-anchor="middle" fill="#1677a8" font-weight="bold">16.5(Q3)</text>
+                <text x="372" y="100" font-size="10" text-anchor="middle">19(最大)</text>
+                <!-- Whiskers & Box -->
+                <line x1="48" y1="45" x2="102" y2="45" stroke="#0f2942" stroke-width="2"/>
+                <line x1="327" y1="45" x2="372" y2="45" stroke="#0f2942" stroke-width="2"/>
+                <line x1="48" y1="30" x2="48" y2="60" stroke="#0f2942" stroke-width="2"/>
+                <line x1="372" y1="30" x2="372" y2="60" stroke="#0f2942" stroke-width="2"/>
+                <rect x="102" y="22" width="225" height="46" fill="#e0f2fe" stroke="#0284c7" stroke-width="2.5"/>
+                <line x1="210" y1="22" x2="210" y2="68" stroke="#dc2626" stroke-width="3"/>
+              </svg>
+            `;
+          } else if (tabName === "corr") {
+            stageEl.innerHTML = `
+              <strong class="text-xs sm:text-sm text-slate-900 block mb-2">相関係数 r スライダー体験（スライド p.82：-1 〜 +1 の分布変化）</strong>
+              <div class="flex items-center gap-3 mb-2 text-xs">
+                <span>相関係数を選択:</span>
+                <button type="button" data-r="-0.91" class="m6-r-btn px-2.5 py-1 rounded bg-slate-100 hover:bg-sky-100 font-bold">r = -0.91 (強い負の相関)</button>
+                <button type="button" data-r="0.07" class="m6-r-btn px-2.5 py-1 rounded bg-slate-100 hover:bg-sky-100 font-bold">r = 0.07 (無相関)</button>
+                <button type="button" data-r="0.88" class="m6-r-btn px-2.5 py-1 rounded bg-sky-600 text-white font-bold">r = 0.88 (強い正の相関：来園者数×待ち時間)</button>
+              </div>
+              <div id="m6-r-desc" class="text-xs font-bold text-sky-900 bg-sky-50 p-2.5 rounded">
+                現在の表示：強い正の相関（r = +0.88）。来園者数が増えるほど待ち時間も右肩上がりに増加する関係です。
+              </div>
+            `;
+            stageEl.querySelectorAll(".m6-r-btn").forEach((btn) => {
+              btn.addEventListener("click", () => {
+                const rVal = Number(btn.dataset.r);
+                const d = document.getElementById("m6-r-desc");
+                if (rVal < -0.5) d.textContent = `強い負の相関（r = ${rVal}）：一方の値が増えるともう一方が減る右肩下がりの関係（例：待ち時間が長くなるほど満足度が下がる r = -0.85）。`;
+                else if (Math.abs(rVal) < 0.2) d.textContent = `無相関（r = ${rVal}）：2つの変数に直線的な関係が見られない状態。`;
+                else d.textContent = `強い正の相関（r = +${rVal}）：一方が増えるともう一方も増える右肩上がりの関係（例：来園者数と待ち時間）。`;
+              });
+            });
+          }
+        };
+
+        box.querySelectorAll(".m6-tab-btn").forEach((btn) => {
+          btn.addEventListener("click", () => {
+            box.querySelectorAll(".m6-tab-btn").forEach((b) => {
+              b.className = "m6-tab-btn px-3 py-1 rounded-lg bg-white text-slate-700 border border-slate-300 text-xs font-bold";
+            });
+            btn.className = "m6-tab-btn px-3 py-1 rounded-lg bg-[#0f2942] text-white text-xs font-bold";
+            renderM6Tab(btn.dataset.tab);
+          });
+        });
+        renderM6Tab("hist", 20);
+        wireLabSaveBox(m, () => "ヒストグラムで全体分布、クロス集計表で「雨×ファミリー」の混雑(平均78.5分)、箱ひげ図で四分位数(Q1=4, 中央値=10, Q3=16.5)、散布図で相関係数を確認した。");
+        return;
+      }
+
+      // ---- M7 Lab: Mean vs Median Outlier Seesaw & Deviation Score / Scaling ----
+      if (m.labType === "m7_stats_and_scaling") {
+        box.innerHTML = `
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="bg-sky-50/70 border border-sky-200 rounded-xl p-4 space-y-3">
+              <div class="flex items-center justify-between">
+                <h4 class="text-xs sm:text-sm font-extrabold text-slate-900">① 外れ値(240分) ON/OFF シーソー (p.83, p.91)</h4>
+                <label class="flex items-center gap-1.5 text-xs font-extrabold text-rose-800 bg-rose-100 px-2.5 py-1 rounded cursor-pointer">
+                  <input type="checkbox" id="m7-outlier-toggle" checked>
+                  <span>異常値 240分 を含める</span>
+                </label>
+              </div>
+              <p class="text-xs text-slate-600">Sky Coasterの待ち時間データに「入力ミスの240分」が1件混ざったとき、<strong>平均値</strong>と<strong>中央値</strong>がどう動くかスイッチを切り替えて見てください。</p>
+              <div id="m7-seesaw-box" class="bg-white p-3 rounded-lg border border-slate-200 space-y-2 text-xs"></div>
+            </div>
+
+            <div class="bg-orange-50/70 border border-orange-200 rounded-xl p-4 space-y-3">
+              <h4 class="text-xs sm:text-sm font-extrabold text-slate-900">② 偏差値・標準化(z変換) 計算機 (p.85-86, p.90)</h4>
+              <p class="text-xs text-slate-600">スライドp.85-86の数学・英語の例題と、テーマパークの待ち時間を切り替えて偏差値と標準化zスコアを比較できます。</p>
+              <div class="flex gap-1.5 text-xs">
+                <button type="button" id="m7-preset-math" class="px-2.5 py-1 rounded bg-[#0f2942] text-white font-bold">p.86 数学(s=4.5) vs 英語(s=13.4)</button>
+                <button type="button" id="m7-preset-park" class="px-2.5 py-1 rounded bg-white border border-slate-300 font-bold">パーク絶叫系 vs キッズ系</button>
+              </div>
+              <div id="m7-dev-result" class="bg-white p-3 rounded-lg border border-slate-200 text-xs space-y-1.5"></div>
+            </div>
+          </div>
+          ${renderLabSaveBox(m, "外れ値があるときに平均値と中央値のどちらを見るべきか、また標準化・偏差値のメリット", "例：外れ値がある場合は影響を受けにくい中央値を併用し、分布が異なる対象同士の比較には標準化（z変換）や偏差値を用いる。")}
+        `;
+
+        const updateSeesaw = () => {
+          const includeOutlier = document.getElementById("m7-outlier-toggle").checked;
+          const base = [22, 27, 29, 34, 38, 44, 46, 95];
+          const arr = includeOutlier ? [...base, 240] : base;
+          const mean = (arr.reduce((a, b) => a + b, 0) / arr.length).toFixed(1);
+          const sorted = [...arr].sort((a, b) => a - b);
+          const mid = Math.floor(sorted.length / 2);
+          const median = (sorted.length % 2 ? sorted[mid] : (sorted[mid - 1] + sorted[mid]) / 2).toFixed(1);
+          document.getElementById("m7-seesaw-box").innerHTML = `
+            <div class="text-[11px] text-slate-500">対象データ: [${arr.join(", ")}] 分</div>
+            <div class="grid grid-cols-2 gap-2 pt-1">
+              <div class="p-2.5 rounded-lg ${includeOutlier ? "bg-rose-50 border border-rose-300" : "bg-slate-50 border"}">
+                <span class="text-slate-500 block">算術平均値</span>
+                <strong class="text-lg ${includeOutlier ? "text-rose-700" : "text-slate-900"}">${mean} 分</strong>
+                <span class="block text-[11px] text-rose-600">${includeOutlier ? "▲ 240分に強く引っ張られる！" : "✓ 実態に近い値"}</span>
+              </div>
+              <div class="p-2.5 rounded-lg bg-emerald-50 border border-emerald-300">
+                <span class="text-slate-500 block">中央値 (Median)</span>
+                <strong class="text-lg text-emerald-800">${median} 分</strong>
+                <span class="block text-[11px] text-emerald-700">✓ 外れ値があってもほぼ動かない！</span>
+              </div>
+            </div>
+          `;
+        };
+
+        const showDevPreset = (mode) => {
+          const el = document.getElementById("m7-dev-result");
+          if (mode === "math") {
+            el.innerHTML = `
+              <div><strong>📘 数学（平均79点、標準偏差 s=4.5、Aさん90点）：</strong><br>標準化 z = (90-79)÷4.5 = <strong>+2.44</strong> ➔ 偏差値 = <strong>74.4</strong></div>
+              <div><strong>📗 英語（平均79点、標準偏差 s=13.4、Aさん90点）：</strong><br>標準化 z = (90-79)÷13.4 = <strong>+0.82</strong> ➔ 偏差値 = <strong>58.2</strong></div>
+              <div class="text-sky-800 font-bold pt-1">💡 同じ「90点（平均79点）」でも、ばらつき（標準偏差）が小さい数学の方が圧倒的に価値が高いことが分かります！</div>
+            `;
+          } else {
+            el.innerHTML = `
+              <div><strong>🎢 Kids Train（平均20分、標準偏差 s=5分、現在35分待ち）：</strong><br>標準化 z = (35-20)÷5 = <strong>+3.00 (3σ超えの外れ値！)</strong> ➔ 混雑偏差値 = <strong>80.0</strong></div>
+              <div><strong>🚀 Sky Coaster（平均50分、標準偏差 s=20分、現在60分待ち）：</strong><br>標準化 z = (60-50)÷20 = <strong>+0.50</strong> ➔ 混雑偏差値 = <strong>55.0</strong></div>
+              <div class="text-sky-800 font-bold pt-1">💡 分数だけ見ると60分の方が長いですが、標準化すると「Kids Trainの35分待ち（+3σ）」の方が異常事態だと検知できます！</div>
+            `;
+          }
+        };
+
+        document.getElementById("m7-outlier-toggle").addEventListener("change", updateSeesaw);
+        document.getElementById("m7-preset-math").addEventListener("click", () => showDevPreset("math"));
+        document.getElementById("m7-preset-park").addEventListener("click", () => showDevPreset("park"));
+        updateSeesaw();
+        showDevPreset("math");
+        wireLabSaveBox(m, () => "異常値240分を除くと平均値が63.9分から41.9分へ適正化されることを確認。また標準偏差を用いた標準化・偏差値により異なる分布間で比較できることを体験した。");
+        return;
+      }
+
+      // ---- M8 Lab: Bayes Theorem & Sampling Standard Error Simulator ----
+      if (m.labType === "m8_bayes_and_sampling") {
+        box.innerHTML = `
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="bg-sky-50/70 border border-sky-200 rounded-xl p-4 space-y-3">
+              <h4 class="text-xs sm:text-sm font-extrabold text-slate-900">① ベイズの定理シミュレーター (p.97-98)</h4>
+              <p class="text-xs text-slate-600">事前確率 $P(B)$ と検査精度 $P(A|B)$ から、陽性（適正あり／混雑アラート）のとき実際にそうである確率 $P(B|A)$ を計算します。</p>
+              <div class="flex gap-1.5 text-xs">
+                <button type="button" id="m8-bayes-slide" class="px-2.5 py-1 rounded bg-[#0f2942] text-white font-bold">p.97 IT適性検査の例題</button>
+                <button type="button" id="m8-bayes-park" class="px-2.5 py-1 rounded bg-white border font-bold">パーク混雑予測アラート</button>
+              </div>
+              <div id="m8-bayes-box" class="bg-white p-3 rounded-lg border border-slate-200 text-xs space-y-1.5"></div>
+            </div>
+
+            <div class="bg-emerald-50/70 border border-emerald-200 rounded-xl p-4 space-y-3">
+              <div class="flex items-center justify-between">
+                <h4 class="text-xs sm:text-sm font-extrabold text-slate-900">② 母集団と標本ガチャ・標準誤差 (p.104-106)</h4>
+                <button type="button" id="m8-btn-sample" class="bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-extrabold px-3 py-1 rounded-lg">
+                  🎲 標本抽出を実行
+                </button>
+              </div>
+              <p class="text-xs text-slate-600">サンプルサイズ $n=5$ と $n=50$ で無作為抽出したとき、どちらが母平均（48.5分）の近くに安定するか（標準誤差 $\sigma/\sqrt{n}$）ボタンを押して比べてください。</p>
+              <div id="m8-sample-box" class="bg-white p-3 rounded-lg border border-slate-200 text-xs space-y-2"></div>
+            </div>
+          </div>
+          ${renderLabSaveBox(m, "ベイズの定理およびサンプルサイズ n と標準誤差の関係についての気づき", "例：サンプルサイズnを大きくすると標準誤差(σ/√n)が小さくなり、標本平均が母平均の近くに安定する。")}
+        `;
+
+        const renderBayes = (mode) => {
+          const el = document.getElementById("m8-bayes-box");
+          if (mode === "slide") {
+            el.innerHTML = `
+              <div>・真にIT向き $P(B) = 0.3$ ／ 向いていない $P(\\bar{B}) = 0.7$</div>
+              <div>・向きで適正あり $P(A|B) = 0.9$ ／ 不向きで誤って適正あり $P(A|\\bar{B}) = 0.15$</div>
+              <div class="p-2 bg-sky-50 rounded font-bold text-sky-950">
+                ベイズ更新後 $P(向いている|適正あり)$ ＝ $\\frac{0.3 \\times 0.9}{0.3 \\times 0.9 + 0.7 \\times 0.15} = \\frac{0.27}{0.375} =$ <span class="text-base text-rose-700">0.72 (72.0%)</span> (p.98一致)
+              </div>
+            `;
+          } else {
+            el.innerHTML = `
+              <div>・実際に大混雑する日 $P(B) = 0.2$ ／ 通常日 $P(\\bar{B}) = 0.8$</div>
+              <div>・大混雑日にAIアラートが出る確率 $0.95$ ／ 通常日に誤アラートが出る確率 $0.10$</div>
+              <div class="p-2 bg-sky-50 rounded font-bold text-sky-950">
+                アラートが出た日に本当に大混雑になる確率 ＝ $\\frac{0.2 \\times 0.95}{0.2 \\times 0.95 + 0.8 \\times 0.10} = \\frac{0.19}{0.27} =$ <span class="text-base text-rose-700">0.704 (70.4%)</span>
+              </div>
+            `;
+          }
+        };
+
+        const runSampleSim = () => {
+          const popMean = 48.5;
+          const popStd = 21.0;
+          const n5Mean = (popMean + (Math.random() - 0.5) * 24).toFixed(1);
+          const n50Mean = (popMean + (Math.random() - 0.5) * 5.5).toFixed(1);
+          document.getElementById("m8-sample-box").innerHTML = `
+            <div>母集団：母平均 $\\mu = 48.5$分 / 母標準偏差 $\\sigma = 21.0$分</div>
+            <div class="p-2 rounded bg-amber-50 border border-amber-200">
+              <strong>小標本 ($n = 5$)：</strong> 今回の標本平均 = <strong>${n5Mean} 分</strong> （標準誤差 $\\sigma/\\sqrt{5} = 9.39$分 ➔ ブレが大きい）
+            </div>
+            <div class="p-2 rounded bg-emerald-50 border border-emerald-200">
+              <strong>大標本 ($n = 50$)：</strong> 今回の標本平均 = <strong>${n50Mean} 分</strong> （標準誤差 $\\sigma/\\sqrt{50} = 2.97$分 ➔ 母平均にピタッと安定！）
+            </div>
+          `;
+        };
+
+        document.getElementById("m8-bayes-slide").addEventListener("click", () => renderBayes("slide"));
+        document.getElementById("m8-bayes-park").addEventListener("click", () => renderBayes("park"));
+        document.getElementById("m8-btn-sample").addEventListener("click", runSampleSim);
+        renderBayes("slide");
+        runSampleSim();
+        wireLabSaveBox(m, () => "ベイズの定理により事後確率(0.72)を算出し、標本抽出においてサンプルサイズnを大きくすると標準誤差(σ/√n)が小さくなることを確認した。");
+        return;
+      }
+
+      // ---- M9 Lab: Calculus Derivative (AI Gradient) & ML 3 Types ----
+      if (m.labType === "m9_math_and_ml") {
+        box.innerHTML = `
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="bg-sky-50/70 border border-sky-200 rounded-xl p-4 space-y-3">
+              <h4 class="text-xs sm:text-sm font-extrabold text-slate-900">① 微分＝接線の傾きとAIの誤差最小化スライダー (p.113, p.116)</h4>
+              <p class="text-xs text-slate-600">スライド p.113 の関数 $f(x) = 2x^2 + 2$（導関数 $f'(x) = 4x$）でパラメータ $x$ を動かし、傾き $f'(x) = 0$（誤差最小の底）を探しましょう。</p>
+              <label class="text-xs font-bold block">パラメータ $x$: <strong id="m9-x-val" class="text-sky-700">1.0</strong></label>
+              <input id="m9-x-slider" type="range" min="-2" max="2" step="0.5" value="1" class="w-full">
+              <div id="m9-deriv-box" class="bg-white p-3 rounded-lg border border-slate-200 text-xs"></div>
+            </div>
+
+            <div class="bg-purple-50/70 border border-purple-200 rounded-xl p-4 space-y-3">
+              <h4 class="text-xs sm:text-sm font-extrabold text-slate-900">② テーマパークAI 機械学習分類マップ (p.120-127)</h4>
+              <div class="space-y-1.5 text-xs bg-white p-3 rounded-lg border border-slate-200">
+                <div>🔹 <strong>教師あり学習（回帰 p.122）</strong>：明日の来園者数や待ち時間（数値）を予測する</div>
+                <div>🔹 <strong>教師あり学習（分類 p.122）</strong>：SNS口コミが「ポジティブかネガティブか」を判定する</div>
+                <div>🔹 <strong>教師なし学習（クラスタリング p.124）</strong>：購買履歴から来園者を「絶叫派・グルメ派・ファミリー派」に自動グループ分けする</div>
+                <div>🔹 <strong>強化学習（p.125-126）</strong>：自律清掃ロボットが試行錯誤で最適巡回ルートを学習する</div>
+                <div>🔹 <strong>生成AI / LLM（p.127）</strong>：多言語対応のパーク案内チャットボットで自然な回答文を生成する</div>
+              </div>
+            </div>
+          </div>
+          ${renderLabSaveBox(m, "テーマパークまたはあなたの職場で使ってみたい機械学習の手法（回帰・分類・クラスタリング・強化学習・LLM）", "例：過去の天候と曜日から来園者数を予測する「教師あり学習（回帰）」をシフト作成に活用したい。")}
+        `;
+
+        const updateDeriv = () => {
+          const x = Number(document.getElementById("m9-x-slider").value);
+          document.getElementById("m9-x-val").textContent = x.toFixed(1);
+          const fx = 2 * x * x + 2;
+          const dfx = 4 * x;
+          document.getElementById("m9-deriv-box").innerHTML = `
+            <div>関数値（誤差） $f(${x}) = 2(${x})^2 + 2 =$ <strong>${fx.toFixed(1)}</strong></div>
+            <div>接線の傾き（微分） $f'(${x}) = 4 \\times (${x}) =$ <strong class="${dfx === 0 ? "text-emerald-700" : "text-rose-700"}">${dfx.toFixed(1)}</strong></div>
+            <div class="mt-1 font-bold ${dfx === 0 ? "text-emerald-700" : "text-slate-600"}">
+              ${dfx === 0 ? "🎯 傾き f'(x) = 0！誤差が最小(2.0)になる最適パラメータに到達しました (p.116)！" : x === 1 ? "📖 スライドp.113の通り、x=1 のとき接点(1,4)で接線の傾きは f'(1)=4 です！" : "スライダーを x=0（傾き0）または x=1（p.113例題）に合わせてみましょう。"}
+            </div>
+          `;
+        };
+        document.getElementById("m9-x-slider").addEventListener("input", updateDeriv);
+        updateDeriv();
+        wireLabSaveBox(m, () => "微分 f'(x)=4x による接線の傾きとAIの誤差最小化の仕組みを確認し、教師あり(回帰/分類)・教師なし(クラスタリング)・強化学習・LLMの使い分けを整理した。");
+        return;
+      }
+
+      // ---- M10 Lab: Data Lake -> DWH -> BI & Backup / Standby Simulator ----
+      if (m.labType === "m10_infra_simulator") {
+        box.innerHTML = `
+          <div class="bg-sky-50/70 border border-sky-200 rounded-xl p-4 space-y-3">
+            <h4 class="text-sm font-extrabold text-slate-900">🏗️ 演習：テーマパーク分析基盤 ＆ スタンバイ・バックアップ設計シミュレーター (p.137-144)</h4>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-3 text-xs">
+              <div class="bg-white p-3 rounded-lg border border-slate-200">
+                <strong class="text-sky-900 block mb-1">① データレイク (p.138)</strong>
+                <p class="text-slate-600">入園ゲートの生ログ、POS生データ、防犯カメラ画像（非構造化データ）をそのままオブジェクトストレージへ一元集約。</p>
+              </div>
+              <div class="bg-white p-3 rounded-lg border border-slate-200">
+                <strong class="text-sky-900 block mb-1">② DWH (p.139)</strong>
+                <p class="text-slate-600">分析用に構造化テーブル（<code>theme_park</code>等）へ整形・格納し、SQLクエリで時間帯別・天候別に高速集計。</p>
+              </div>
+              <div class="bg-white p-3 rounded-lg border border-slate-200">
+                <strong class="text-sky-900 block mb-1">③ BIツール (p.140)</strong>
+                <p class="text-slate-600">DWHの集計結果をヒストグラムやダッシュボードで可視化し、パーク運営スタッフ全員にリアルタイム共有。</p>
+              </div>
+            </div>
+            <div class="bg-white p-3 rounded-lg border border-slate-200 text-xs space-y-2">
+              <div class="font-bold text-slate-900">⚡ 障害対策・バックアップ方式の比較切替 (p.143-144)：</div>
+              <div class="flex flex-wrap gap-2">
+                <button type="button" data-mode="hot" class="m10-sim-btn px-3 py-1 rounded bg-[#0f2942] text-white font-bold">ホットスタンバイ (p.143)</button>
+                <button type="button" data-mode="cold" class="m10-sim-btn px-3 py-1 rounded bg-slate-100 font-bold">コールドスタンバイ (p.143)</button>
+                <button type="button" data-mode="diff" class="m10-sim-btn px-3 py-1 rounded bg-slate-100 font-bold">差分 vs 増分バックアップ (p.144)</button>
+              </div>
+              <div id="m10-sim-out" class="p-2.5 bg-sky-50 rounded font-bold text-sky-950">
+                ホットスタンバイ：本番機と常時同期する予備機を用意し、障害発生時に即座に切り替えます（可用性：高 ／ コスト：高）。チケット発券システムなど止まってはいけない処理に最適です。
+              </div>
+            </div>
+          </div>
+          ${renderLabSaveBox(m, "データレイク・DWH・BIの役割の違い、またはRDBとNoSQLの使い分けメモ", "例：生データの保管がデータレイク、SQLでの分析用蓄積がDWH、グラフ可視化・共有がBIツール。")}
+        `;
+        box.querySelectorAll(".m10-sim-btn").forEach((btn) => {
+          btn.addEventListener("click", () => {
+            const mMode = btn.dataset.mode;
+            const out = document.getElementById("m10-sim-out");
+            if (mMode === "hot") out.textContent = "ホットスタンバイ（p.143）：本番機と常時同期する予備機を用意し、障害発生時に即座に切り替えます（可用性：高 ／ コスト：高）。";
+            else if (mMode === "cold") out.textContent = "コールドスタンバイ（p.143）：普段は停止している予備機を用意し、障害発生時に起動して切り替えます（可用性：低 ／ コスト：低）。";
+            else out.textContent = "バックアップ比較（p.144）：「フル」は全体保存で時間長・復旧簡便。「差分」はフル以降の更新分、「増分」は前回バックアップ以降の更新分のみ保存するためバックアップ時間は最短ですが復旧手順は複雑になります。";
+          });
+        });
+        wireLabSaveBox(m, () => "データレイク(生データ集約)→DWH(SQL分析用蓄積)→BI(可視化・共有)のパイプラインと、ホットスタンバイ・バックアップ3方式(フル/差分/増分)を確認した。");
+        return;
+      }
+
+      // ---- M11 Lab: Interactive SQL Lab (theme_park + students + club) & 5 Samplings ----
+      if (m.labType === "m11_sql_and_sampling") {
+        box.innerHTML = `
+          <div class="bg-sky-50/70 border border-sky-200 rounded-xl p-4 space-y-3">
+            <div class="flex flex-wrap items-center justify-between gap-2">
+              <h4 class="text-sm font-extrabold text-slate-900">💻 演習：ブラウザで動く SQL Lab（スライド p.153-157 ＆ テーマパーク両対応）</h4>
+              <span class="text-xs font-bold text-sky-800">ボタンを押すかSQLを編集して「SQL実行」を押してください</span>
+            </div>
+            <div class="flex flex-wrap gap-1.5 text-xs">
+              <button type="button" data-sql="SELECT category, AVG(wait), COUNT(*) FROM theme_park GROUP BY category;" class="m11-sql-preset px-2.5 py-1 rounded bg-white border border-sky-300 font-bold text-sky-900">① パーク：分類別の平均待ち時間</button>
+              <button type="button" data-sql="SELECT date, attraction, weather, wait FROM theme_park WHERE weather = 'rainy' ORDER BY wait DESC;" class="m11-sql-preset px-2.5 py-1 rounded bg-white border border-sky-300 font-bold text-sky-900">② パーク：雨の日を待ち時間順</button>
+              <button type="button" data-sql="SELECT student_id, l_name, f_name, birth_date, pref, club_id FROM students WHERE student_id = 101;" class="m11-sql-preset px-2.5 py-1 rounded bg-orange-50 border border-orange-300 font-bold text-orange-900">③ p.154 SELECT+WHERE (101)</button>
+              <button type="button" data-sql="SELECT student_id, l_name, f_name, height FROM students WHERE height >= 180;" class="m11-sql-preset px-2.5 py-1 rounded bg-orange-50 border border-orange-300 font-bold text-orange-900">④ p.155 height >= 180</button>
+              <button type="button" data-sql="SELECT student_id, l_name, f_name, height FROM students ORDER BY height;" class="m11-sql-preset px-2.5 py-1 rounded bg-orange-50 border border-orange-300 font-bold text-orange-900">⑤ p.156 ORDER BY height</button>
+              <button type="button" data-sql="INSERT INTO club (club_id, club_name) VALUES (50, 'Football');" class="m11-sql-preset px-2.5 py-1 rounded bg-emerald-50 border border-emerald-300 font-bold text-emerald-900">⑥ p.157 INSERT (50:Football)</button>
+              <button type="button" data-sql="UPDATE club SET club_name = 'Soccer' WHERE club_id = 50;" class="m11-sql-preset px-2.5 py-1 rounded bg-emerald-50 border border-emerald-300 font-bold text-emerald-900">⑦ p.157 UPDATE (50➔Soccer)</button>
+              <button type="button" data-sql="DELETE FROM club WHERE club_id = 50;" class="m11-sql-preset px-2.5 py-1 rounded bg-rose-50 border border-rose-300 font-bold text-rose-900">⑧ p.157 DELETE (50削除)</button>
+            </div>
+            <div class="flex gap-2">
+              <input id="m11-sql-input" type="text" value="SELECT category, AVG(wait), COUNT(*) FROM theme_park GROUP BY category;" class="flex-1 font-mono text-xs bg-slate-900 text-sky-200 px-3 py-2 rounded-lg border border-slate-700">
+              <button type="button" id="m11-sql-run" class="bg-[#1677a8] hover:bg-[#125e85] text-white text-xs font-extrabold px-4 py-2 rounded-lg shrink-0">▶ SQL実行</button>
+            </div>
+            <div id="m11-sql-status" class="text-xs font-bold text-slate-700"></div>
+            <div class="overflow-x-auto max-h-52 border border-slate-200 rounded-lg bg-white">
+              <table id="m11-sql-table" class="w-full text-xs text-left border-collapse"></table>
+            </div>
+          </div>
+          ${renderLabSaveBox(m, "実行したSQL文と結果のメモ", "例：SELECT category, AVG(wait) FROM theme_park GROUP BY category; を実行し分類別平均を確認。")}
+        `;
+
+        const runM11Sql = () => {
+          const rawQ = document.getElementById("m11-sql-input").value.trim().replace(/;\s*$/, "");
+          const stEl = document.getElementById("m11-sql-status");
+          const tblEl = document.getElementById("m11-sql-table");
+
+          try {
+            // INSERT INTO club
+            if (/^INSERT\s+INTO\s+club/i.test(rawQ)) {
+              if (!sqlClub.some((c) => c.club_id === 50)) {
+                sqlClub.push({ club_id: 50, club_name: "Football" });
+              }
+              stEl.textContent = "✅ p.157 INSERT成功：club テーブルに (50, 'Football') を追加しました！";
+              renderSimpleTable(tblEl, ["club_id", "club_name"], sqlClub);
+              return;
+            }
+            // UPDATE club
+            if (/^UPDATE\s+club/i.test(rawQ)) {
+              const target = sqlClub.find((c) => c.club_id === 50);
+              if (target) target.club_name = "Soccer";
+              else sqlClub.push({ club_id: 50, club_name: "Soccer" });
+              stEl.textContent = "✅ p.157 UPDATE成功：club_id = 50 の club_name を 'Soccer' に更新しました！";
+              renderSimpleTable(tblEl, ["club_id", "club_name"], sqlClub);
+              return;
+            }
+            // DELETE FROM club
+            if (/^DELETE\s+FROM\s+club/i.test(rawQ)) {
+              sqlClub = sqlClub.filter((c) => c.club_id !== 50);
+              stEl.textContent = "✅ p.157 DELETE成功：club_id = 50 のレコードを削除しました！";
+              renderSimpleTable(tblEl, ["club_id", "club_name"], sqlClub);
+              return;
+            }
+
+            // SELECT queries
+            if (/FROM\s+students/i.test(rawQ)) {
+              let rows = [...sqlStudents];
+              if (/student_id\s*=\s*101/i.test(rawQ)) {
+                rows = rows.filter((r) => r.student_id === 101);
+                stEl.textContent = "✅ p.154 実行結果：WHERE student_id = 101 で1件抽出しました。";
+                renderSimpleTable(tblEl, ["student_id", "l_name", "f_name", "birth_date", "pref", "club_id"], rows);
+              } else if (/height\s*>=\s*180/i.test(rawQ)) {
+                rows = rows.filter((r) => r.height >= 180);
+                stEl.textContent = "✅ p.155 実行結果：WHERE height >= 180 で2名（Takahashi 181.7cm, Tanaka 183.7cm）抽出しました。";
+                renderSimpleTable(tblEl, ["student_id", "l_name", "f_name", "height"], rows);
+              } else if (/ORDER\s+BY\s+height/i.test(rawQ)) {
+                rows.sort((a, b) => a.height - b.height);
+                stEl.textContent = "✅ p.156 実行結果：ORDER BY height で身長の低い順（Yamamoto 148.2cm〜）に整列しました。";
+                renderSimpleTable(tblEl, ["student_id", "l_name", "f_name", "height"], rows);
+              } else {
+                stEl.textContent = "✅ students テーブル全件表示（p.153）";
+                renderSimpleTable(tblEl, ["student_id", "l_name", "f_name", "birth_date", "pref", "height", "club_id"], rows);
+              }
+              return;
+            }
+
+            if (/FROM\s+club/i.test(rawQ)) {
+              stEl.textContent = "✅ club テーブル表示（p.153, p.157）";
+              renderSimpleTable(tblEl, ["club_id", "club_name"], sqlClub);
+              return;
+            }
+
+            // Default: theme_park queries
+            const cleanPark = THEME_PARK_DATA.filter((d) => d.wait !== null && d.wait >= 0 && d.wait < 180);
+            if (/GROUP\s+BY\s+category/i.test(rawQ)) {
+              const cats = ["thrill", "family", "kids"];
+              const out = cats.map((c) => {
+                const sub = cleanPark.filter((d) => d.category === c);
+                return {
+                  category: c,
+                  "AVG(wait)": (sub.reduce((a, b) => a + b.wait, 0) / sub.length).toFixed(1) + "分",
+                  "COUNT(*)": sub.length + "件"
+                };
+              });
+              stEl.textContent = "✅ theme_park 集計結果（GROUP BY category）";
+              renderSimpleTable(tblEl, ["category", "AVG(wait)", "COUNT(*)"], out);
+            } else if (/weather\s*=\s*'rainy'/i.test(rawQ)) {
+              const out = cleanPark.filter((d) => d.weather === "rainy").sort((a, b) => b.wait - a.wait);
+              stEl.textContent = "✅ theme_park 抽出結果（WHERE weather = 'rainy' ORDER BY wait DESC）";
+              renderSimpleTable(tblEl, ["date", "attraction", "category", "weather", "wait", "sat"], out);
+            } else {
+              stEl.textContent = "✅ theme_park テーブル表示";
+              renderSimpleTable(tblEl, ["date", "weather", "attraction", "category", "wait", "sat", "sales"], cleanPark.slice(0, 12));
+            }
+          } catch (e) {
+            stEl.textContent = "⚠️ SQLを確認してください: " + e.message;
+          }
+        };
+
+        function renderSimpleTable(tbl, cols, rows) {
+          tbl.innerHTML = `
+            <thead class="bg-slate-800 text-white"><tr>${cols.map((c) => `<th class="p-2 border border-slate-700">${c}</th>`).join("")}</tr></thead>
+            <tbody>${rows.map((r) => `<tr class="even:bg-slate-50">${cols.map((c) => `<td class="p-2 border border-slate-200">${r[c] ?? ""}</td>`).join("")}</tr>`).join("")}</tbody>
+          `;
+        }
+
+        box.querySelectorAll(".m11-sql-preset").forEach((btn) => {
+          btn.addEventListener("click", () => {
+            document.getElementById("m11-sql-input").value = btn.dataset.sql;
+            runM11Sql();
+          });
+        });
+        document.getElementById("m11-sql-run").addEventListener("click", runM11Sql);
+        runM11Sql();
+        wireLabSaveBox(m, () => `実行SQL: ${document.getElementById("m11-sql-input").value} を検証し、SELECT/WHERE/ORDER BY/INSERT/UPDATE/DELETEの動作を確認した。`);
+        return;
+      }
+
+      // ---- M12 Lab: Security CIA / Public-Key Crypto & Full Day Score Report ----
+      if (m.labType === "m12_security_and_summary") {
+        const s = calcStudentScores(studentState);
+        box.innerHTML = `
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="bg-sky-50/70 border border-sky-200 rounded-xl p-4 space-y-3">
+              <h4 class="text-xs sm:text-sm font-extrabold text-slate-900">🔐 ① 共通鍵 vs 公開鍵暗号シミュレーター (p.168)</h4>
+              <p class="text-xs text-slate-600">テーマパークのオンライン決済データを送信する際、「公開鍵暗号方式」ではどの鍵で暗号化し、どの鍵で復号するかボタンを押して確認しましょう。</p>
+              <div class="flex gap-2 text-xs">
+                <button type="button" id="m12-btn-sym" class="px-3 py-1 rounded bg-white border font-bold">共通鍵暗号方式</button>
+                <button type="button" id="m12-btn-pub" class="px-3 py-1 rounded bg-[#0f2942] text-white font-bold">公開鍵暗号方式</button>
+              </div>
+              <div id="m12-crypto-box" class="bg-white p-3 rounded-lg border border-slate-200 text-xs">
+                <strong>🔑 公開鍵暗号方式（p.168）：</strong><br>
+                暗号鍵と復号鍵が<strong>異なる</strong>方式。公開された「暗号鍵（公開鍵）」でデータを暗号化し、受信者（または管理者）だけが持つ「<strong>復号鍵（秘密鍵）</strong>」で復号します。
+              </div>
+            </div>
+
+            <div class="bg-emerald-50/70 border border-emerald-200 rounded-xl p-4 space-y-2">
+              <h4 class="text-xs sm:text-sm font-extrabold text-slate-900">🎓 ② あなたの本日のDS検定 成長スコアカード</h4>
+              <div class="bg-white p-3.5 rounded-lg border border-slate-200 space-y-2 text-xs">
+                <div class="flex justify-between"><span>受講者名:</span><strong>${studentState.name || "未設定"} さん</strong></div>
+                <div class="flex justify-between"><span>導入4択 (Pre) 正答率:</span><strong class="text-sky-700">${s.prePct !== null ? s.prePct + "% (" + s.preCorrect + "/" + s.preTotal + ")" : "回答中"}</strong></div>
+                <div class="flex justify-between"><span>仕上げ類似4択 (Post) 正答率:</span><strong class="text-emerald-700 text-sm">${s.postPct !== null ? s.postPct + "% (" + s.postCorrect + "/" + s.postTotal + ")" : "回答中"}</strong></div>
+                <div class="text-[11px] text-slate-500 pt-1">すべてのモジュールでPre/Post問題に回答すると、1日の成長スコアが完成します！</div>
+              </div>
+            </div>
+          </div>
+          ${renderLabSaveBox(m, "1日の講義全体の振り返り・明日から実務で意識したいこと", "例：データを見る際はまず背景と定義、外れ値を確認し、空・雨・傘の論理で提案していきたい。")}
+        `;
+        document.getElementById("m12-btn-sym").addEventListener("click", () => {
+          document.getElementById("m12-crypto-box").innerHTML = "<strong>🔑 共通鍵暗号方式（p.168）：</strong><br>暗号鍵と復号鍵が<strong>同一</strong>である方式。送信者と受信者で1つの共通鍵を用意して暗号化・復号します（処理は高速ですが、鍵の安全な受け渡しが課題になります）。";
+        });
+        document.getElementById("m12-btn-pub").addEventListener("click", () => {
+          document.getElementById("m12-crypto-box").innerHTML = "<strong>🔑 公開鍵暗号方式（p.168）：</strong><br>暗号鍵と復号鍵が<strong>異なる</strong>方式。暗号鍵（公開鍵）を公開し、復号鍵（秘密鍵）を厳重に管理することで安全にやり取りできます。";
+        });
+        wireLabSaveBox(m, () => "情報セキュリティの3要素（機密性・完全性・可用性）と公開鍵暗号方式の仕組みを確認し、全12モジュールのDS検定演習を完了した。");
+      }
+    }
+
+    // =========================================================================
+    // 7. DATASET EXPLORER VIEW
+    // =========================================================================
+    function renderDatasetExplorer() {
+      const w = document.getElementById("exp-weather").value;
+      const c = document.getElementById("exp-category").value;
+      const mode = document.getElementById("exp-clean").value;
+
+      let rows = THEME_PARK_DATA.filter((d) => (!w || d.weather === w) && (!c || d.category === c));
+      if (mode === "clean") {
+        rows = rows.filter((d) => d.wait !== null && d.wait >= 0 && d.wait < 180);
+      }
+
+      const validWaits = rows.map((r) => r.wait).filter((v) => v !== null && Number.isFinite(v));
+      const mean = validWaits.length ? (validWaits.reduce((a, b) => a + b, 0) / validWaits.length).toFixed(1) : "-";
+      const sorted = [...validWaits].sort((a, b) => a - b);
+      const mid = Math.floor(sorted.length / 2);
+      const median = sorted.length ? (sorted.length % 2 ? sorted[mid] : (sorted[mid - 1] + sorted[mid]) / 2).toFixed(1) : "-";
+      const max = validWaits.length ? Math.max(...validWaits) : "-";
+
+      document.getElementById("exp-metrics").innerHTML = `
+        <div class="bg-sky-50 border border-sky-200 p-2.5 rounded-lg"><span>該当件数</span><strong class="block text-sm text-slate-900">${rows.length} 件</strong></div>
+        <div class="bg-sky-50 border border-sky-200 p-2.5 rounded-lg"><span>平均待ち時間</span><strong class="block text-sm text-slate-900">${mean} 分</strong></div>
+        <div class="bg-sky-50 border border-sky-200 p-2.5 rounded-lg"><span>中央値</span><strong class="block text-sm text-slate-900">${median} 分</strong></div>
+        <div class="bg-sky-50 border border-sky-200 p-2.5 rounded-lg"><span>最大待ち時間</span><strong class="block text-sm text-slate-900">${max} 分</strong></div>
+        <div class="bg-sky-50 border border-sky-200 p-2.5 rounded-lg"><span>異常値/欠損状態</span><strong class="block text-sm text-rose-700">${mode === "clean" ? "除外済み" : "生データ(240分/-10分含)"}</strong></div>
+      `;
+
+      document.getElementById("exp-tbody").innerHTML = rows
+        .map((r) => {
+          const isOut = r.wait !== null && (r.wait >= 180 || r.wait < 0);
+          const isMiss = r.wait === null || r.sat === null;
+          const cls = isOut ? "bg-rose-100 font-bold text-rose-900" : isMiss ? "bg-amber-100 font-bold text-amber-900" : "even:bg-slate-50";
+          return `
+            <tr class="${cls}">
+              <td class="p-2">${r.id}</td>
+              <td class="p-2">${r.date} (${r.dow})</td>
+              <td class="p-2">${r.weather}</td>
+              <td class="p-2">${r.temp}℃</td>
+              <td class="p-2">${r.visitors.toLocaleString()}</td>
+              <td class="p-2">${r.attraction}</td>
+              <td class="p-2">${r.category}</td>
+              <td class="p-2">${r.hour}:00</td>
+              <td class="p-2">${r.wait === null ? "欠損(NULL)" : r.wait + "分"}</td>
+              <td class="p-2">${r.sat === null ? "欠損(NULL)" : r.sat}</td>
+              <td class="p-2">${r.sales.toLocaleString()}円</td>
+            </tr>
+          `;
+        })
+        .join("");
+    }
+
+    // =========================================================================
+    // 8. INSTRUCTOR DASHBOARD (5-CLICK ON TITLE + PASSWORD 'teacher')
+    // =========================================================================
+    function seedDemoStudents() {
+      const demoProfiles = [
+        { name: "佐藤 健太 (営業1課)", dept: "営業本部", preRate: 0.55, postRate: 0.95, sru: "【空】雨天時は屋内Fantasy Castleが75分超待ち【雨】屋外からの流入が集中【傘】11-14時飲食クーポンで分散" },
+        { name: "鈴木 陽菜 (企画部)", dept: "経営企画", preRate: 0.65, postRate: 1.0, sru: "【空】240分の異常値混入で平均が歪んでいた【雨】外れ値除外と中央値確認が必要【傘】3σ超アラートと自動クレンジング導入" },
+        { name: "高橋 誠 (店舗運営)", dept: "運営部", preRate: 0.4, postRate: 0.85, sru: "【空】猛暑日はアイス売上と待ち時間が両方増加【雨】気温という共通要因による疑似相関【傘】気温28度以上の日は給水・モバイルオーダー強化" },
+        { name: "田中 美咲 (マーケティング)", dept: "マーケ部", preRate: 0.5, postRate: 0.92, sru: "【空】常連客アンケートだけでは初回客の不満が漏れる【雨】標本バイアスが発生【傘】層別サンプリング(ファミリー80:学生20)で調査" },
+        { name: "伊藤 大輔 (情報システム)", dept: "IT推進部", preRate: 0.75, postRate: 1.0, sru: "【空】各部署にCSVが散在【雨】データレイクとDWHの分離が必要【傘】生ログをレイクへ集約しDWH+BIで日次モニタリング" }
+      ];
+
+      demoProfiles.forEach((p, idx) => {
+        const rec = createBlankStudent(p.name, p.dept);
+        rec.currentModule = MODULES[Math.min(11, idx * 2 + 3)].id;
+        MODULES.forEach((m, mIdx) => {
+          const preOk = ((idx + mIdx) % 3 !== 0);
+          const preChoice = preOk ? m.preQuiz.answer : (m.preQuiz.answer + 1) % 4;
+          rec.preAnswers[m.id] = { choice: preChoice, correct: preOk, time: "10:" + (15 + mIdx) };
+
+          const postOk = ((idx + mIdx) % 7 !== 0);
+          const postChoice = postOk ? m.postQuiz.answer : (m.postQuiz.answer + 2) % 4;
+          rec.postAnswers[m.id] = { choice: postChoice, correct: postOk, time: "14:" + (20 + mIdx) };
+          rec.labResponses[m.id] = m.id === "m4" ? p.sru : `${m.code} 演習確認済（${p.name}）`;
+        });
+        classRecords[p.name] = rec;
+      });
+      saveLocalState();
+      renderInstructorDashboard();
+    }
+
+    function renderInstructorDashboard() {
+      const students = Object.values(classRecords).filter((r) => r && r.name);
+
+      // KPI Summary Row
+      let sumPrePct = 0, cntPre = 0, sumPostPct = 0, cntPost = 0;
+      students.forEach((stu) => {
+        const sc = calcStudentScores(stu);
+        if (sc.prePct !== null) { sumPrePct += sc.prePct; cntPre++; }
+        if (sc.postPct !== null) { sumPostPct += sc.postPct; cntPost++; }
+      });
+      const avgPre = cntPre ? Math.round(sumPrePct / cntPre) : 0;
+      const avgPost = cntPost ? Math.round(sumPostPct / cntPost) : 0;
+      const diff = avgPost - avgPre;
+
+      const kpiRow = document.getElementById("inst-kpi-row");
+      if (kpiRow) {
+        kpiRow.innerHTML = `
+          <div class="bg-slate-800 border border-slate-700 p-3 rounded-xl">
+            <span class="text-xs text-slate-400 block">参加受講者数</span>
+            <strong class="text-xl text-white">${students.length} 名</strong>
+          </div>
+          <div class="bg-slate-800 border border-slate-700 p-3 rounded-xl">
+            <span class="text-xs text-slate-400 block">クラス平均 導入4択 (Pre)</span>
+            <strong class="text-xl text-sky-300">${avgPre} %</strong>
+          </div>
+          <div class="bg-slate-800 border border-slate-700 p-3 rounded-xl">
+            <span class="text-xs text-slate-400 block">クラス平均 類似4択 (Post)</span>
+            <strong class="text-xl text-emerald-300">${avgPost} %</strong>
+          </div>
+          <div class="bg-slate-800 border border-slate-700 p-3 rounded-xl">
+            <span class="text-xs text-slate-400 block">講義・演習による理解度向上</span>
+            <strong class="text-xl text-amber-300">${diff >= 0 ? "+" : ""}${diff} pt UP!</strong>
+          </div>
+        `;
+      }
+
+      // Tab 1: Student Answer Matrix
+      const thead = document.getElementById("inst-matrix-thead");
+      const tbody = document.getElementById("inst-matrix-tbody");
+      if (thead && tbody) {
+        thead.innerHTML = `
+          <th class="p-2.5 border border-slate-700">受講者名 (クリックで詳細)</th>
+          <th class="p-2.5 border border-slate-700">Pre ➔ Post</th>
+          ${MODULES.map((m) => `<th class="p-2 border border-slate-700 text-center" title="${m.title}">${m.id.toUpperCase()}<br><span class="text-[10px] font-normal text-slate-300">Pre|Post</span></th>`).join("")}
+        `;
+
+        if (!students.length) {
+          tbody.innerHTML = `<tr><td colspan="14" class="p-6 text-center text-slate-500">まだ受講者の回答データがありません。右上の「🧪 デモ受講者5名を投入」を押すと一覧表示のサンプルを確認できます。</td></tr>`;
+        } else {
+          tbody.innerHTML = students
+            .map((stu) => {
+              const sc = calcStudentScores(stu);
+              const cells = MODULES.map((m) => {
+                const pre = stu.preAnswers && stu.preAnswers[m.id];
+                const post = stu.postAnswers && stu.postAnswers[m.id];
+                const preBadge = pre
+                  ? `<span class="px-1 py-0.5 rounded ${pre.correct ? "bg-emerald-100 text-emerald-900 font-bold" : "bg-rose-100 text-rose-900"}">${["①", "②", "③", "④"][pre.choice] || "?"}${pre.correct ? "⭕" : "❌"}</span>`
+                  : `<span class="text-slate-300">-</span>`;
+                const postBadge = post
+                  ? `<span class="px-1 py-0.5 rounded ${post.correct ? "bg-emerald-100 text-emerald-900 font-bold" : "bg-rose-100 text-rose-900"}">${["①", "②", "③", "④"][post.choice] || "?"}${post.correct ? "⭕" : "❌"}</span>`
+                  : `<span class="text-slate-300">-</span>`;
+                return `<td class="p-1.5 border border-slate-200 text-center whitespace-nowrap">${preBadge} <span class="text-slate-300">|</span> ${postBadge}</td>`;
+              }).join("");
+
+              return `
+                <tr class="hover:bg-sky-50 cursor-pointer inst-stu-row" data-stuname="${stu.name}">
+                  <td class="p-2.5 border border-slate-200 font-extrabold text-sky-900 underline">${stu.name}<br><span class="text-[10px] font-normal text-slate-500">最終更新 ${stu.updatedAt || "-"}</span></td>
+                  <td class="p-2.5 border border-slate-200 font-bold whitespace-nowrap">${sc.prePct ?? 0}% ➔ <span class="text-emerald-700">${sc.postPct ?? 0}%</span></td>
+                  ${cells}
+                </tr>
+              `;
+            })
+            .join("");
+
+          tbody.querySelectorAll(".inst-stu-row").forEach((row) => {
+            row.addEventListener("click", () => {
+              const stu = classRecords[row.dataset.stuname];
+              if (!stu) return;
+              const detailBox = document.getElementById("inst-student-detail-box");
+              detailBox.classList.remove("hidden");
+              const labsHtml = MODULES.map((m) => {
+                const txt = (stu.labResponses && stu.labResponses[m.id]) || "（未記入）";
+                return `<div class="bg-white p-2.5 rounded border border-slate-200 text-xs"><strong>${m.code} (${m.title}):</strong> ${txt}</div>`;
+              }).join("");
+              detailBox.innerHTML = `
+                <div class="flex items-center justify-between">
+                  <h4 class="text-sm font-extrabold text-slate-900">👤 ${stu.name} さんの演習・記述回答詳細</h4>
+                  <button type="button" id="btn-close-stu-detail" class="text-xs text-slate-500 font-bold">閉じる ✕</button>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-2">${labsHtml}</div>
+              `;
+              document.getElementById("btn-close-stu-detail").addEventListener("click", () => detailBox.classList.add("hidden"));
+            });
+          });
+        }
+      }
+
+      // Tab 2: Option Distribution
+      const distSelect = document.getElementById("inst-dist-module-select");
+      if (distSelect && !distSelect.options.length) {
+        distSelect.innerHTML = MODULES.map((m, i) => `<option value="${i}">${m.code}: ${m.title} (${m.slides})</option>`).join("");
+      }
+      renderInstructorDistCards(students);
+
+      // Tab 3: Written Lab Submissions
+      const labsList = document.getElementById("inst-labs-list");
+      if (labsList) {
+        const cards = [];
+        students.forEach((stu) => {
+          Object.entries(stu.labResponses || {}).forEach(([mId, text]) => {
+            if (!text) return;
+            const mObj = MODULES.find((x) => x.id === mId);
+            cards.push(`
+              <div class="bg-slate-50 border border-slate-200 rounded-xl p-3.5 text-xs space-y-1">
+                <div class="flex items-center justify-between">
+                  <span class="font-extrabold text-sky-900">👤 ${stu.name}</span>
+                  <span class="bg-white border px-2 py-0.5 rounded text-[11px] font-bold">${mObj ? mObj.code : mId}</span>
+                </div>
+                <p class="text-slate-800 leading-relaxed pt-1">${text}</p>
+              </div>
+            `);
+          });
+        });
+        labsList.innerHTML = cards.length ? cards.join("") : `<p class="text-xs text-slate-500">まだ記述回答がありません。</p>`;
+      }
+    }
+
+    function renderInstructorDistCards(students) {
+      const selEl = document.getElementById("inst-dist-module-select");
+      const showAnsEl = document.getElementById("inst-dist-show-answer");
+      const cardsEl = document.getElementById("inst-dist-cards");
+      if (!selEl || !cardsEl) return;
+
+      const m = MODULES[Number(selEl.value || 0)];
+      const showAns = showAnsEl ? showAnsEl.checked : true;
+
+      const buildDistCard = (stageLabel, quizObj, isPre) => {
+        const counts = [0, 0, 0, 0];
+        const namesByOpt = [[], [], [], []];
+        students.forEach((stu) => {
+          const map = isPre ? stu.preAnswers : stu.postAnswers;
+          const ans = map && map[m.id];
+          if (ans && ans.choice >= 0 && ans.choice < 4) {
+            counts[ans.choice]++;
+            namesByOpt[ans.choice].push(stu.name);
+          }
+        });
+        const total = Math.max(1, counts.reduce((a, b) => a + b, 0));
+
+        const rows = quizObj.options
+          .map((opt, idx) => {
+            const cnt = counts[idx];
+            const pct = Math.round((cnt / total) * 100);
+            const isCorrect = idx === quizObj.answer;
+            const barColor = showAns && isCorrect ? "bg-emerald-600" : "bg-sky-600";
+            return `
+              <div class="space-y-1 p-2 rounded border ${showAns && isCorrect ? "bg-emerald-50/70 border-emerald-300" : "bg-white border-slate-200"}">
+                <div class="flex justify-between text-xs font-bold">
+                  <span>${opt} ${showAns && isCorrect ? "⭕【正解】" : ""}</span>
+                  <span class="shrink-0 ml-2">${cnt}名 (${pct}%)</span>
+                </div>
+                <div class="w-full bg-slate-100 h-3 rounded overflow-hidden">
+                  <div class="${barColor} h-full" style="width:${pct}%"></div>
+                </div>
+                <div class="text-[11px] text-slate-500">選択者: ${namesByOpt[idx].length ? namesByOpt[idx].join("、") : "なし"}</div>
+              </div>
+            `;
+          })
+          .join("");
+
+        return `
+          <div class="bg-slate-50 border border-slate-200 rounded-xl p-4 space-y-2.5">
+            <span class="text-xs font-extrabold px-2.5 py-1 rounded ${isPre ? "bg-amber-100 text-amber-900" : "bg-emerald-100 text-emerald-900"}">${stageLabel}</span>
+            <p class="text-xs font-bold text-slate-900">${quizObj.q}</p>
+            <div class="space-y-2">${rows}</div>
+          </div>
+        `;
       };
 
-      document.getElementById("sru-save").onclick = () => {
-        const data = { sky: sky.value.trim(), rain: rain.value.trim(), umb: umb.value.trim() };
-        try { localStorage.setItem("ds_sru_proposal", JSON.stringify(data)); } catch(e) {}
-        out.style.display = "block";
-        out.textContent =
-          "【第3章 p.50 空・雨・傘 データドリブン改善提案書】\n" +
-          "■ 空（事実・データ根拠）：\n  " + (data.sky || "（未入力）") + "\n\n" +
-          "■ 雨（解釈・発生要因）：\n  " + (data.rain || "（未入力）") + "\n\n" +
-          "■ 傘（改善アクション・KPI目標）：\n  " + (data.umb || "（未入力）");
-        st.textContent = "✓ 提案シートを生成しブラウザに保存しました";
+      cardsEl.innerHTML = buildDistCard("STEP 1：導入4択クイズ (Pre)", m.preQuiz, true) + buildDistCard("STEP 5：仕上げ類似4択クイズ (Post)", m.postQuiz, false);
+    }
+
+    // =========================================================================
+    // 9. VIEW SWITCHING & EVENT LISTENERS
+    // =========================================================================
+    function showStudentView() {
+      document.getElementById("student-module-view").classList.remove("hidden");
+      document.getElementById("dataset-explorer-view").classList.add("hidden");
+      document.getElementById("instructor-dashboard-view").classList.add("hidden");
+    }
+
+    function showDatasetView() {
+      document.getElementById("student-module-view").classList.add("hidden");
+      document.getElementById("dataset-explorer-view").classList.remove("hidden");
+      document.getElementById("instructor-dashboard-view").classList.add("hidden");
+      renderDatasetExplorer();
+    }
+
+    function showInstructorView() {
+      document.getElementById("student-module-view").classList.add("hidden");
+      document.getElementById("dataset-explorer-view").classList.add("hidden");
+      document.getElementById("instructor-dashboard-view").classList.remove("hidden");
+      renderInstructorDashboard();
+    }
+
+    function switchInstTab(activeTabId) {
+      const tabs = [
+        { btn: "tab-inst-matrix", panel: "inst-panel-matrix" },
+        { btn: "tab-inst-dist", panel: "inst-panel-dist" },
+        { btn: "tab-inst-labs", panel: "inst-panel-labs" },
+        { btn: "tab-inst-import", panel: "inst-panel-import" }
+      ];
+      tabs.forEach((t) => {
+        const b = document.getElementById(t.btn);
+        const p = document.getElementById(t.panel);
+        const isAct = t.btn === activeTabId;
+        if (b) b.className = isAct ? "px-4 py-2 rounded-lg bg-slate-900 text-white text-xs font-extrabold" : "px-4 py-2 rounded-lg bg-slate-100 text-slate-700 hover:bg-slate-200 text-xs font-extrabold";
+        if (p) p.classList.toggle("hidden", !isAct);
+      });
+    }
+
+    function initEvents() {
+      // 1. Secret 5-Click on Main Title (#app-main-title) -> Opens Teacher Password Modal
+      const titleEl = document.getElementById("app-main-title");
+      if (titleEl) {
+        titleEl.addEventListener("click", () => {
+          titleClickCount++;
+          if (titleClickTimer) clearTimeout(titleClickTimer);
+          titleClickTimer = setTimeout(() => {
+            titleClickCount = 0;
+          }, 2500);
+
+          if (titleClickCount >= 5) {
+            titleClickCount = 0;
+            const modal = document.getElementById("teacher-auth-modal");
+            const pwdInput = document.getElementById("teacher-password-input");
+            const errEl = document.getElementById("teacher-auth-error");
+            if (errEl) errEl.classList.add("hidden");
+            if (pwdInput) pwdInput.value = "";
+            if (modal) {
+              modal.classList.remove("hidden");
+              modal.classList.add("flex");
+              if (pwdInput) pwdInput.focus();
+            }
+          }
+        });
+      }
+
+      // Teacher Password Modal handlers (Password: "teacher")
+      const closeTeacherModal = () => {
+        const modal = document.getElementById("teacher-auth-modal");
+        if (modal) {
+          modal.classList.add("hidden");
+          modal.classList.remove("flex");
+        }
       };
-    })();
+      const submitTeacherLogin = () => {
+        const pwd = document.getElementById("teacher-password-input").value.trim();
+        const errEl = document.getElementById("teacher-auth-error");
+        if (pwd === "teacher") {
+          isInstructorUnlocked = true;
+          closeTeacherModal();
+          document.getElementById("btn-instructor-toggle").classList.remove("hidden");
+          fetchCloudRecords().then(() => showInstructorView());
+        } else {
+          if (errEl) errEl.classList.remove("hidden");
+        }
+      };
+
+      document.getElementById("btn-close-teacher-modal").addEventListener("click", closeTeacherModal);
+      document.getElementById("btn-cancel-teacher-login").addEventListener("click", closeTeacherModal);
+      document.getElementById("btn-submit-teacher-login").addEventListener("click", submitTeacherLogin);
+      document.getElementById("teacher-password-input").addEventListener("keydown", (e) => {
+        if (e.key === "Enter") submitTeacherLogin();
+      });
+
+      document.getElementById("btn-instructor-toggle").addEventListener("click", () => {
+        const instView = document.getElementById("instructor-dashboard-view");
+        if (instView.classList.contains("hidden")) showInstructorView();
+        else showStudentView();
+      });
+
+      // 2. First-time Student Name Modal
+      const openNameModal = () => {
+        const modal = document.getElementById("student-name-modal");
+        document.getElementById("input-student-name").value = studentState.name || "";
+        document.getElementById("input-student-dept").value = studentState.dept || "";
+        modal.classList.remove("hidden");
+        modal.classList.add("flex");
+      };
+      const saveStudentName = () => {
+        const nameVal = document.getElementById("input-student-name").value.trim();
+        const deptVal = document.getElementById("input-student-dept").value.trim();
+        const errEl = document.getElementById("name-modal-error");
+        if (!nameVal) {
+          errEl.classList.remove("hidden");
+          return;
+        }
+        errEl.classList.add("hidden");
+        studentState.name = nameVal;
+        studentState.dept = deptVal;
+        saveLocalState();
+        const modal = document.getElementById("student-name-modal");
+        modal.classList.add("hidden");
+        modal.classList.remove("flex");
+        renderActiveModule();
+      };
+
+      document.getElementById("btn-open-profile").addEventListener("click", openNameModal);
+      document.getElementById("btn-save-student-name").addEventListener("click", saveStudentName);
+      document.getElementById("input-student-name").addEventListener("keydown", (e) => {
+        if (e.key === "Enter") saveStudentName();
+      });
+
+      // 3. Student Sync / Export Code Modal
+      document.getElementById("btn-open-sync-modal").addEventListener("click", () => {
+        const modal = document.getElementById("student-sync-modal");
+        document.getElementById("student-export-code").value = JSON.stringify(studentState);
+        document.getElementById("sync-copy-status").textContent = "";
+        modal.classList.remove("hidden");
+        modal.classList.add("flex");
+      });
+      document.getElementById("btn-close-sync-modal").addEventListener("click", () => {
+        const modal = document.getElementById("student-sync-modal");
+        modal.classList.add("hidden");
+        modal.classList.remove("flex");
+      });
+      document.getElementById("btn-copy-sync-code").addEventListener("click", async () => {
+        const ta = document.getElementById("student-export-code");
+        ta.select();
+        try {
+          await navigator.clipboard.writeText(ta.value);
+        } catch (e) {
+          document.execCommand("copy");
+        }
+        document.getElementById("sync-copy-status").textContent = "✓ 回答コードをクリップボードにコピーしました！";
+      });
+      document.getElementById("btn-sync-now").addEventListener("click", async () => {
+        await syncToCloudServer();
+        document.getElementById("sync-copy-status").textContent = "✓ 最新データを保存・送信しました！";
+      });
+
+      // 4. Module Pager Buttons
+      document.getElementById("btn-prev-module").addEventListener("click", () => {
+        if (currentModuleIdx > 0) {
+          currentModuleIdx--;
+          renderActiveModule();
+          window.scrollTo({ top: 0, behavior: "smooth" });
+        }
+      });
+      document.getElementById("btn-next-module").addEventListener("click", () => {
+        if (currentModuleIdx < MODULES.length - 1) {
+          currentModuleIdx++;
+          renderActiveModule();
+          window.scrollTo({ top: 0, behavior: "smooth" });
+        }
+      });
+
+      // 5. Dataset Explorer Controls
+      document.getElementById("btn-dataset-overview").addEventListener("click", showDatasetView);
+      document.getElementById("btn-close-dataset-view").addEventListener("click", showStudentView);
+      ["exp-weather", "exp-category", "exp-clean"].forEach((id) => {
+        document.getElementById(id).addEventListener("change", renderDatasetExplorer);
+      });
+      document.getElementById("btn-exp-reset").addEventListener("click", () => {
+        document.getElementById("exp-weather").value = "";
+        document.getElementById("exp-category").value = "";
+        document.getElementById("exp-clean").value = "raw";
+        renderDatasetExplorer();
+      });
+
+      // 6. Instructor Dashboard Controls
+      document.getElementById("tab-inst-matrix").addEventListener("click", () => switchInstTab("tab-inst-matrix"));
+      document.getElementById("tab-inst-dist").addEventListener("click", () => switchInstTab("tab-inst-dist"));
+      document.getElementById("tab-inst-labs").addEventListener("click", () => switchInstTab("tab-inst-labs"));
+      document.getElementById("tab-inst-import").addEventListener("click", () => switchInstTab("tab-inst-import"));
+
+      document.getElementById("inst-dist-module-select").addEventListener("change", () => {
+        renderInstructorDistCards(Object.values(classRecords).filter((r) => r && r.name));
+      });
+      document.getElementById("inst-dist-show-answer").addEventListener("change", () => {
+        renderInstructorDistCards(Object.values(classRecords).filter((r) => r && r.name));
+      });
+
+      document.getElementById("btn-inst-refresh").addEventListener("click", async () => {
+        await fetchCloudRecords();
+        renderInstructorDashboard();
+      });
+      document.getElementById("btn-inst-seed-demo").addEventListener("click", seedDemoStudents);
+      document.getElementById("btn-inst-clear-all").addEventListener("click", () => {
+        classRecords = {};
+        if (studentState.name) classRecords[studentState.name] = studentState;
+        try { localStorage.setItem(STORAGE_KEY_ALL_RECORDS, JSON.stringify(classRecords)); } catch (e) {}
+        renderInstructorDashboard();
+      });
+      document.getElementById("btn-inst-close").addEventListener("click", showStudentView);
+
+      document.getElementById("btn-inst-export-csv").addEventListener("click", () => {
+        const students = Object.values(classRecords).filter((r) => r && r.name);
+        const hdr = ["受講者名", "所属", "Pre正答率(%)", "Post正答率(%)", ...MODULES.map((m) => `${m.id}_Pre`), ...MODULES.map((m) => `${m.id}_Post`), "M4_空雨傘提案"];
+        const lines = [hdr.join(",")];
+        students.forEach((stu) => {
+          const sc = calcStudentScores(stu);
+          const preCols = MODULES.map((m) => {
+            const a = stu.preAnswers && stu.preAnswers[m.id];
+            return a ? `${a.choice + 1}(${a.correct ? "O" : "X"})` : "-";
+          });
+          const postCols = MODULES.map((m) => {
+            const a = stu.postAnswers && stu.postAnswers[m.id];
+            return a ? `${a.choice + 1}(${a.correct ? "O" : "X"})` : "-";
+          });
+          const sru = ((stu.labResponses && stu.labResponses.m4) || "").replace(/"/g, '""');
+          lines.push([`"${stu.name}"`, `"${stu.dept || ""}"`, sc.prePct ?? 0, sc.postPct ?? 0, ...preCols, ...postCols, `"${sru}"`].join(","));
+        });
+        const blob = new Blob(["\uFEFF" + lines.join("\n")], { type: "text/csv;charset=utf-8" });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = "ds_kentei_class_records.csv";
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+      });
+
+      document.getElementById("btn-inst-do-import").addEventListener("click", () => {
+        const raw = document.getElementById("inst-import-textarea").value.trim();
+        const msg = document.getElementById("inst-import-msg");
+        if (!raw) return;
+        let count = 0;
+        raw.split(/\r?\n/).forEach((line) => {
+          const t = line.trim();
+          if (!t) return;
+          try {
+            const obj = JSON.parse(t);
+            if (obj && obj.name) {
+              classRecords[obj.name] = obj;
+              count++;
+            }
+          } catch (e) {}
+        });
+        saveLocalState();
+        renderInstructorDashboard();
+        if (msg) msg.textContent = `✓ ${count} 名分の回答コードを取り込みました！`;
+      });
+    }
+
+    // =========================================================================
+    // 10. INITIALIZATION
+    // =========================================================================
+    loadLocalState();
+    initEvents();
+    updateHeaderStats();
+    renderActiveModule();
+
+    // Show student name registration modal on first visit if name is empty
+    if (!studentState.name) {
+      const modal = document.getElementById("student-name-modal");
+      if (modal) {
+        modal.classList.remove("hidden");
+        modal.classList.add("flex");
+      }
+    }
+  })();
   </script>
 </body>
 </html>

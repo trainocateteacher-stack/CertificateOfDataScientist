@@ -1,415 +1,115 @@
+/* SQL Lab：sql.js（ブラウザで動く SQLite）で、入力した SQL をそのまま実行する。部品は assets/sqldb.js。 */
 (function () {
   const $ = (s) => document.querySelector(s);
-  const parkTables = { wait_times: [], survey: [], daily_ops: [] };
-  const DEFAULT_SQL = "SELECT category, AVG(wait_time_min) FROM wait_times GROUP BY category";
-
-  // Textbook p.153-157 students & club sample tables
-  const INITIAL_STUDENTS = [
-    { student_id: 101, l_name: "Suzuki", f_name: "Ichiro", birth_date: "2001/10/03", pref: "Osaka", height: 172.5, club_id: 30 },
-    { student_id: 102, l_name: "Takahashi", f_name: "Jiro", birth_date: "1995/06/10", pref: "Hyogo", height: 181.7, club_id: 20 },
-    { student_id: 103, l_name: "Tanaka", f_name: "Akiko", birth_date: "1997/02/19", pref: "Osaka", height: 161.8, club_id: 20 },
-    { student_id: 104, l_name: "Yamamoto", f_name: "Hikari", birth_date: "1996/05/08", pref: "Nara", height: 148.2, club_id: 10 },
-    { student_id: 105, l_name: "Ito", f_name: "Hiroshi", birth_date: "1995/09/10", pref: "Kyoto", height: 165.1, club_id: 20 },
-    { student_id: 106, l_name: "Suzuki", f_name: "Akiko", birth_date: "1996/05/01", pref: "Hyogo", height: 171.8, club_id: 30 },
-    { student_id: 107, l_name: "Tanaka", f_name: "Tsubasa", birth_date: "1997/03/31", pref: "Nara", height: 183.7, club_id: 10 },
-    { student_id: 108, l_name: "Kitajima", f_name: "Kota", birth_date: "1995/12/20", pref: "Osaka", height: 176.3, club_id: 20 },
-    { student_id: 109, l_name: "Suzuki", f_name: "Haruka", birth_date: "1996/10/10", pref: "Kyoto", height: 163.0, club_id: 10 }
-  ];
-  const INITIAL_CLUB = [
-    { club_id: 10, club_name: "Tennis" },
-    { club_id: 20, club_name: "Baseball" },
-    { club_id: 30, club_name: "Swimming" },
-    { club_id: 40, club_name: "Judo" }
-  ];
-  let studentsData = JSON.parse(JSON.stringify(INITIAL_STUDENTS));
-  let clubData = JSON.parse(JSON.stringify(INITIAL_CLUB));
-
-  const SCHEMA = [
-    { name: "wait_times", desc: "category, attraction, weather, wait_time_min（公式）, wait_standby_min（一般列）, satisfaction_1to5（出口ボタン評価）" },
-    { name: "survey", desc: "date, channel, age_group, companion, priority_pass, overall_sat, wait_sat" },
-    { name: "daily_ops", desc: "date, year, weather, park_visitors, food_sales_yen_total" },
-    { name: "students (p.153)", desc: "student_id, l_name, f_name, height, pref, club_id" },
-    { name: "club (p.153)", desc: "club_id, club_name" }
-  ];
+  const DEFAULT_SQL = "SELECT category, AVG(wait_time_min), COUNT(*)\nFROM wait_times\nWHERE downtime_flag = 0\nGROUP BY category\nORDER BY AVG(wait_time_min) DESC;";
   const PRESETS = [
-    {
-      label: "演習1: 6月の回答方法別の満足度",
-      sql: "SELECT channel, AVG(overall_sat), COUNT(*) FROM survey WHERE date >= '2026-06-01' GROUP BY channel"
-    },
-    {
-      label: "演習2: 優先パスの有無と待ち時間満足度",
-      sql: "SELECT priority_pass, AVG(wait_sat), COUNT(*) FROM survey WHERE date >= '2026-05-01' GROUP BY priority_pass"
-    },
-    {
-      label: "p.154 SELECT+WHERE (student_id=101)",
-      sql: "SELECT student_id, l_name, f_name, birth_date, pref, club_id FROM students WHERE student_id = 101;"
-    },
-    {
-      label: "p.155 WHERE比較 (height >= 180)",
-      sql: "SELECT student_id, l_name, f_name, height FROM students WHERE height >= 180;"
-    },
-    {
-      label: "p.156 ORDER BY整列 (height順)",
-      sql: "SELECT student_id, l_name, f_name, height FROM students ORDER BY height;"
-    },
-    {
-      label: "p.157 INSERT追加 (clubへ50:Football)",
-      sql: "INSERT INTO club (club_id, club_name) VALUES (50, 'Football');"
-    },
-    {
-      label: "p.157 UPDATE更新 (club_id=50をSoccerに)",
-      sql: "UPDATE club SET club_name = 'Soccer' WHERE club_id = 50;"
-    }
+    { group: "案件の調査", label: "① 月別の満足度（2026年）", sql: "SELECT substr(date, 1, 7) AS month, ROUND(AVG(overall_sat), 2) AS avg_sat, COUNT(*) AS n\nFROM survey\nWHERE date >= '2026-04-01'\nGROUP BY month;" },
+    { group: "案件の調査", label: "② 6月の回答方法別", sql: "SELECT channel, ROUND(AVG(overall_sat), 2) AS avg_sat, COUNT(*) AS n\nFROM survey\nWHERE date >= '2026-06-01'\nGROUP BY channel;" },
+    { group: "案件の調査", label: "③ 月×年代の満足度", sql: "SELECT substr(date, 1, 7) AS month, age_group, ROUND(AVG(overall_sat), 2) AS avg_sat, COUNT(*) AS n\nFROM survey\nWHERE date >= '2026-04-01'\nGROUP BY month, age_group\nORDER BY age_group, month;" },
+    { group: "案件の調査", label: "④ 優先パスの有無と待ち時間満足度", sql: "SELECT priority_pass, ROUND(AVG(wait_sat), 2) AS avg_wait_sat, COUNT(*) AS n\nFROM survey\nWHERE date >= '2026-05-01'\nGROUP BY priority_pass;" },
+    { group: "案件の調査", label: "⑤ 公式と一般列の待ち時間（月別）", sql: "SELECT substr(date, 1, 7) AS month,\n       ROUND(AVG(wait_time_min), 1) AS official,\n       ROUND(AVG(wait_standby_min), 1) AS standby\nFROM wait_times\nWHERE downtime_flag = 0\nGROUP BY month;" },
+    { group: "案件の調査", label: "⑥ 天気と満足度（JOIN・前年比較）", sql: "SELECT d.year, d.weather, ROUND(AVG(s.overall_sat), 2) AS avg_sat, COUNT(*) AS n\nFROM survey s\nJOIN daily_ops d ON s.date = d.date\nGROUP BY d.year, d.weather\nORDER BY d.year, avg_sat DESC;" },
+    { group: "案件の調査", label: "⑦ 未回答（NULL）の数", sql: "SELECT channel, age_group, COUNT(*) AS n,\n       SUM(CASE WHEN overall_sat IS NULL THEN 1 ELSE 0 END) AS missing\nFROM survey\nGROUP BY channel, age_group\nORDER BY missing DESC;" },
+    { group: "スライド p.153-157", label: "p.154 SELECT + WHERE", sql: "SELECT student_id, l_name, f_name, birth_date, pref, club_id\nFROM students\nWHERE student_id = 101;" },
+    { group: "スライド p.153-157", label: "p.155 WHERE 比較", sql: "SELECT student_id, l_name, f_name, height\nFROM students\nWHERE height >= 180;" },
+    { group: "スライド p.153-157", label: "p.156 ORDER BY", sql: "SELECT student_id, l_name, f_name, height\nFROM students\nORDER BY height;" },
+    { group: "スライド p.153-157", label: "p.152 JOIN", sql: "SELECT s.student_id, s.l_name, c.club_name\nFROM students s\nJOIN club c ON s.club_id = c.club_id;" },
+    { group: "スライド p.153-157", label: "p.157 INSERT", sql: "INSERT INTO club (club_id, club_name) VALUES (50, 'Football');" },
+    { group: "スライド p.153-157", label: "p.157 UPDATE", sql: "UPDATE club SET club_name = 'Soccer' WHERE club_id = 50;" },
+    { group: "スライド p.153-157", label: "p.157 DELETE", sql: "DELETE FROM club WHERE club_id = 50;" },
   ];
-  function parseCSV(text) {
-    const lines = text.replace(/^\uFEFF/, "").trim().split(/\r?\n/);
-    const cols = lines.shift().split(",");
-    return lines.map((line) => {
-      const cells = [];
-      let cur = "", q = false;
-      for (let i = 0; i < line.length; i++) {
-        const c = line[i];
-        if (c === '"') q = !q;
-        else if (c === "," && !q) {
-          cells.push(cur);
-          cur = "";
-        } else cur += c;
-      }
-      cells.push(cur);
-      const obj = {};
-      cols.forEach((k, i) => (obj[k] = cells[i] ?? ""));
-      return obj;
+
+  let ctx = null; // { SQL, park, db }
+
+  function setStage(text, isError) {
+    const el = $("#stage");
+    el.textContent = text;
+    el.classList.toggle("sql-error", !!isError);
+  }
+
+  function renderFields() {
+    const tables = ["wait_times", "survey", "daily_ops", "students", "club"];
+    $("#fields").innerHTML = tables.map((t) => {
+      const cols = ctx.db.exec(`PRAGMA table_info("${t}")`)[0].values.map((r) => r[1]);
+      const n = ctx.db.exec(`SELECT COUNT(*) FROM "${t}"`)[0].values[0][0];
+      return `<div class="field" data-col="${t}" title="クリックで SQL に挿入"><strong>${t}</strong><small>${n.toLocaleString()}行</small></div>`
+        + `<div class="field-cols">${cols.map((c) => `<span class="field" data-col="${c}" title="クリックで SQL に挿入">${c}</span>`).join("")}</div>`;
+    }).join("");
+    $("#fields").querySelectorAll(".field").forEach((el) => {
+      el.onclick = () => {
+        const ta = $("#sql");
+        const start = ta.selectionStart ?? ta.value.length, end = ta.selectionEnd ?? ta.value.length;
+        ta.value = ta.value.slice(0, start) + el.dataset.col + ta.value.slice(end);
+        ta.focus();
+        ta.selectionStart = ta.selectionEnd = start + el.dataset.col.length;
+      };
     });
   }
 
-  function toNum(v) {
-    if (v === "" || v === null || v === undefined) return NaN;
-    const n = Number(v);
-    return Number.isFinite(n) ? n : NaN;
-  }
-
-  function getTableData(tableName) {
-    const t = tableName.toLowerCase();
-    if (parkTables[t]) return parkTables[t];
-    if (t === "students") return studentsData;
-    if (t === "club") return clubData;
-    throw new Error(`テーブル '${tableName}' は存在しません（wait_times, survey, daily_ops, students, club が利用可能です）`);
-  }
-
-  function evalWhere(rows, whereClause) {
-    if (!whereClause) return rows;
-    const conds = whereClause.split(/\s+AND\s+/i);
-    return rows.filter((row) =>
-      conds.every((cond) => {
-        const m = cond.trim().match(/^([a-zA-Z0-9_]+)\s*(=|!=|<>|>=|<=|>|<)\s*(.+)$/);
-        if (!m) return true;
-        const col = m[1];
-        const op = m[2];
-        let valRaw = m[3].trim().replace(/^['"]|['"]$/g, "");
-        const rowVal = row[col];
-        const nRow = toNum(rowVal);
-        const nVal = toNum(valRaw);
-        const bothNum = Number.isFinite(nRow) && Number.isFinite(nVal);
-        const a = bothNum ? nRow : String(rowVal);
-        const b = bothNum ? nVal : String(valRaw);
-        if (op === "=") return a == b;
-        if (op === "!=" || op === "<>") return a != b;
-        if (op === ">=") return a >= b;
-        if (op === "<=") return a <= b;
-        if (op === ">") return a > b;
-        if (op === "<") return a < b;
-        return true;
-      })
-    );
-  }
-
-  function computeAgg(func, col, groupRows) {
-    const fn = func.toUpperCase();
-    if (fn === "COUNT") {
-      if (col === "*") return groupRows.length;
-      return groupRows.filter((r) => r[col] !== "" && r[col] !== undefined).length;
-    }
-    const nums = groupRows.map((r) => toNum(r[col])).filter(Number.isFinite);
-    if (!nums.length) return null;
-    if (fn === "AVG") return Number((nums.reduce((a, b) => a + b, 0) / nums.length).toFixed(2));
-    if (fn === "SUM") return Number(nums.reduce((a, b) => a + b, 0).toFixed(2));
-    if (fn === "MAX") return Math.max(...nums);
-    if (fn === "MIN") return Math.min(...nums);
-    return null;
-  }
-
-  function executeSQL(queryText) {
-    const q = queryText.replace(/;\s*$/, "").replace(/\s+/g, " ").trim();
-
-    // 1. Check INSERT INTO (Textbook p.157)
-    const insertMatch = q.match(/^INSERT\s+INTO\s+([a-zA-Z0-9_]+)\s*\((.+?)\)\s*VALUES\s*\((.+?)\)$/i);
-    if (insertMatch) {
-      const tblName = insertMatch[1];
-      const cols = insertMatch[2].split(",").map((c) => c.trim());
-      const vals = insertMatch[3].split(",").map((v) => v.trim().replace(/^['"]|['"]$/g, ""));
-      const target = getTableData(tblName);
-      const newObj = {};
-      cols.forEach((c, i) => {
-        const n = toNum(vals[i]);
-        newObj[c] = Number.isFinite(n) ? n : vals[i];
-      });
-      target.push(newObj);
-      return {
-        columns: Object.keys(target[0] || newObj),
-        rows: target,
-        totalCount: target.length,
-        message: `INSERT成功: ${tblName} テーブルに1件追加しました（p.157 データ追加）`
-      };
-    }
-
-    // 2. Check UPDATE (Textbook p.170)
-    const updateMatch = q.match(/^UPDATE\s+([a-zA-Z0-9_]+)\s+SET\s+([a-zA-Z0-9_]+)\s*=\s*(.+?)(?:\s+WHERE\s+(.+))?$/i);
-    if (updateMatch) {
-      const tblName = updateMatch[1];
-      const setCol = updateMatch[2].trim();
-      const setValRaw = updateMatch[3].trim().replace(/^['"]|['"]$/g, "");
-      const wherePart = updateMatch[4] ? updateMatch[4].trim() : null;
-      const target = getTableData(tblName);
-      const matched = evalWhere(target, wherePart);
-      matched.forEach((r) => {
-        const n = toNum(setValRaw);
-        r[setCol] = Number.isFinite(n) ? n : setValRaw;
-      });
-      return {
-        columns: Object.keys(target[0] || {}),
-        rows: target.slice(0, 100),
-        totalCount: target.length,
-        message: `UPDATE成功: ${tblName} テーブルの ${matched.length} 件を更新しました（p.170 データ更新）`
-      };
-    }
-
-    // 3. Check DELETE
-    const deleteMatch = q.match(/^DELETE\s+FROM\s+([a-zA-Z0-9_]+)(?:\s+WHERE\s+(.+))?$/i);
-    if (deleteMatch) {
-      const tblName = deleteMatch[1];
-      const wherePart = deleteMatch[2] ? deleteMatch[2].trim() : null;
-      if (parkTables[tblName.toLowerCase()]) throw new Error(`${tblName} テーブルは読み取り専用です（削除の練習は club テーブルで行ってください）`);
-      const target = getTableData(tblName);
-      const toRemove = new Set(evalWhere(target, wherePart));
-      const kept = target.filter((r) => !toRemove.has(r));
-      if (tblName.toLowerCase() === "students") studentsData = kept;
-      else if (tblName.toLowerCase() === "club") clubData = kept;
-      return {
-        columns: Object.keys(kept[0] || {}),
-        rows: kept.slice(0, 100),
-        totalCount: kept.length,
-        message: `DELETE成功: ${toRemove.size} 件を削除しました`
-      };
-    }
-
-    // 4. SELECT
-    const selectMatch = q.match(/^SELECT\s+(.+?)\s+FROM\s+([a-zA-Z0-9_]+)(?:\s+WHERE\s+(.+?))?(?:\s+GROUP\s+BY\s+(.+?))?(?:\s+ORDER\s+BY\s+(.+?))?(?:\s+LIMIT\s+(\d+))?$/i);
-    if (!selectMatch) {
-      throw new Error("構文エラー: SELECT 列名 FROM テーブル名(wait_times / survey / daily_ops / students / club) [WHERE ...] [GROUP BY ...] [ORDER BY ...] の形式で入力してください。");
-    }
-
-    const selectPart = selectMatch[1].trim();
-    const tableName = selectMatch[2].trim();
-    const wherePart = selectMatch[3] ? selectMatch[3].trim() : null;
-    const groupPart = selectMatch[4] ? selectMatch[4].trim() : null;
-    const orderPart = selectMatch[5] ? selectMatch[5].trim() : null;
-    const limitNum = selectMatch[6] ? Number(selectMatch[6]) : 100;
-
-    const sourceRows = getTableData(tableName);
-    const filtered = evalWhere(sourceRows, wherePart);
-
-    const selectExprs = selectPart.split(",").map((s) => s.trim());
-    const hasAgg = selectExprs.some((expr) => /^(AVG|SUM|COUNT|MAX|MIN)\s*\(/i.test(expr));
-
-    let resultRows = [];
-    let columns = [];
-
-    if (groupPart || hasAgg) {
-      const groupCols = groupPart ? groupPart.split(",").map((s) => s.trim()) : [];
-      const groups = new Map();
-      filtered.forEach((r) => {
-        const key = groupCols.map((c) => r[c] ?? "NULL").join("||");
-        if (!groups.has(key)) groups.set(key, []);
-        groups.get(key).push(r);
-      });
-
-      let gIdx = 0;
-      groups.forEach((gRows) => {
-        const out = { __groupColor: `g${gIdx % 4}` };
-        gIdx++;
-        selectExprs.forEach((expr) => {
-          const aliasMatch = expr.match(/^(.+?)\s+AS\s+([a-zA-Z0-9_]+)$/i);
-          const rawExpr = aliasMatch ? aliasMatch[1].trim() : expr;
-          const label = aliasMatch ? aliasMatch[2].trim() : expr;
-          if (!columns.includes(label)) columns.push(label);
-
-          const aggMatch = rawExpr.match(/^(AVG|SUM|COUNT|MAX|MIN)\s*\(\s*([a-zA-Z0-9_*]+)\s*\)$/i);
-          if (aggMatch) {
-            out[label] = computeAgg(aggMatch[1], aggMatch[2], gRows);
-          } else {
-            out[label] = gRows[0] ? gRows[0][rawExpr] : "";
-          }
-        });
-        resultRows.push(out);
-      });
-    } else {
-      if (selectPart === "*") {
-        columns = Object.keys(sourceRows[0] || {});
-      } else {
-        columns = selectExprs.map((e) => {
-          const m = e.match(/^(.+?)\s+AS\s+([a-zA-Z0-9_]+)$/i);
-          return m ? m[2].trim() : e;
-        });
-      }
-      resultRows = filtered.map((r) => {
-        const out = {};
-        if (selectPart === "*") {
-          columns.forEach((c) => (out[c] = r[c]));
-        } else {
-          selectExprs.forEach((e) => {
-            const m = e.match(/^(.+?)\s+AS\s+([a-zA-Z0-9_]+)$/i);
-            const src = m ? m[1].trim() : e;
-            const dst = m ? m[2].trim() : e;
-            out[dst] = r[src];
-          });
-        }
-        return out;
-      });
-    }
-
-    if (orderPart) {
-      const om = orderPart.match(/^(.+?)(?:\s+(ASC|DESC))?$/i);
-      if (om) {
-        const col = om[1].trim();
-        const dir = om[2] && om[2].toUpperCase() === "DESC" ? -1 : 1;
-        resultRows.sort((a, b) => {
-          const va = a[col], vb = b[col];
-          const na = toNum(va), nb = toNum(vb);
-          if (Number.isFinite(na) && Number.isFinite(nb)) return (na - nb) * dir;
-          return String(va ?? "").localeCompare(String(vb ?? ""), "ja") * dir;
-        });
-      }
-    }
-
-    const totalCount = resultRows.length;
-    return {
-      columns,
-      rows: resultRows.slice(0, limitNum),
-      totalCount,
-      message: `${tableName} テーブル抽出結果`
-    };
-  }
-
-  function renderResult(res, stageTitle) {
-    if ($("#stage")) {
-      const msg = res.message || stageTitle;
-      $("#stage").textContent = `${msg} （該当 ${res.totalCount.toLocaleString()} 件中 ${res.rows.length.toLocaleString()} 件表示）`;
-    }
+  function runQuery() {
+    if (!ctx) return;
+    const res = ParkSQL.run(ctx.db, $("#sql").value);
     const tbl = $("#table");
-    if (!tbl) return;
-    if (!res.columns.length) {
-      tbl.innerHTML = "<tbody><tr><td>結果がありません</td></tr></tbody>";
+    if (!res.ok) {
+      setStage(`⚠️ ${res.hint}（エラー：${res.error}）`, true);
+      tbl.innerHTML = "";
       return;
     }
-    const thead = `<thead><tr>${res.columns.map((c) => `<th>${c}</th>`).join("")}</tr></thead>`;
-    const tbody = `<tbody>${res.rows
-      .map((r) => {
-        const cls = r.__groupColor || "";
-        return `<tr class="${cls}">${res.columns
-          .map((c) => `<td>${r[c] === null || r[c] === "" || r[c] === undefined ? "NULL" : r[c]}</td>`)
-          .join("")}</tr>`;
-      })
-      .join("")}</tbody>`;
-    tbl.innerHTML = thead + tbody;
-  }
-
-  function initUI() {
-    const fieldsEl = $("#fields");
-    if (fieldsEl) {
-      fieldsEl.innerHTML = SCHEMA.map(
-        (col) => `
-        <div class="field" data-col="${col.name.split(" ")[0].replace(/^theme_park\./, "")}" title="クリックしてSQLに挿入">
-          <strong>${col.name}</strong>
-          <small>${col.desc}</small>
-        </div>`
-      ).join("");
-
-      fieldsEl.querySelectorAll(".field").forEach((el) => {
-        el.onclick = () => {
-          const ta = $("#sql");
-          if (!ta) return;
-          const start = ta.selectionStart || ta.value.length;
-          const end = ta.selectionEnd || ta.value.length;
-          const col = el.dataset.col;
-          ta.value = ta.value.slice(0, start) + col + ta.value.slice(end);
-          ta.focus();
-        };
-      });
-    }
-
-    const ta = $("#sql");
-    if (ta && !document.querySelector(".sql-presets")) {
-      const presetWrap = document.createElement("div");
-      presetWrap.className = "sql-presets";
-      presetWrap.innerHTML = PRESETS.map(
-        (p, idx) => `<button type="button" data-idx="${idx}">${p.label}</button>`
-      ).join("");
-      ta.parentNode.insertBefore(presetWrap, ta);
-      presetWrap.querySelectorAll("button").forEach((btn) => {
-        btn.onclick = () => {
-          ta.value = PRESETS[Number(btn.dataset.idx)].sql;
-          runQuery();
-        };
-      });
-    }
-
-    const tbl = $("#table");
-    if (tbl && !tbl.parentElement.classList.contains("table-wrap")) {
-      const wrap = document.createElement("div");
-      wrap.className = "table-wrap";
-      tbl.parentNode.insertBefore(wrap, tbl);
-      wrap.appendChild(tbl);
+    const last = res.results[res.results.length - 1];
+    if (last) {
+      const shown = Math.min(200, last.values.length);
+      setStage(`✅ ${last.values.length.toLocaleString()} 行（${shown.toLocaleString()} 行を表示）`);
+      tbl.innerHTML = ParkSQL.toTableHTML(last, 200);
+    } else if (res.touched) {
+      const after = ctx.db.exec(`SELECT * FROM "${res.touched}" LIMIT 200`)[0];
+      setStage(`✅ ${res.touched} テーブルの ${res.changes} 行を変更しました。下は変更後の ${res.touched} テーブルです。`);
+      tbl.innerHTML = after ? ParkSQL.toTableHTML(after, 200) : "";
+      renderFields();
+    } else {
+      setStage("✅ 実行しました（表示する結果はありません）。");
+      tbl.innerHTML = "";
     }
   }
 
-  function runQuery() {
-    const ta = $("#sql");
-    if (!ta) return;
-    try {
-      const res = executeSQL(ta.value);
-      renderResult(res, "SQL実行結果");
-    } catch (err) {
-      if ($("#stage")) {
-        $("#stage").textContent = "⚠️ " + err.message;
-      }
-    }
-  }
-
-  if ($("#run")) $("#run").onclick = runQuery;
-  if ($("#reset")) {
-    $("#reset").onclick = () => {
-      studentsData = JSON.parse(JSON.stringify(INITIAL_STUDENTS));
-      clubData = JSON.parse(JSON.stringify(INITIAL_CLUB));
-      if ($("#sql")) $("#sql").value = DEFAULT_SQL;
-      const res = executeSQL("SELECT * FROM wait_times LIMIT 50");
-      renderResult(res, "wait_times 元データ (先頭50件プレビュー)");
-    };
+  function initPresets() {
+    const wrap = document.createElement("div");
+    wrap.className = "sql-presets";
+    let lastGroup = "";
+    wrap.innerHTML = PRESETS.map((p, i) => {
+      const head = p.group !== lastGroup ? `<span class="preset-group">${p.group}</span>` : "";
+      lastGroup = p.group;
+      return `${head}<button type="button" data-idx="${i}">${p.label}</button>`;
+    }).join("");
+    $("#sql").parentNode.insertBefore(wrap, $("#sql"));
+    wrap.querySelectorAll("button").forEach((b) => {
+      b.onclick = () => { $("#sql").value = PRESETS[Number(b.dataset.idx)].sql; runQuery(); };
+    });
   }
 
   async function init() {
-    initUI();
-    try {
-      const files = { wait_times: "data/wait_times_clean.csv", survey: "data/survey_clean.csv", daily_ops: "data/daily_ops.csv" };
-      await Promise.all(Object.entries(files).map(async ([name, url]) => {
-        const r = await fetch(url);
-        if (!r.ok) throw new Error(`${url} HTTP ${r.status}`);
-        parkTables[name] = parseCSV(await r.text());
-      }));
+    $("#sql").value = DEFAULT_SQL;
+    initPresets();
+    $("#run").onclick = runQuery;
+    $("#sql").addEventListener("keydown", (e) => {
+      if ((e.ctrlKey || e.metaKey) && e.key === "Enter") { e.preventDefault(); runQuery(); }
+    });
+    $("#reset").onclick = () => {
+      if (!ctx) return;
+      ctx.db.close();
+      ctx.db = ParkSQL.build(ctx.SQL, ctx.park);
+      $("#sql").value = DEFAULT_SQL;
+      renderFields();
       runQuery();
-    } catch (err) {
-      if ($("#stage")) $("#stage").textContent = "データの読み込みに失敗しました: " + err.message;
+      setStage("↺ すべてのテーブルを初期状態に戻しました。" + $("#stage").textContent);
+    };
+    setStage("SQL エンジンとデータを読み込んでいます…");
+    try {
+      ctx = await ParkSQL.open();
+      renderFields();
+      runQuery();
+    } catch (e) {
+      setStage("⚠️ 読み込みに失敗しました：" + e.message + "（このページはサーバー経由で開く必要があります）", true);
     }
   }
-
   init();
 })();

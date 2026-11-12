@@ -448,7 +448,8 @@
     MACO029G ビジネスパーソンのためのデータリテラシー入門 ～データサイエンティスト検定対応～ (MAC0029G-T1-03準拠)
   </footer>
 
-  <script src="assets/data.js"></script>
+  <script src="assets/data.js?v=4"></script>
+  <script src="assets/sqldb.js?v=4"></script>
   <script>
   (function () {
     "use strict";
@@ -468,28 +469,6 @@
       return true;
     }
 
-    // Textbook p.153 exact students & club tables
-    const INITIAL_STUDENTS = [
-      { student_id: 101, l_name: "Suzuki", f_name: "Ichiro", birth_date: "2001/10/03", pref: "Osaka", height: 172.5, club_id: 30 },
-      { student_id: 102, l_name: "Takahashi", f_name: "Jiro", birth_date: "1995/06/10", pref: "Hyogo", height: 181.7, club_id: 20 },
-      { student_id: 103, l_name: "Tanaka", f_name: "Akiko", birth_date: "1997/02/19", pref: "Osaka", height: 161.8, club_id: 20 },
-      { student_id: 104, l_name: "Yamamoto", f_name: "Hikari", birth_date: "1996/05/08", pref: "Nara", height: 148.2, club_id: 10 },
-      { student_id: 105, l_name: "Ito", f_name: "Hiroshi", birth_date: "1995/09/10", pref: "Kyoto", height: 165.1, club_id: 20 },
-      { student_id: 106, l_name: "Suzuki", f_name: "Akiko", birth_date: "1996/05/01", pref: "Hyogo", height: 171.8, club_id: 30 },
-      { student_id: 107, l_name: "Tanaka", f_name: "Tsubasa", birth_date: "1997/03/31", pref: "Nara", height: 183.7, club_id: 10 },
-      { student_id: 108, l_name: "Kitajima", f_name: "Kota", birth_date: "1995/12/20", pref: "Osaka", height: 176.3, club_id: 20 },
-      { student_id: 109, l_name: "Suzuki", f_name: "Haruka", birth_date: "1996/10/10", pref: "Kyoto", height: 163.0, club_id: 10 }
-    ];
-
-    const INITIAL_CLUB = [
-      { club_id: 10, club_name: "Tennis" },
-      { club_id: 20, club_name: "Baseball" },
-      { club_id: 30, club_name: "Swimming" },
-      { club_id: 40, club_name: "Judo" }
-    ];
-
-    let sqlStudents = JSON.parse(JSON.stringify(INITIAL_STUDENTS));
-    let sqlClub = JSON.parse(JSON.stringify(INITIAL_CLUB));
 
     // =========================================================================
     // 2. 6-PERIOD TIMETABLE & 12 MODULES (5-STEP FLOW)
@@ -2305,130 +2284,81 @@
         return;
       }
 
-      // ---- M11 Lab: SQL (wait_times + survey + students + club) & 5 Samplings ----
+      // ---- M11 Lab: SQL で集計し直す（sql.js＝ブラウザで動く SQLite）----
       if (m.labType === "m11_sql_and_sampling") {
+        const M11_PRESETS = [
+          ["① 6月の回答方法別の満足度", "SELECT channel, ROUND(AVG(overall_sat), 2) AS avg_sat, COUNT(*) AS n\nFROM survey\nWHERE date >= '2026-06-01'\nGROUP BY channel;", "sky"],
+          ["② 4月の回答者の年代構成", "SELECT age_group, COUNT(*) AS n,\n       ROUND(100.0 * COUNT(*) / (SELECT COUNT(*) FROM survey WHERE date LIKE '2026-04%'), 1) AS pct\nFROM survey\nWHERE date LIKE '2026-04%'\nGROUP BY age_group;", "sky"],
+          ["③ 6月の回答者の年代構成", "SELECT age_group, COUNT(*) AS n,\n       ROUND(100.0 * COUNT(*) / (SELECT COUNT(*) FROM survey WHERE date LIKE '2026-06%'), 1) AS pct\nFROM survey\nWHERE date LIKE '2026-06%'\nGROUP BY age_group;", "sky"],
+          ["p.154 SELECT + WHERE", "SELECT student_id, l_name, f_name, birth_date, pref, club_id\nFROM students\nWHERE student_id = 101;", "orange"],
+          ["p.155 WHERE 比較", "SELECT student_id, l_name, f_name, height\nFROM students\nWHERE height >= 180;", "orange"],
+          ["p.156 ORDER BY", "SELECT student_id, l_name, f_name, height\nFROM students\nORDER BY height;", "orange"],
+          ["p.157 INSERT", "INSERT INTO club (club_id, club_name) VALUES (50, 'Football');", "emerald"],
+          ["p.157 UPDATE", "UPDATE club SET club_name = 'Soccer' WHERE club_id = 50;", "emerald"],
+          ["p.157 DELETE", "DELETE FROM club WHERE club_id = 50;", "rose"],
+        ];
         box.innerHTML = `
           <div class="bg-sky-50/70 border border-sky-200 rounded-xl p-4 space-y-3">
             <div class="flex flex-wrap items-center justify-between gap-2">
-              <h4 class="text-sm font-extrabold text-slate-900">💻 演習：SQL で集計し直す（スライド p.153-157）</h4>
-              <span class="text-xs font-bold text-sky-800">ボタンを押すかSQLを編集して「SQL実行」を押してください</span>
+              <h4 class="text-sm font-extrabold text-slate-900">💻 演習：SQL で集計し直す（スライド p.152-157）</h4>
+              <span class="text-xs font-bold text-sky-800">ブラウザの中で本物の SQLite が動いています。自由に書き換えて実行できます</span>
             </div>
+            <p class="text-xs text-slate-600">テーブル：<code>wait_times</code>（待ち時間）・<code>survey</code>（アンケート）・<code>daily_ops</code>（日別運営）・<code>students</code>・<code>club</code>（スライド p.153）。②と③を比べて、次回アンケートの回答者をどう選べばよいか考えましょう。</p>
             <div class="flex flex-wrap gap-1.5 text-xs">
-              <button type="button" data-sql="SELECT channel, AVG(overall_sat), COUNT(*) FROM survey WHERE date >= '2026-06-01' GROUP BY channel;" class="m11-sql-preset px-2.5 py-1 rounded bg-white border border-sky-300 font-bold text-sky-900">① 6月の回答方法別の満足度</button>
-              <button type="button" data-sql="SELECT category, AVG(wait_time_min), COUNT(*) FROM wait_times GROUP BY category;" class="m11-sql-preset px-2.5 py-1 rounded bg-white border border-sky-300 font-bold text-sky-900">② 分類別の平均待ち時間</button>
-              <button type="button" data-sql="SELECT student_id, l_name, f_name, birth_date, pref, club_id FROM students WHERE student_id = 101;" class="m11-sql-preset px-2.5 py-1 rounded bg-orange-50 border border-orange-300 font-bold text-orange-900">③ p.154 SELECT+WHERE (101)</button>
-              <button type="button" data-sql="SELECT student_id, l_name, f_name, height FROM students WHERE height >= 180;" class="m11-sql-preset px-2.5 py-1 rounded bg-orange-50 border border-orange-300 font-bold text-orange-900">④ p.155 height >= 180</button>
-              <button type="button" data-sql="SELECT student_id, l_name, f_name, height FROM students ORDER BY height;" class="m11-sql-preset px-2.5 py-1 rounded bg-orange-50 border border-orange-300 font-bold text-orange-900">⑤ p.156 ORDER BY height</button>
-              <button type="button" data-sql="INSERT INTO club (club_id, club_name) VALUES (50, 'Football');" class="m11-sql-preset px-2.5 py-1 rounded bg-emerald-50 border border-emerald-300 font-bold text-emerald-900">⑥ p.157 INSERT (50:Football)</button>
-              <button type="button" data-sql="UPDATE club SET club_name = 'Soccer' WHERE club_id = 50;" class="m11-sql-preset px-2.5 py-1 rounded bg-emerald-50 border border-emerald-300 font-bold text-emerald-900">⑦ p.157 UPDATE (50➔Soccer)</button>
-              <button type="button" data-sql="DELETE FROM club WHERE club_id = 50;" class="m11-sql-preset px-2.5 py-1 rounded bg-rose-50 border border-rose-300 font-bold text-rose-900">⑧ p.157 DELETE (50削除)</button>
+              ${M11_PRESETS.map(([label, , color], i) => `<button type="button" data-idx="${i}" class="m11-sql-preset px-2.5 py-1 rounded bg-${color}-50 border border-${color}-300 font-bold text-${color}-900">${label}</button>`).join("")}
             </div>
-            <div class="flex gap-2">
-              <input id="m11-sql-input" type="text" value="SELECT category, AVG(wait_time_min), COUNT(*) FROM wait_times GROUP BY category;" class="flex-1 font-mono text-xs bg-slate-900 text-sky-200 px-3 py-2 rounded-lg border border-slate-700">
-              <button type="button" id="m11-sql-run" class="bg-[#1677a8] hover:bg-[#125e85] text-white text-xs font-extrabold px-4 py-2 rounded-lg shrink-0">▶ SQL実行</button>
+            <textarea id="m11-sql-input" rows="5" spellcheck="false" class="w-full font-mono text-xs bg-slate-900 text-sky-200 px-3 py-2 rounded-lg border border-slate-700">${M11_PRESETS[0][1]}</textarea>
+            <div class="flex flex-wrap items-center gap-2">
+              <button type="button" id="m11-sql-run" class="bg-[#1677a8] hover:bg-[#125e85] text-white text-xs font-extrabold px-4 py-2 rounded-lg">▶ SQL実行（Ctrl / ⌘ + Enter）</button>
+              <button type="button" id="m11-sql-reset" class="bg-slate-200 hover:bg-slate-300 text-slate-800 text-xs font-bold px-3 py-2 rounded-lg">初期状態にリセット</button>
+              <a href="sql.html" class="text-xs font-bold text-sky-700 underline">広い画面の SQL Lab で開く</a>
             </div>
-            <div id="m11-sql-status" class="text-xs font-bold text-slate-700"></div>
-            <div class="overflow-x-auto max-h-52 border border-slate-200 rounded-lg bg-white">
-              <table id="m11-sql-table" class="w-full text-xs text-left border-collapse"></table>
+            <div id="m11-sql-status" class="text-xs font-bold text-slate-700">SQL エンジンを読み込んでいます…</div>
+            <div class="overflow-x-auto max-h-60 border border-slate-200 rounded-lg bg-white">
+              <table id="m11-sql-table" class="w-full text-xs text-left border-collapse [&_th]:bg-slate-800 [&_th]:text-white [&_th]:p-2 [&_th]:sticky [&_th]:top-0 [&_td]:p-2 [&_td]:border-b [&_td]:border-slate-200"></table>
             </div>
           </div>
-          ${renderLabSaveBox(m, "実行したSQL文と結果のメモ", "")}
+          ${renderLabSaveBox(m, "", "")}
         `;
 
+        const stEl = document.getElementById("m11-sql-status");
+        const tblEl = document.getElementById("m11-sql-table");
+        const inputEl = document.getElementById("m11-sql-input");
+        let sqlCtx = null;
         const runM11Sql = () => {
-          const rawQ = document.getElementById("m11-sql-input").value.trim().replace(/;\s*$/, "");
-          const stEl = document.getElementById("m11-sql-status");
-          const tblEl = document.getElementById("m11-sql-table");
-
-          try {
-            // INSERT INTO club
-            if (/^INSERT\s+INTO\s+club/i.test(rawQ)) {
-              if (!sqlClub.some((c) => c.club_id === 50)) {
-                sqlClub.push({ club_id: 50, club_name: "Football" });
-              }
-              stEl.textContent = "✅ p.157 INSERT成功：club テーブルに (50, 'Football') を追加しました！";
-              renderSimpleTable(tblEl, ["club_id", "club_name"], sqlClub);
-              return;
-            }
-            // UPDATE club
-            if (/^UPDATE\s+club/i.test(rawQ)) {
-              const target = sqlClub.find((c) => c.club_id === 50);
-              if (target) target.club_name = "Soccer";
-              else sqlClub.push({ club_id: 50, club_name: "Soccer" });
-              stEl.textContent = "✅ p.157 UPDATE成功：club_id = 50 の club_name を 'Soccer' に更新しました！";
-              renderSimpleTable(tblEl, ["club_id", "club_name"], sqlClub);
-              return;
-            }
-            // DELETE FROM club
-            if (/^DELETE\s+FROM\s+club/i.test(rawQ)) {
-              sqlClub = sqlClub.filter((c) => c.club_id !== 50);
-              stEl.textContent = "✅ p.157 DELETE成功：club_id = 50 のレコードを削除しました！";
-              renderSimpleTable(tblEl, ["club_id", "club_name"], sqlClub);
-              return;
-            }
-
-            // SELECT queries
-            if (/FROM\s+students/i.test(rawQ)) {
-              let rows = [...sqlStudents];
-              if (/student_id\s*=\s*101/i.test(rawQ)) {
-                rows = rows.filter((r) => r.student_id === 101);
-                stEl.textContent = "✅ p.154 実行結果：WHERE student_id = 101 で1件抽出しました。";
-                renderSimpleTable(tblEl, ["student_id", "l_name", "f_name", "birth_date", "pref", "club_id"], rows);
-              } else if (/height\s*>=\s*180/i.test(rawQ)) {
-                rows = rows.filter((r) => r.height >= 180);
-                stEl.textContent = "✅ p.155 実行結果：WHERE height >= 180 で2名（Takahashi 181.7cm, Tanaka 183.7cm）抽出しました。";
-                renderSimpleTable(tblEl, ["student_id", "l_name", "f_name", "height"], rows);
-              } else if (/ORDER\s+BY\s+height/i.test(rawQ)) {
-                rows.sort((a, b) => a.height - b.height);
-                stEl.textContent = "✅ p.156 実行結果：ORDER BY height で身長の低い順（Yamamoto 148.2cm〜）に整列しました。";
-                renderSimpleTable(tblEl, ["student_id", "l_name", "f_name", "height"], rows);
-              } else {
-                stEl.textContent = "✅ students テーブル全件表示（p.153）";
-                renderSimpleTable(tblEl, ["student_id", "l_name", "f_name", "birth_date", "pref", "height", "club_id"], rows);
-              }
-              return;
-            }
-
-            if (/FROM\s+club/i.test(rawQ)) {
-              stEl.textContent = "✅ club テーブル表示（p.153, p.157）";
-              renderSimpleTable(tblEl, ["club_id", "club_name"], sqlClub);
-              return;
-            }
-
-            if (/FROM\s+survey/i.test(rawQ) && /GROUP\s+BY\s+channel/i.test(rawQ)) {
-              const rows = PARK.survey_clean.filter((r) => !/WHERE/i.test(rawQ) || r.date >= "2026-06-01");
-              const out = [...ParkData.groupBy(rows, (r) => r.channel)].map(([k, v]) => ({ channel: k, "AVG(overall_sat)": ParkData.fmt(ParkData.mean(v.map((r) => r.overall_sat)), 2), "COUNT(*)": v.length }));
-              stEl.textContent = "✅ survey 集計結果（GROUP BY channel）";
-              renderSimpleTable(tblEl, ["channel", "AVG(overall_sat)", "COUNT(*)"], out);
-            } else if (/FROM\s+wait_times/i.test(rawQ) && /GROUP\s+BY\s+category/i.test(rawQ)) {
-              const rows = PARK.wait_times_clean.filter((r) => r.downtime_flag === 0);
-              const out = [...ParkData.groupBy(rows, (r) => r.category)].map(([k, v]) => ({ category: k, "AVG(wait_time_min)": ParkData.fmt(ParkData.mean(v.map((r) => r.wait_time_min))), "COUNT(*)": v.length }));
-              stEl.textContent = "✅ wait_times 集計結果（GROUP BY category）";
-              renderSimpleTable(tblEl, ["category", "AVG(wait_time_min)", "COUNT(*)"], out);
-            } else {
-              stEl.textContent = "ℹ️ この画面では、上のボタンの SQL だけが実行できます。自由な SQL は「SQL Lab」ページで試してください。";
-              renderSimpleTable(tblEl, ["table", "rows"], [{ table: "wait_times", rows: PARK.wait_times_clean.length }, { table: "survey", rows: PARK.survey_clean.length }, { table: "daily_ops", rows: PARK.daily_ops.length }]);
-            }
-          } catch (e) {
-            stEl.textContent = "⚠️ SQLを確認してください: " + e.message;
+          if (!sqlCtx) return;
+          const res = ParkSQL.run(sqlCtx.db, inputEl.value);
+          if (!res.ok) {
+            stEl.innerHTML = `<span class="text-rose-700">⚠️ ${res.hint}（エラー：${res.error.replace(/</g, "&lt;")}）</span>`;
+            tblEl.innerHTML = "";
+            return;
+          }
+          const last = res.results[res.results.length - 1];
+          if (last) {
+            stEl.textContent = `✅ ${last.values.length.toLocaleString()} 行`;
+            tblEl.innerHTML = ParkSQL.toTableHTML(last, 200);
+          } else if (res.touched) {
+            const after = sqlCtx.db.exec(`SELECT * FROM "${res.touched}" LIMIT 200`)[0];
+            stEl.textContent = `✅ ${res.touched} テーブルの ${res.changes} 行を変更しました（下は変更後の ${res.touched}）`;
+            tblEl.innerHTML = after ? ParkSQL.toTableHTML(after, 200) : "";
+          } else {
+            stEl.textContent = "✅ 実行しました";
+            tblEl.innerHTML = "";
           }
         };
-
-        function renderSimpleTable(tbl, cols, rows) {
-          tbl.innerHTML = `
-            <thead class="bg-slate-800 text-white"><tr>${cols.map((c) => `<th class="p-2 border border-slate-700">${c}</th>`).join("")}</tr></thead>
-            <tbody>${rows.map((r) => `<tr class="even:bg-slate-50">${cols.map((c) => `<td class="p-2 border border-slate-200">${r[c] ?? ""}</td>`).join("")}</tr>`).join("")}</tbody>
-          `;
-        }
-
         box.querySelectorAll(".m11-sql-preset").forEach((btn) => {
-          btn.addEventListener("click", () => {
-            document.getElementById("m11-sql-input").value = btn.dataset.sql;
-            runM11Sql();
-          });
+          btn.addEventListener("click", () => { inputEl.value = M11_PRESETS[Number(btn.dataset.idx)][1]; runM11Sql(); });
         });
         document.getElementById("m11-sql-run").addEventListener("click", runM11Sql);
-        runM11Sql();
+        inputEl.addEventListener("keydown", (e) => { if ((e.ctrlKey || e.metaKey) && e.key === "Enter") { e.preventDefault(); runM11Sql(); } });
+        document.getElementById("m11-sql-reset").addEventListener("click", () => {
+          if (!sqlCtx) return;
+          sqlCtx.db.close();
+          sqlCtx.db = ParkSQL.build(sqlCtx.SQL, sqlCtx.park);
+          runM11Sql();
+        });
+        ParkSQL.open(PARK).then((c) => { sqlCtx = c; runM11Sql(); })
+          .catch((e) => { stEl.textContent = "⚠️ SQL エンジンを読み込めませんでした：" + e.message; });
         wireLabSaveBox(m, () => "回答方法（紙・アプリ）と年代で層に分け、2026年4月の構成比に合わせて各層から抽出する（層化抽出）。");
         return;
       }

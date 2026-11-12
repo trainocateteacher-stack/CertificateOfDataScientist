@@ -29,6 +29,11 @@
 | `daily_ops.csv` | 日別の運営記録（180行） |
 | `theme_park_training_data.xlsx` | 上の5つの表、データ辞書、演習ガイド |
 
+## SQL
+`sql.html` とトップページ Module 11 では、[sql.js](https://github.com/sql-js/sql.js)（SQLite を WebAssembly でブラウザ上に動かすライブラリ、MIT ライセンス）を使って、入力した SQL をそのまま実行します。
+sql.js 1.14.2 の本体は `assets/vendor/sql.js-1.14.2/` に同梱しているため、外部の CDN には接続しません。
+テーブル：`wait_times`（= wait_times_clean）、`survey`（= survey_clean）、`daily_ops`、`students`・`club`（テキスト p.153）。
+
 サイトは CSV を読み込むため、ファイルを直接開く（file://）と動きません。公開サイトか、`python3 -m http.server` などのローカルサーバーで開いてください。
 
 ## Cloudflare Pages
@@ -43,4 +48,4 @@
 | V1 | 初期版。1ページ型の受講者サイト |
 | V2 | 複数ページ化、Excel風UI、テキスト連動問題、SQL Labを追加 |
 | V3 | 上の「V3 の主な変更点」を参照 |
-| **V4** | **データを1本化（待ち時間・アンケート・日別運営）し、「満足度低下の調査」という案件の物語で12モジュールを再構成** |
+| **V4** | **データを1本化（待ち時間・アンケート・日別運営）し、「満足度低下の調査」という案件の物語で12モジュールを再構成。SQL を sql.js（本物の SQLite）に置き換え** |

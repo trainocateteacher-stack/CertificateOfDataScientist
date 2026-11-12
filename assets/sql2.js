@@ -1,47 +1,44 @@
 (function () {
   const $ = (s) => document.querySelector(s);
-  let themeParkData = [];
-  const DEFAULT_SQL = "SELECT area, AVG(wait_time_min) FROM theme_park GROUP BY area";
+  const parkTables = { wait_times: [], survey: [], daily_ops: [] };
+  const DEFAULT_SQL = "SELECT category, AVG(wait_time_min) FROM wait_times GROUP BY category";
 
   // Textbook p.153-157 students & club sample tables
   const INITIAL_STUDENTS = [
-    { student_id: 101, l_name: "佐藤", f_name: "翔太", birth_date: "2005-04-12", pref: "東京都", height: 175, club_id: 10 },
-    { student_id: 102, l_name: "鈴木", f_name: "陽菜", birth_date: "2005-08-23", pref: "神奈川県", height: 162, club_id: 20 },
-    { student_id: 103, l_name: "高橋", f_name: "健太", birth_date: "2005-11-05", pref: "埼玉県", height: 182, club_id: 10 },
-    { student_id: 104, l_name: "田中", f_name: "美咲", birth_date: "2006-01-19", pref: "千葉県", height: 158, club_id: 30 },
-    { student_id: 105, l_name: "伊藤", f_name: "大輔", birth_date: "2005-06-30", pref: "東京都", height: 185, club_id: 40 },
-    { student_id: 106, l_name: "渡辺", f_name: "結衣", birth_date: "2005-12-14", pref: "神奈川県", height: 165, club_id: 20 }
+    { student_id: 101, l_name: "Suzuki", f_name: "Ichiro", birth_date: "2001/10/03", pref: "Osaka", height: 172.5, club_id: 30 },
+    { student_id: 102, l_name: "Takahashi", f_name: "Jiro", birth_date: "1995/06/10", pref: "Hyogo", height: 181.7, club_id: 20 },
+    { student_id: 103, l_name: "Tanaka", f_name: "Akiko", birth_date: "1997/02/19", pref: "Osaka", height: 161.8, club_id: 20 },
+    { student_id: 104, l_name: "Yamamoto", f_name: "Hikari", birth_date: "1996/05/08", pref: "Nara", height: 148.2, club_id: 10 },
+    { student_id: 105, l_name: "Ito", f_name: "Hiroshi", birth_date: "1995/09/10", pref: "Kyoto", height: 165.1, club_id: 20 },
+    { student_id: 106, l_name: "Suzuki", f_name: "Akiko", birth_date: "1996/05/01", pref: "Hyogo", height: 171.8, club_id: 30 },
+    { student_id: 107, l_name: "Tanaka", f_name: "Tsubasa", birth_date: "1997/03/31", pref: "Nara", height: 183.7, club_id: 10 },
+    { student_id: 108, l_name: "Kitajima", f_name: "Kota", birth_date: "1995/12/20", pref: "Osaka", height: 176.3, club_id: 20 },
+    { student_id: 109, l_name: "Suzuki", f_name: "Haruka", birth_date: "1996/10/10", pref: "Kyoto", height: 163.0, club_id: 10 }
   ];
-
   const INITIAL_CLUB = [
-    { club_id: 10, club_name: "Basketball" },
-    { club_id: 20, club_name: "Tennis" },
-    { club_id: 30, club_name: "BrassBand" },
-    { club_id: 40, club_name: "Baseball" }
+    { club_id: 10, club_name: "Tennis" },
+    { club_id: 20, club_name: "Baseball" },
+    { club_id: 30, club_name: "Swimming" },
+    { club_id: 40, club_name: "Judo" }
   ];
-
   let studentsData = JSON.parse(JSON.stringify(INITIAL_STUDENTS));
   let clubData = JSON.parse(JSON.stringify(INITIAL_CLUB));
 
   const SCHEMA = [
-    { name: "theme_park.area", desc: "エリア/分類 (categoryと同義)" },
-    { name: "theme_park.attraction", desc: "アトラクション名" },
-    { name: "theme_park.weather", desc: "天気 (sunny/cloudy/rainy)" },
-    { name: "theme_park.wait_time_min", desc: "待ち時間・分 (数値)" },
-    { name: "theme_park.park_visitors", desc: "来園者数 (数値)" },
-    { name: "theme_park.satisfaction_1to5", desc: "満足度 (1.0〜5.0)" },
-    { name: "students (p.154)", desc: "student_id, l_name, f_name, height, pref, club_id" },
-    { name: "club (p.157)", desc: "club_id, club_name" }
+    { name: "wait_times", desc: "category, attraction, weather, wait_time_min（公式）, wait_standby_min（一般列）, satisfaction_1to5（出口ボタン評価）" },
+    { name: "survey", desc: "date, channel, age_group, companion, priority_pass, overall_sat, wait_sat" },
+    { name: "daily_ops", desc: "date, year, weather, park_visitors, food_sales_yen_total" },
+    { name: "students (p.153)", desc: "student_id, l_name, f_name, height, pref, club_id" },
+    { name: "club (p.153)", desc: "club_id, club_name" }
   ];
-
   const PRESETS = [
     {
-      label: "演習1: エリア別の平均待ち時間",
-      sql: "SELECT area, AVG(wait_time_min), COUNT(*) FROM theme_park GROUP BY area"
+      label: "演習1: 6月の回答方法別の満足度",
+      sql: "SELECT channel, AVG(overall_sat), COUNT(*) FROM survey WHERE date >= '2026-06-01' GROUP BY channel"
     },
     {
-      label: "演習2: 雨の日のアトラクション別平均",
-      sql: "SELECT attraction, AVG(wait_time_min) FROM theme_park WHERE weather = 'rainy' GROUP BY attraction ORDER BY AVG(wait_time_min) DESC"
+      label: "演習2: 優先パスの有無と待ち時間満足度",
+      sql: "SELECT priority_pass, AVG(wait_sat), COUNT(*) FROM survey WHERE date >= '2026-05-01' GROUP BY priority_pass"
     },
     {
       label: "p.154 SELECT+WHERE (student_id=101)",
@@ -60,11 +57,10 @@
       sql: "INSERT INTO club (club_id, club_name) VALUES (50, 'Football');"
     },
     {
-      label: "p.170 UPDATE更新 (student_id=101の身長変更)",
-      sql: "UPDATE students SET height = 178 WHERE student_id = 101;"
+      label: "p.157 UPDATE更新 (club_id=50をSoccerに)",
+      sql: "UPDATE club SET club_name = 'Soccer' WHERE club_id = 50;"
     }
   ];
-
   function parseCSV(text) {
     const lines = text.replace(/^\uFEFF/, "").trim().split(/\r?\n/);
     const cols = lines.shift().split(",");
@@ -82,7 +78,6 @@
       cells.push(cur);
       const obj = {};
       cols.forEach((k, i) => (obj[k] = cells[i] ?? ""));
-      if (!obj.area && obj.category) obj.area = obj.category;
       return obj;
     });
   }
@@ -95,10 +90,10 @@
 
   function getTableData(tableName) {
     const t = tableName.toLowerCase();
-    if (t === "theme_park") return themeParkData;
+    if (parkTables[t]) return parkTables[t];
     if (t === "students") return studentsData;
     if (t === "club") return clubData;
-    throw new Error(`テーブル '${tableName}' は存在しません（theme_park, students, club が利用可能です）`);
+    throw new Error(`テーブル '${tableName}' は存在しません（wait_times, survey, daily_ops, students, club が利用可能です）`);
   }
 
   function evalWhere(rows, whereClause) {
@@ -193,6 +188,7 @@
     if (deleteMatch) {
       const tblName = deleteMatch[1];
       const wherePart = deleteMatch[2] ? deleteMatch[2].trim() : null;
+      if (parkTables[tblName.toLowerCase()]) throw new Error(`${tblName} テーブルは読み取り専用です（削除の練習は club テーブルで行ってください）`);
       const target = getTableData(tblName);
       const toRemove = new Set(evalWhere(target, wherePart));
       const kept = target.filter((r) => !toRemove.has(r));
@@ -209,7 +205,7 @@
     // 4. SELECT
     const selectMatch = q.match(/^SELECT\s+(.+?)\s+FROM\s+([a-zA-Z0-9_]+)(?:\s+WHERE\s+(.+?))?(?:\s+GROUP\s+BY\s+(.+?))?(?:\s+ORDER\s+BY\s+(.+?))?(?:\s+LIMIT\s+(\d+))?$/i);
     if (!selectMatch) {
-      throw new Error("構文エラー: SELECT 列名 FROM テーブル名(theme_park / students / club) [WHERE ...] [GROUP BY ...] [ORDER BY ...] の形式で入力してください。");
+      throw new Error("構文エラー: SELECT 列名 FROM テーブル名(wait_times / survey / daily_ops / students / club) [WHERE ...] [GROUP BY ...] [ORDER BY ...] の形式で入力してください。");
     }
 
     const selectPart = selectMatch[1].trim();
@@ -395,17 +391,20 @@
       studentsData = JSON.parse(JSON.stringify(INITIAL_STUDENTS));
       clubData = JSON.parse(JSON.stringify(INITIAL_CLUB));
       if ($("#sql")) $("#sql").value = DEFAULT_SQL;
-      const res = executeSQL("SELECT * FROM theme_park LIMIT 50");
-      renderResult(res, "theme_park 元データ (先頭50件プレビュー)");
+      const res = executeSQL("SELECT * FROM wait_times LIMIT 50");
+      renderResult(res, "wait_times 元データ (先頭50件プレビュー)");
     };
   }
 
   async function init() {
     initUI();
     try {
-      const r = await fetch("data/theme_park_wait_times_raw.csv");
-      if (!r.ok) throw new Error(`HTTP ${r.status}`);
-      themeParkData = parseCSV(await r.text());
+      const files = { wait_times: "data/wait_times_clean.csv", survey: "data/survey_clean.csv", daily_ops: "data/daily_ops.csv" };
+      await Promise.all(Object.entries(files).map(async ([name, url]) => {
+        const r = await fetch(url);
+        if (!r.ok) throw new Error(`${url} HTTP ${r.status}`);
+        parkTables[name] = parseCSV(await r.text());
+      }));
       runQuery();
     } catch (err) {
       if ($("#stage")) $("#stage").textContent = "データの読み込みに失敗しました: " + err.message;

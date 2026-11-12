@@ -41,7 +41,7 @@
       </div>
       <pre id="code1">import pandas as pd
 
-df = pd.read_csv("data/theme_park_wait_times_raw.csv")
+df = pd.read_csv("data/wait_times_raw.csv")
 print(df["wait_time_min"].describe())
 print(df.isna().sum())</pre>
     </section>
@@ -75,25 +75,25 @@ print(df.isna().sum())</pre>
           <tbody>
             <tr>
               <td><strong>データ件数</strong></td>
-              <td><code>=COUNT(G2:G1126)</code></td>
+              <td><code>=COUNT(N2:N3601)</code></td>
               <td><code>COUNT(wait_time_min)</code></td>
               <td><code>df["wait_time_min"].count()</code></td>
             </tr>
             <tr>
               <td><strong>合計値</strong></td>
-              <td><code>=SUM(G2:G1126)</code></td>
+              <td><code>=SUM(N2:N3601)</code></td>
               <td><code>SUM(wait_time_min)</code></td>
               <td><code>df["wait_time_min"].sum()</code></td>
             </tr>
             <tr>
               <td><strong>平均値（算術平均）</strong></td>
-              <td><code>=AVERAGE(G2:G1126)</code></td>
+              <td><code>=AVERAGE(N2:N3601)</code></td>
               <td><code>AVG(wait_time_min)</code></td>
               <td><code>df["wait_time_min"].mean()</code></td>
             </tr>
             <tr>
               <td><strong>中央値（メディアン）</strong></td>
-              <td><code>=MEDIAN(G2:G1126)</code></td>
+              <td><code>=MEDIAN(N2:N3601)</code></td>
               <td><code>PERCENTILE_CONT(0.5)</code></td>
               <td><code>df["wait_time_min"].median()</code></td>
             </tr>
@@ -186,7 +186,7 @@ print(df.isna().sum())</pre>
 
       async function initSim() {
         try {
-          const r = await fetch("data/theme_park_wait_times_raw.csv");
+          const r = await fetch("data/wait_times_raw.csv");
           if (!r.ok) throw new Error(r.status);
           const text = await r.text();
           const lines = text.replace(/^\uFEFF/, "").trim().split(/\r?\n/);

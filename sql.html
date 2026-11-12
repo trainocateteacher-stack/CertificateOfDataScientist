@@ -10,7 +10,7 @@
 <body>
   <header>
     <b>第5章 p.152-158 / p.170 連動</b>
-    <h1>SQL Lab（ブラウザで動く簡易SQL演習：theme_park / students / club 対応）</h1>
+    <h1>SQL Lab（ブラウザで動く簡易SQL演習：wait_times / survey / daily_ops / students / club 対応）</h1>
     <nav>
       <a href="index.html">ホーム</a>
       <a href="workbook.html">Excel風操作 (第3・4章)</a>
@@ -22,8 +22,8 @@
   <main>
     <section class="panel">
       <h2>SQL実行（SELECT / WHERE / ORDER BY / GROUP BY / INSERT / UPDATE 対応）</h2>
-      <p style="margin-top:0;font-size:13px;color:var(--muted);">共通題材 <code>theme_park</code> に加え、テキスト p.153-157 の <code>students</code> テーブル・<code>club</code> テーブルのSQL実行例もワンクリックで試せます。</p>
-      <textarea id="sql" rows="5">SELECT area, AVG(wait_time_min) FROM theme_park GROUP BY area</textarea>
+      <p style="margin-top:0;font-size:13px;color:var(--muted);">テーマパークの <code>wait_times</code>・<code>survey</code>・<code>daily_ops</code> に加え、テキスト p.153-157 の <code>students</code> テーブル・<code>club</code> テーブルのSQL実行例もワンクリックで試せます。</p>
+      <textarea id="sql" rows="5">SELECT category, AVG(wait_time_min) FROM wait_times GROUP BY category</textarea>
       <div>
         <button id="run" type="button">▶ SQLを実行</button>
         <button id="reset" type="button" class="secondary">初期状態にリセット</button>

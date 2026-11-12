@@ -20,9 +20,10 @@
     </nav>
   </header>
   <div class="toolbar">
-    <button id="btn-raw" type="button" class="active">theme_park_raw</button>
-    <button id="btn-cleaned" type="button">theme_park_cleaned</button>
-    <button id="btn-q3" type="button">問3: フィルタ(ファミリー/ファンタジー)</button>
+    <button id="btn-raw" type="button" class="active">wait_times_raw</button>
+    <button id="btn-cleaned" type="button">wait_times_clean</button>
+    <button id="btn-survey" type="button">survey_raw（アンケート）</button>
+    <button id="btn-q3" type="button">問3: フィルタ(family / kids)</button>
     <button id="btn-q4" type="button">問4: ソート(待機時間・外れ値確認)</button>
     <button id="btn-q5" type="button">問5: 異常値・欠損除外 (p.91)</button>
     <button id="btn-reset" type="button" class="secondary">初期表示</button>
@@ -36,7 +37,7 @@
     <table id="tbl"></table>
   </div>
   <div class="bottom">
-    <div><b>theme_park_raw / cleaned</b> | テキスト p.73-91 : データ確認(チェックリスト) → 理解(ヒストグラム・クロス集計・箱ひげ) → 加工(外れ値除外・標準化)</div>
+    <div><b>wait_times / survey</b> | テキスト p.73-91 : データ確認(チェックリスト) → 理解(ヒストグラム・クロス集計・箱ひげ) → 加工(外れ値除外・標準化)</div>
     <span id="status">データを読み込んでいます...</span>
   </div>
   <script src="assets/excel.js" defer></script>

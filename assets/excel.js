@@ -21,13 +21,28 @@
     event_flag: "イベント",
     park_visitors: "来園者数",
     attraction: "アトラクション",
-    category: "エリア/分類",
+    category: "分類",
     hour: "時間帯(時)",
     capacity_per_hour: "時間定員",
-    wait_time_min: "待ち時間(分)",
+    wait_time_min: "公式待ち時間(分)",
     downtime_flag: "休止フラグ",
-    satisfaction_1to5: "満足度(1-5)",
-    food_sales_yen: "飲食売上(円)"
+    wait_standby_min: "一般列(分)",
+    priority_riders_pct: "優先パス利用(%)",
+    satisfaction_1to5: "出口ボタン評価",
+    response_id: "回答ID",
+    channel: "回答方法",
+    age_group: "年代",
+    companion: "同行者",
+    visit_type: "来園の種類",
+    priority_pass: "優先パス",
+    overall_sat: "総合満足度",
+    wait_sat: "待ち時間満足度",
+    food_sat: "飲食満足度",
+    would_return: "再来園意向",
+    complaint_flag: "苦情記録",
+    free_text: "自由記述",
+    email: "メール",
+    food_sales_yen: "売店売上(円)"
   };
 
   function parseCSV(text) {
@@ -160,7 +175,9 @@
       <div class="metric-item"><span>欠損 / 異常値(≥180分)</span><strong>${stats.missingCount}件 / ${stats.outlierCount}件</strong></div>
     `;
     if ($("#status")) {
-      $("#status").textContent = `【${modeLabel}】 全 ${stats.count.toLocaleString()} 件 | 平均: ${stats.mean}分 / 中央値: ${stats.median}分 / 標準偏差: ${stats.std}分`;
+      $("#status").textContent = headers.includes("wait_time_min")
+        ? `【${modeLabel}】 全 ${stats.count.toLocaleString()} 件 | 平均: ${stats.mean}分 / 中央値: ${stats.median}分 / 標準偏差: ${stats.std}分`
+        : `【${modeLabel}】 全 ${stats.count.toLocaleString()} 件`;
     }
   }
 
@@ -455,7 +472,8 @@
 
   async function loadDataset(type) {
     currentDataset = type;
-    const url = type === "cleaned" ? "data/theme_park_wait_times_clean.csv" : "data/theme_park_wait_times_raw.csv";
+    const FILES = { raw: "data/wait_times_raw.csv", cleaned: "data/wait_times_clean.csv", survey: "data/survey_raw.csv" };
+    const url = FILES[type];
     if ($("#status")) $("#status").textContent = "データを読み込んでいます...";
     try {
       if (!cache[type]) {
@@ -469,8 +487,8 @@
       viewRows = [...rawRows];
       sortKey = null;
       currentPage = 1;
-      setActiveButton(type === "cleaned" ? "btn-cleaned" : "btn-raw");
-      const label = type === "cleaned" ? "theme_park_cleaned (整形済みデータ)" : "theme_park_raw (生データ)";
+      setActiveButton("btn-" + type);
+      const label = { raw: "wait_times_raw（元データ）", cleaned: "wait_times_clean（修正済み）", survey: "survey_raw（アンケート元データ）" }[type];
       if ($("#fx")) $("#fx").value = `${label} を読み込みました（全 ${rawRows.length.toLocaleString()} 行）。任意のセルをクリックすると詳細・偏差値を表示します。`;
       renderTable(label);
       bindExtraButtons();
@@ -493,19 +511,15 @@
 
   if ($("#btn-raw")) $("#btn-raw").onclick = () => loadDataset("raw");
   if ($("#btn-cleaned")) $("#btn-cleaned").onclick = () => loadDataset("cleaned");
+  if ($("#btn-survey")) $("#btn-survey").onclick = () => loadDataset("survey");
   if ($("#btn-q3")) {
     $("#btn-q3").onclick = () => {
       setActiveButton("btn-q3");
-      const hasFantasy = rawRows.some((r) => /fantasy|ファンタジー/i.test(r.category) || /fantasy|ファンタジー/i.test(r.attraction));
-      if (hasFantasy) {
-        viewRows = rawRows.filter((r) => /fantasy|ファンタジー/i.test(r.category) || /fantasy|ファンタジー/i.test(r.attraction));
-      } else {
-        viewRows = rawRows.filter((r) => r.category === "family" || r.category === "kids");
-      }
+      viewRows = rawRows.filter((r) => r.category === "family" || r.category === "kids");
       currentPage = 1;
       const stats = calcStats(viewRows);
-      if ($("#fx")) $("#fx").value = `=AVERAGEIF(category, "ファミリー/ファンタジー系", wait_time_min) => 平均 ${stats.mean} 分 / 中央値 ${stats.median} 分`;
-      renderTable("問3: フィルタ (ファンタジー/ファミリーエリア)");
+      if ($("#fx")) $("#fx").value = `=AVERAGEIF(category, "family|kids", wait_time_min) => 平均 ${stats.mean} 分 / 中央値 ${stats.median} 分`;
+      renderTable("問3: フィルタ (family / kids)");
     };
   }
   if ($("#btn-q4")) {
@@ -545,7 +559,7 @@
   }
   if ($("#btn-reset")) {
     $("#btn-reset").onclick = () => {
-      setActiveButton(currentDataset === "cleaned" ? "btn-cleaned" : "btn-raw");
+      setActiveButton("btn-" + currentDataset);
       viewRows = [...rawRows];
       sortKey = null;
       currentPage = 1;

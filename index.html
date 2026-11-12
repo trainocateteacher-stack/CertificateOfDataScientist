@@ -83,6 +83,7 @@
         </button>
 
         <!-- Share / Export Code Button for Student -->
+        <button type="button" id="btn-open-case-note" class="bg-amber-500/20 hover:bg-amber-500/30 border border-amber-300/40 text-white text-xs font-bold px-3 py-1.5 rounded-lg">📒 案件ノート</button>
         <button type="button" id="btn-open-sync-modal" class="bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold px-3 py-1.5 rounded-lg shadow-sm">
           📤 回答提出・同期
         </button>
@@ -209,7 +210,7 @@
         <div class="flex flex-wrap items-center justify-between gap-3 border-b border-slate-200 pb-3">
           <div>
             <span class="step-badge bg-sky-100 text-sky-900">共通題材データベース</span>
-            <h2 class="text-lg font-extrabold text-slate-900 mt-1">🎢 テーマパーク待ち時間・来園者データ 自由に触れるスプレッドシート</h2>
+            <h2 class="text-lg font-extrabold text-slate-900 mt-1">🎢 待ち時間データ（wait_times_raw）一覧</h2>
           </div>
           <button type="button" id="btn-close-dataset-view" class="px-3 py-1.5 rounded-lg bg-slate-800 text-white text-xs font-bold">
             ✕ 講義モジュールに戻る
@@ -224,18 +225,20 @@
               <option value="rainy">雨 (rainy)</option>
             </select>
           </label>
-          <label class="font-bold">分類(area/category):
+          <label class="font-bold">分類(category):
             <select id="exp-category" class="ml-1 border border-slate-300 rounded px-2 py-1 bg-white">
               <option value="">すべて</option>
               <option value="thrill">絶叫系 (thrill)</option>
-              <option value="family">ファミリー/ファンタジー (family)</option>
+              <option value="family">ファミリー (family)</option>
               <option value="kids">キッズ (kids)</option>
+              <option value="indoor">屋内 (indoor)</option>
+              <option value="show">ショー (show)</option>
             </select>
           </label>
-          <label class="font-bold">異常値(240分等)・欠損:
+          <label class="font-bold">記録ミス・欠損:
             <select id="exp-clean" class="ml-1 border border-slate-300 rounded px-2 py-1 bg-white">
-              <option value="raw">生データ（異常値・欠損あり）</option>
-              <option value="clean">クレンジング済み（除外後）</option>
+              <option value="raw">元データ（記録ミス・欠損あり）</option>
+              <option value="clean">記録ミス・運休を除外</option>
             </select>
           </label>
           <button type="button" id="btn-exp-reset" class="px-3 py-1 rounded bg-slate-200 hover:bg-slate-300 font-bold">条件リセット</button>
@@ -245,17 +248,18 @@
           <table class="w-full text-xs text-left border-collapse">
             <thead class="bg-slate-800 text-white sticky top-0">
               <tr>
-                <th class="p-2">#</th>
-                <th class="p-2">日付 (date)</th>
-                <th class="p-2">天気 (weather)</th>
-                <th class="p-2">気温(℃)</th>
+                <th class="p-2">record_id</th>
+                <th class="p-2">日付</th>
+                <th class="p-2">天気</th>
+                <th class="p-2">気温</th>
                 <th class="p-2">来園者数</th>
                 <th class="p-2">アトラクション</th>
-                <th class="p-2">分類(area)</th>
-                <th class="p-2">時間(hour)</th>
-                <th class="p-2">待ち時間(分)</th>
-                <th class="p-2">満足度</th>
-                <th class="p-2">飲食売上(円)</th>
+                <th class="p-2">分類</th>
+                <th class="p-2">時刻</th>
+                <th class="p-2">公式待ち時間</th>
+                <th class="p-2">一般列</th>
+                <th class="p-2">出口評価</th>
+                <th class="p-2">売店売上</th>
               </tr>
             </thead>
             <tbody id="exp-tbody" class="divide-y divide-slate-200"></tbody>
@@ -264,6 +268,17 @@
       </div>
 
       <!-- View 3: Hidden Instructor Real-Time Monitoring Dashboard -->
+      <div id="case-note-view" class="hidden bg-white rounded-xl border border-slate-200 shadow-sm p-5 sm:p-6 space-y-4">
+        <div class="flex flex-wrap items-center justify-between gap-2">
+          <h2 class="text-lg font-extrabold text-slate-900">📒 案件ノート（満足度低下の調査）</h2>
+          <div class="flex gap-2">
+            <button type="button" id="btn-copy-case-note" class="px-3 py-1.5 rounded-lg bg-[#1677a8] text-white text-xs font-bold">📋 まとめてコピー</button>
+            <button type="button" id="btn-close-case-note" class="px-3 py-1.5 rounded-lg bg-slate-800 text-white text-xs font-bold">閉じる</button>
+          </div>
+        </div>
+        <div id="case-note-body" class="space-y-4 text-sm"></div>
+      </div>
+
       <div id="instructor-dashboard-view" class="hidden space-y-6">
         <div class="bg-slate-900 text-white rounded-xl p-5 shadow-lg border border-amber-400/40">
           <div class="flex flex-wrap items-center justify-between gap-3">
@@ -433,39 +448,25 @@
     MACO029G ビジネスパーソンのためのデータリテラシー入門 ～データサイエンティスト検定対応～ (MAC0029G-T1-03準拠)
   </footer>
 
+  <script src="assets/data.js"></script>
   <script>
   (function () {
     "use strict";
 
     // =========================================================================
-    // 1. EMBEDDED THEME PARK DATASET (Real records from repository + rich rows)
+    // 1. THEME PARK DATA（data/*.csv を assets/data.js で読み込む。生成元：講師用/data_generator）
     // =========================================================================
-    const THEME_PARK_DATA = [
-      { id: 1, date: "2026-04-01", dow: "Wed", weather: "sunny", temp: 21.2, weekend: 0, event: 0, visitors: 8206, attraction: "Sky Coaster", category: "thrill", hour: 10, wait: 44, sat: 3.8, sales: 317716 },
-      { id: 2, date: "2026-04-01", dow: "Wed", weather: "sunny", temp: 22.0, weekend: 0, event: 0, visitors: 8206, attraction: "Sky Coaster", category: "thrill", hour: 11, wait: 34, sat: 3.9, sales: 313048 },
-      { id: 3, date: "2026-04-01", dow: "Wed", weather: "sunny", temp: 23.1, weekend: 0, event: 0, visitors: 8206, attraction: "Sky Coaster", category: "thrill", hour: 13, wait: 27, sat: 4.2, sales: 241232 },
-      { id: 4, date: "2026-04-01", dow: "Wed", weather: "sunny", temp: 23.4, weekend: 0, event: 0, visitors: 8206, attraction: "Sky Coaster", category: "thrill", hour: 14, wait: 29, sat: 4.2, sales: 365470 },
-      { id: 5, date: "2026-04-01", dow: "Wed", weather: "sunny", temp: 22.5, weekend: 0, event: 0, visitors: 8206, attraction: "Fantasy Castle", category: "family", hour: 11, wait: 35, sat: 4.3, sales: 295100 },
-      { id: 6, date: "2026-04-01", dow: "Wed", weather: "sunny", temp: 23.0, weekend: 0, event: 0, visitors: 8206, attraction: "Kids Train", category: "kids", hour: 12, wait: 18, sat: 4.5, sales: 210400 },
-      { id: 7, date: "2026-04-02", dow: "Thu", weather: "cloudy", temp: 18.5, weekend: 0, event: 0, visitors: 8924, attraction: "Sky Coaster", category: "thrill", hour: 10, wait: 38, sat: 3.7, sales: 170673 },
-      { id: 8, date: "2026-04-02", dow: "Thu", weather: "cloudy", temp: 19.2, weekend: 0, event: 0, visitors: 8924, attraction: "Sky Coaster", category: "thrill", hour: 11, wait: 46, sat: 3.9, sales: 189431 },
-      { id: 9, date: "2026-04-02", dow: "Thu", weather: "cloudy", temp: 20.1, weekend: 0, event: 0, visitors: 8924, attraction: "Fantasy Castle", category: "family", hour: 13, wait: 52, sat: 3.8, sales: 259257 },
-      { id: 10, date: "2026-04-02", dow: "Thu", weather: "cloudy", temp: 19.8, weekend: 0, event: 0, visitors: 8924, attraction: "Jungle River", category: "family", hour: 14, wait: 41, sat: 4.0, sales: 234900 },
-      { id: 11, date: "2026-04-03", dow: "Fri", weather: "rainy", temp: 14.2, weekend: 0, event: 0, visitors: 6420, attraction: "Fantasy Castle", category: "family", hour: 11, wait: 75, sat: 3.1, sales: 165200 },
-      { id: 12, date: "2026-04-03", dow: "Fri", weather: "rainy", temp: 13.8, weekend: 0, event: 0, visitors: 6420, attraction: "Space Odyssey", category: "thrill", hour: 13, wait: 68, sat: 3.3, sales: 178900 },
-      { id: 13, date: "2026-04-03", dow: "Fri", weather: "rainy", temp: 13.5, weekend: 0, event: 0, visitors: 6420, attraction: "Sky Coaster", category: "thrill", hour: 14, wait: 22, sat: 3.6, sales: 142000 },
-      { id: 14, date: "2026-04-03", dow: "Fri", weather: "rainy", temp: 13.0, weekend: 0, event: 0, visitors: 6420, attraction: "Kids Train", category: "kids", hour: 15, wait: null, sat: 3.5, sales: 138000 },
-      { id: 15, date: "2026-04-04", dow: "Sat", weather: "sunny", temp: 28.4, weekend: 1, event: 1, visitors: 14850, attraction: "Sky Coaster", category: "thrill", hour: 11, wait: 95, sat: 3.2, sales: 542000 },
-      { id: 16, date: "2026-04-04", dow: "Sat", weather: "sunny", temp: 29.6, weekend: 1, event: 1, visitors: 14850, attraction: "Space Odyssey", category: "thrill", hour: 13, wait: 110, sat: 2.9, sales: 598000 },
-      { id: 17, date: "2026-04-04", dow: "Sat", weather: "sunny", temp: 30.1, weekend: 1, event: 1, visitors: 14850, attraction: "Fantasy Castle", category: "family", hour: 14, wait: 85, sat: 3.4, sales: 612000 },
-      { id: 18, date: "2026-04-04", dow: "Sat", weather: "sunny", temp: 29.2, weekend: 1, event: 1, visitors: 14850, attraction: "Kids Train", category: "kids", hour: 15, wait: 45, sat: 4.0, sales: 489000 },
-      { id: 19, date: "2026-04-05", dow: "Sun", weather: "sunny", temp: 27.5, weekend: 1, event: 1, visitors: 13900, attraction: "Sky Coaster", category: "thrill", hour: 12, wait: 240, sat: 1.8, sales: 515000 },
-      { id: 20, date: "2026-04-05", dow: "Sun", weather: "sunny", temp: 28.0, weekend: 1, event: 1, visitors: 13900, attraction: "Jungle River", category: "family", hour: 13, wait: 78, sat: 3.5, sales: 530000 },
-      { id: 21, date: "2026-04-05", dow: "Sun", weather: "cloudy", temp: 21.0, weekend: 1, event: 0, visitors: 11200, attraction: "Pirate Ship", category: "thrill", hour: 15, wait: 64, sat: 3.7, sales: 389000 },
-      { id: 22, date: "2026-04-06", dow: "Mon", weather: "rainy", temp: 15.1, weekend: 0, event: 0, visitors: 5800, attraction: "Fantasy Castle", category: "family", hour: 12, wait: 82, sat: 3.0, sales: 159000 },
-      { id: 23, date: "2026-04-06", dow: "Mon", weather: "rainy", temp: 14.8, weekend: 0, event: 0, visitors: 5800, attraction: "Space Odyssey", category: "thrill", hour: 14, wait: -10, sat: null, sales: 149000 },
-      { id: 24, date: "2026-04-07", dow: "Tue", weather: "sunny", temp: 24.0, weekend: 0, event: 0, visitors: 9400, attraction: "Jungle River", category: "family", hour: 11, wait: 48, sat: 4.1, sales: 342000 }
-    ];
+    let PARK = null;
+    let PARK_ERROR = null;
+    const PARK_TABLES = ["wait_times_raw", "wait_times_clean", "survey_raw", "survey_clean", "daily_ops"];
+
+    function needData(box) {
+      if (PARK) return false;
+      box.innerHTML = PARK_ERROR
+        ? `<p class="text-sm font-bold text-rose-700">⚠️ データを読み込めませんでした（${PARK_ERROR}）。このページはサーバー経由で開く必要があります。</p>`
+        : `<p class="text-sm font-bold text-slate-500">テーマパークのデータを読み込んでいます…</p>`;
+      return true;
+    }
 
     // Textbook p.153 exact students & club tables
     const INITIAL_STUDENTS = [
@@ -566,6 +567,8 @@
             body: "DS検定リテラシーレベルは4段階のスキルレベルのうち<strong>「★ アシスタントデータサイエンティスト（見習いレベル：プロジェクトの担当テーマに対応できる）」</strong>を対象としています。<br>スキルチェックリスト ver5.00（計650項目）の内訳：<br>① <strong>ビジネス力（159個）</strong>：行動規範、論理的思考、課題の定義、契約・権利保護など<br>② <strong>データサイエンス力（309個）</strong>：数学的理解、データ準備、データ可視化、モデル化など<br>③ <strong>データエンジニアリング力（182個）</strong>：環境構築、データ収集・蓄積・加工、SQL/プログラミング、ITセキュリティなど"
           }
         ],
+        caseMemo: { from: "運営部長", text: "着任おめでとう。さっそくだが、アンケートの満足度が4月から6月で下がっている。待ち時間のせいだと思うので、対策を提言してほしい。" },
+        record: { tag: null, prompt: "この依頼で必要になる3つのスキルを、自分の言葉で分けてください", placeholder: "例：ビジネス力＝依頼の目的を確かめる／データサイエンス力＝…／データエンジニアリング力＝…" },
         labType: "m1_skill_sorter",
         postQuiz: {
           q: "【類似4択リベンジ】デジタルリテラシー協議会が定義する「Di-Lite」の3領域と、DS検定リテラシーレベルの対象レベルに関する記述として、最も適切なものはどれか？（p.10, p.14）",
@@ -608,6 +611,8 @@
             body: "・<strong>4つのAI類型（p.22）</strong>：認識型AI（画像・音声認識）、会話型AI（チャットボット・翻訳）、予測型AI（需要予測・異常検知）、実行型AI（自動運転・制御）<br>・<strong>データリテラシーの3要素（p.24）</strong>：<br>① <strong>適切に読み解く力（p.25）</strong>：分布・ばらつき、相関と因果、母集団を意識する<br>② <strong>適切に説明する力（p.26）</strong>：縦軸を途中で切って誇張しない、条件を揃えた比較対象を設定する<br>③ <strong>適切に扱う力（p.27）</strong>：スプレッドシート等で並べ替えやクロス集計を行う"
           }
         ],
+        caseMemo: { from: "運営部長", text: "資料を用意しておいた。満足度はこのとおり急降下だ。それに売店がよく売れる日ほど待ち時間が長い。混雑が全部悪いんだよ。" },
+        record: { tag: "空", prompt: "部長の資料と相関から「言えること」と「まだ言えないこと」を分けて書いてください", placeholder: "例：言えること＝… ／ まだ言えないこと＝…" },
         labType: "m2_spurious_and_axis",
         postQuiz: {
           q: "【類似4択リベンジ】テーマパークのデータ分析において、「飲食売上（アイスクリーム等）が多い日ほどアトラクションの平均待ち時間が長い」という強い正の相関が見られた。このデータの解釈とグラフ表現として最も適切なものはどれか？（p.25-26）",
@@ -650,6 +655,8 @@
             body: "・<strong>国内外の法規制（p.29, p.62）</strong>：改正個人情報保護法（日本・2022年）、<strong>GDPR</strong>（EU一般データ保護規則・2018年）、<strong>CCPA</strong>（カリフォルニア州消費者プライバシー法・2020年）<br>・<strong>AI社会原則（p.29）</strong>：公平性、説明責任、透明性、人間中心の判断<br>・<strong>先進技術と倫理の論点（p.30）</strong>：自動運転事故の責任、防犯カメラとプライバシー、購買・行動ログの扱い、生成AI創作物の権利"
           }
         ],
+        caseMemo: { from: "情報システム課", text: "アンケートの元データを渡します。メールアドレスや自由記述も入ったままなので、扱いには気をつけてください。" },
+        record: { tag: null, prompt: "分析を始める前に、消す・加工する列とその理由を書いてください", placeholder: "例：email は… ／ free_text は…" },
         labType: "m3_ethics_judge",
         postQuiz: {
           q: "【類似4択リベンジ】テーマパークが海外観光客を含む来園者アプリの位置情報・購買ログをAI分析に活用する際のコンプライアンスとAI社会原則に関する記述として、適切なものはどれか？（p.29, p.62）",
@@ -697,6 +704,8 @@
             body: "・<strong>スコーピング（p.48）</strong>：「要求（やりたいこと）」を洗い出し、「要件（できること）」を絞る。現状分析には<strong>5フォース分析</strong>（業界内競争、新規参入者、代替品、買い手の交渉力、売り手の交渉力）を活用。<br>・<strong>空・雨・傘（p.50）</strong>：<strong>「空（事実・課題の確認）」➔「雨（解釈・課題の深堀）」➔「傘（結論・アクション）」</strong>の順序で論理を組み立てる。"
           }
         ],
+        caseMemo: { from: "運営部長", text: "で、何を目標にして、何を見ればいいんだ？" },
+        record: { tag: "空", prompt: "満足度を最終目標（KGI）にした KPI と、確かめたい仮説を書いてください", placeholder: "例：KGI＝… ／ KPI＝… ／ 仮説＝…" },
         labType: "m4_kpi_and_sru",
         postQuiz: {
           q: "【類似4択リベンジ】論理的思考のアプローチである「スコーピング」「5フォース分析」「空・雨・傘」に関する記述として、最も適切なものはどれか？（p.48-50）",
@@ -744,6 +753,8 @@
             body: "・<strong>開発手法と契約（p.57-58）</strong>：AI・データ分析は事前の性能保証が難しく探索的に進めるため、<strong>アジャイル開発</strong>の考え方と<strong>準委任契約</strong>（仕事の完成ではなく事務処理の遂行を委託）が多く用いられる。<br>・<strong>情報の種類（p.60）</strong>：<strong>一次情報</strong>（自社アンケート・実測＝信頼度高）＞ 二次情報（他者の書籍・論文）＞ 三次情報（噂話）。<br>・<strong>絶対NGの不正行為（p.61）</strong>：<strong>捏造</strong>（存在しないデータ作成）、<strong>改ざん</strong>（データの変造・偽造）、<strong>盗用</strong>（引用なしの無断使用）。"
           }
         ],
+        caseMemo: { from: "マーケティング課", text: "アンケートの設問はうちで作りました。選択肢は十分だと思います。" },
+        record: { tag: null, prompt: "設問の選択肢で MECE になっていないものと、その直し方を書いてください", placeholder: "例：companion の…" },
         labType: "m5_mece_and_contract",
         postQuiz: {
           q: "【類似4択リベンジ（スライド p.64 練習問題2）】MECE（Mutually Exclusive, Collectively Exhaustive：漏れも重複もない）を意識したアンケートの設問として、適切なものはどれか？",
@@ -791,6 +802,8 @@
             body: "・<strong>ヒストグラム（p.78）</strong>：区間（ビン）ごとの度数分布。区間幅の設定（10分幅 vs 5分幅）で見える情報が変わる。<br>・<strong>クロス集計表（p.79）</strong>：2つのカテゴリ因子（例：天気 × エリア）を掛け合わせて平均や件数を集計。<br>・<strong>箱ひげ図（p.80）</strong>：最小値・<strong>第1四分位数(Q1)</strong>・<strong>中央値</strong>・<strong>第3四分位数(Q3)</strong>・最大値・外れ値で散らばりを表現。<br>・<strong>散布図と相関係数 r（p.81-82）</strong>：$-1 \le r \le +1$。$+1$に近いほど強い正の相関、$-1$に近いほど強い負の相関、$0$に近いほど無相関。"
           }
         ],
+        caseMemo: { from: "先輩データサイエンティスト", text: "まずは全体を眺めよう。誰の回答で下がっているのか、去年と比べてどうかも見てみるといい。" },
+        record: { tag: "雨", prompt: "グラフで見えた「満足度が下がった理由の候補」を書いてください", placeholder: "例：6月は回答方法が… ／ 一般列の待ち時間が… ／ 雨の日は…" },
         labType: "m6_four_charts",
         postQuiz: {
           q: "【類似4択リベンジ】9個のデータ「 1, 2, 6, 7, 10, 12, 15, 18, 19 」の箱ひげ図を作成したとき、「第1四分位数」「中央値」「第3四分位数」の組み合わせとして正しいものはどれか？（スライド p.80）",
@@ -838,17 +851,19 @@
             body: "① <strong>質的データの数値化（p.88）</strong>：Labelエンコーディング（0,1,2,3）と <strong>One-Hotエンコーディング（ダミー変数化：1,0,0,0）</strong><br>② <strong>量的データの離散化（p.89）</strong>：細かい年齢（20, 26, 27歳…）を「20代、30代…」の質的データへまとめる<br>③ <strong>スケーリング（p.90）</strong>：<strong>標準化（z変換：平均0、標準偏差1）</strong>と <strong>正規化（主に0〜1の範囲に変換）</strong><br>④ <strong>外れ値・異常値・欠損値（p.91）</strong>：平均から<strong>標準偏差の3倍（3σ）以上</strong>離れた値は外れ値と判断されることが多い。"
           }
         ],
+        caseMemo: { from: "先輩データサイエンティスト", text: "元データには記録ミスも欠損もある。消す前に、なぜそうなったのかを考えてから。" },
+        record: { tag: null, prompt: "除外・補完したデータと、その根拠を書いてください", placeholder: "例：240分は… ／ 満足度の欠損は…" },
         labType: "m7_stats_and_scaling",
         postQuiz: {
-          q: "【類似4択リベンジ】テーマパークの2つのアトラクションで、どちらも本日の待ち時間が「60分」だった。Sky Coasterは「平均50分・標準偏差5分」、Fantasy Castleは「平均50分・標準偏差20分」であるとき、普段と比べてどちらがより異常に混雑していると言えるか（偏差値・標準化の観点）？（p.86, p.90）",
+          q: "【類似4択リベンジ】テーマパークの2つのアトラクションで、どちらも本日の待ち時間が「60分」だった。Sky Coasterは「平均50分・標準偏差5分」、Magic Castleは「平均50分・標準偏差20分」であるとき、普段と比べてどちらがより異常に混雑していると言えるか（偏差値・標準化の観点）？（p.86, p.90）",
           options: [
             "1. 平均も現在の待ち時間も同じなので、混雑の珍しさ（偏差値）は全く同じである",
             "2. 標準偏差が小さい Sky Coaster の方が標準化zスコア（+2.0 / 偏差値70）が高く、普段より異常に混雑している",
-            "3. 標準偏差が大きい Fantasy Castle の方が偏差値が高い",
+            "3. 標準偏差が大きい Magic Castle の方が偏差値が高い",
             "4. 待ち時間を0〜1に変換する処理を「One-Hotエンコーディング」と呼ぶ"
           ],
           answer: 1,
-          explanation: "正解は2です。Sky Coasterは (60-50)÷5 = +2.0σ（偏差値70）、Fantasy Castleは (60-50)÷20 = +0.5σ（偏差値55）となり、普段のばらつき（標準偏差）が小さいSky Coasterでの60分待ちの方がはるかに珍しい混雑です（p.85-86, p.90）。"
+          explanation: "正解は2です。Sky Coasterは (60-50)÷5 = +2.0σ（偏差値70）、Magic Castleは (60-50)÷20 = +0.5σ（偏差値55）となり、普段のばらつき（標準偏差）が小さいSky Coasterでの60分待ちの方がはるかに珍しい混雑です（p.85-86, p.90）。"
         }
       },
 
@@ -885,6 +900,8 @@
             body: "・<strong>離散型確率分布（p.99-101）</strong>：ベルヌーイ分布（結果が2通り）、二項分布（ベルヌーイ試行を$n$回）、ポアソン分布。<br>・<strong>連続型確率分布（p.99, p.102）</strong>：<strong>正規分布</strong>（平均$\mu \pm 1\sigma$に<strong>68.2%</strong>、$\pm 2\sigma$に<strong>95.4%</strong>、$\pm 3\sigma$に<strong>99.8%</strong>が収まる）、指数分布、カイ二乗分布。<br>・<strong>不偏分散と標準誤差（p.105-106）</strong>：標本分散は母分散より小さくなる傾向があるため <strong>$n-1$ で割る不偏分散</strong>を使う。<strong>サンプルサイズ $n$ が大きくなると標準誤差 $\sigma_X = \sigma/\sqrt{n}$ は小さくなる</strong>。"
           }
         ],
+        caseMemo: { from: "先輩データサイエンティスト", text: "6月はアプリだけで、1日の回答が少ない。その差、誤差じゃないと言える？" },
+        record: { tag: "雨", prompt: "6月の低下が誤差の範囲を超えているかどうかと、その根拠を書いてください", placeholder: "例：1日の回答数は約… 標準誤差は…" },
         labType: "m8_bayes_and_sampling",
         postQuiz: {
           q: "【類似4択リベンジ】正規分布の特徴（p.102）および母集団と標本・不偏分散・標準誤差（p.104-106）に関する記述として、最も適切なものはどれか？",
@@ -932,6 +949,8 @@
             body: "① <strong>教師あり学習（p.121-122）</strong>：正解付きデータで学習 ➔ <strong>回帰</strong>（数値予測）・<strong>分類</strong>（カテゴリ予測）<br>② <strong>教師なし学習（p.123-124）</strong>：正解なしでデータ構造を把握 ➔ <strong>特徴抽出</strong>・<strong>クラスタリング</strong>（顧客グループ分け等）<br>③ <strong>強化学習（p.125-126）</strong>：エージェントが「状態(State)」を観測し「報酬(Reward)」を最大化する「行動(Action)」を学習（自動運転・ゲームAI等）<br>④ <strong>生成AI / LLM（p.127）</strong>：大量の文章を<strong>教師なし学習</strong>した基盤モデルに、<strong>教師あり学習や強化学習</strong>を重ねて対話能力を獲得。"
           }
         ],
+        caseMemo: { from: "情報システム課", text: "不満を持ちそうなお客様を予測できませんか？使えそうな列は全部入れておきました。" },
+        record: { tag: null, prompt: "予測に使ってはいけない列とその理由を書いてください", placeholder: "例：complaint_flag は…" },
         labType: "m9_math_and_ml",
         postQuiz: {
           q: "【類似4択リベンジ】線形代数・微積分・機械学習・生成AI（LLM）に関する記述として、最も適切なものはどれか？（p.108-127）",
@@ -979,6 +998,8 @@
             body: "・<strong>拡張性（Scalability）と可用性（Availability）（p.143）</strong>：<br><strong>ホットスタンバイ</strong>（本番機と常時同期・即座切替・高コスト/高可用性）＞ <strong>ウォームスタンバイ</strong>（OSのみ起動）＞ <strong>コールドスタンバイ</strong>（予備機停止・低コスト/切替遅い）。<br>・<strong>バックアップ3方式（p.144）</strong>：<strong>フルバックアップ</strong>（全体・時間長いが復旧簡便）、<strong>差分バックアップ</strong>（フル以降の更新分）、<strong>増分バックアップ</strong>（前回以降の更新分・時間短いが復旧複雑）。<br>・<strong>Web API（p.146）</strong>：軽量な検索等に向く <strong>REST</strong> と、厳密な入出力チェックに向く <strong>SOAP</strong>。"
           }
         ],
+        caseMemo: { from: "運営部長", text: "提言が通ったら、毎週見られるようにしたい。" },
+        record: { tag: "傘", prompt: "毎週見るダッシュボードに載せる KPI を書いてください（平均だけにしない）", placeholder: "例：一般列の待ち時間の… ／ パス非購入者の満足度…" },
         labType: "m10_infra_simulator",
         postQuiz: {
           q: "【類似4択リベンジ】データ分析基盤（データレイク・DWH・BI）、サーバースタンバイ構成、バックアップ手法に関する記述として、最も適切なものはどれか？（p.137-144）",
@@ -1026,6 +1047,8 @@
             body: "・<strong>5つのサンプリング手法（p.162-163）</strong>：<br>① <strong>単純無作為サンプリング</strong>：全体から完全ランダム抽出<br>② <strong>系統サンプリング</strong>：3人おき・5人おきなど一定間隔で抽出<br>③ <strong>層別サンプリング</strong>：母集団を事前にグループ分けし比率に合わせて抽出（例：<strong>男女比8:2の大学1000人から男80人・女20人を抽出</strong> p.163）<br>④ <strong>集落サンプリング</strong>：グループ（例：特定のA市）を無作為に選び、その中は<strong>全数調査</strong>する（p.163）<br>⑤ <strong>多段サンプリング</strong>：グループを選び、さらにそこからランダム抽出する"
           }
         ],
+        caseMemo: { from: "マーケティング課", text: "次回のアンケート、どうやって回答者を選べばいいですか？" },
+        record: { tag: "傘", prompt: "次回アンケートの回答者の選び方（抽出方法）を書いてください", placeholder: "例：回答方法と年代で層に分け…" },
         labType: "m11_sql_and_sampling",
         postQuiz: {
           q: "【類似4択リベンジ】あるテーマパークの年間パスポート会員10,000人（ファミリー層80%、学生層20%）から100人を選んで満足度調査を行う際、あらかじめファミリー層80人・学生層20人となるようにグループ分けして抽出するサンプリング手法はどれか？（p.162-163）",
@@ -1073,6 +1096,8 @@
             body: "・<strong>認証（ユーザー特定）の3情報（p.167）</strong>：①<strong>知識情報</strong>（パスワード）、②<strong>生体情報</strong>（指紋・虹彩・静脈）、③<strong>所有情報</strong>（スマホ・IDカード）。<strong>認可</strong>は特定アクションの権利付与。<br>・<strong>共通鍵暗号方式（p.168）</strong>：暗号鍵と復号鍵が<strong>同一</strong>（送信者と受信者で1つの共通鍵を共有）。<br>・<strong>公開鍵暗号方式（p.168）</strong>：暗号鍵と復号鍵が<strong>異なる</strong>（公開鍵を公開して暗号化してもらい、<strong>秘密鍵（復号鍵）</strong>で復号する）。"
           }
         ],
+        caseMemo: { from: "運営部長", text: "最終報告を聞こう。公開する前に、データの扱いも確認しておいてくれ。" },
+        record: { tag: "傘", prompt: "最終提言を「空・雨・傘」で書いてください", placeholder: "例：【空】… 【雨】… 【傘】…" },
         labType: "m12_security_and_summary",
         postQuiz: {
           q: "【類似4択リベンジ】情報セキュリティ対策・マルウェア・認証・暗号化に関する記述として、最も適切なものはどれか？（p.165-168）",
@@ -1310,6 +1335,11 @@
           <p class="text-xs sm:text-sm text-slate-600 mt-1.5 bg-slate-50 border-l-4 border-[#1677a8] p-2.5 rounded-r-lg">
             <strong>🎯 この単元のゴール：</strong> ${m.goal}
           </p>
+          ${m.caseMemo ? `
+          <div class="mt-3 bg-amber-50 border border-amber-200 rounded-lg p-3 text-xs sm:text-sm">
+            <span class="font-extrabold text-amber-900">📨 案件メモ（${m.caseMemo.from}より）</span>
+            <p class="mt-1 text-slate-800">${m.caseMemo.text}</p>
+          </div>` : ""}
         `;
       }
 
@@ -1456,11 +1486,15 @@
     // 6. STEP 4 INTERACTIVE HANDS-ON LABS (ALL 12 MODULES)
     // =========================================================================
     function renderLabSaveBox(m, promptLabel, placeholder, defaultTextFn) {
+      if (m.record) {
+        promptLabel = (m.record.tag ? `【${m.record.tag}】` : "") + m.record.prompt;
+        placeholder = m.record.placeholder;
+      }
       const savedText = studentState.labResponses[m.id] || "";
       return `
         <div class="bg-slate-50 border border-slate-200 rounded-xl p-4 mt-4 space-y-2">
           <div class="flex flex-wrap items-center justify-between gap-2">
-            <label for="lab-input-${m.id}" class="text-xs font-extrabold text-slate-800">✍️ 演習ミッション記録（講師画面へ共有されます）：${promptLabel}</label>
+            <label for="lab-input-${m.id}" class="text-xs font-extrabold text-slate-800">✍️ 案件ノートに記録：${promptLabel}</label>
             <button type="button" id="btn-lab-autofill-${m.id}" class="text-xs bg-white hover:bg-sky-50 text-sky-700 border border-sky-200 font-bold px-2.5 py-1 rounded">
               💡 現在の操作結果から下書きを自動入力
             </button>
@@ -1508,6 +1542,9 @@
     function renderStep4Lab(m) {
       const box = document.getElementById("step4-lab-container");
       if (!box) return;
+      const DATA_LABS = ["m2_spurious_and_axis", "m3_ethics_judge", "m5_mece_and_contract", "m6_four_charts",
+        "m7_stats_and_scaling", "m8_bayes_and_sampling", "m9_math_and_ml", "m11_sql_and_sampling"];
+      if (DATA_LABS.includes(m.labType) && needData(box)) return;
 
       // ---- M1 Lab: Theme Park Challenge x 3 Skills Sorter ----
       if (m.labType === "m1_skill_sorter") {
@@ -1566,96 +1603,80 @@
         return;
       }
 
-      // ---- M2 Lab: Spurious Correlation & Exaggerated Graph ----
+      // ---- M2 Lab: 依頼の数字を疑う（疑似相関と部長のグラフ）----
       if (m.labType === "m2_spurious_and_axis") {
+        const daily26 = PARK.daily_ops.filter((d) => d.year === 2026);
+        const okWait = PARK.wait_times_clean.filter((r) => r.downtime_flag === 0);
+        const waitByDate = new Map([...ParkData.groupBy(okWait, (r) => r.date)].map(([k, v]) => [k, ParkData.mean(v.map((r) => r.wait_time_min))]));
+        const pts = daily26.map((d) => ({ date: d.date, food: d.food_sales_yen_total, wait: waitByDate.get(d.date), vis: d.park_visitors }));
+        const fx = pts.map((p) => p.food), wy = pts.map((p) => p.wait), vz = pts.map((p) => p.vis);
+        const rAll = ParkData.pearson(fx, wy), rPart = ParkData.partialR(fx, wy, vz);
+        const q1 = ParkData.quantile(vz, 1 / 3), q2 = ParkData.quantile(vz, 2 / 3);
+        const xMin = Math.min(...fx), xMax = Math.max(...fx), yMin = Math.min(...wy), yMax = Math.max(...wy);
+        const monthly = ["04", "05", "06"].map((mm) => ({
+          label: `${Number(mm)}月`,
+          val: ParkData.mean(PARK.survey_raw.filter((r) => r.date.startsWith(`2026-${mm}`)).map((r) => r.overall_sat)),
+        }));
+
         box.innerHTML = `
           <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div class="bg-sky-50/70 border border-sky-200 rounded-xl p-4 space-y-3">
-              <div class="flex items-center justify-between">
-                <h4 class="text-xs sm:text-sm font-extrabold text-slate-900">① 疑似相関シミュレーター (p.25)</h4>
+              <div class="flex flex-wrap items-center justify-between gap-2">
+                <h4 class="text-xs sm:text-sm font-extrabold text-slate-900">① 売店が売れる日ほど待つ？ (p.25)</h4>
                 <button type="button" id="btn-m2-stratify" class="bg-amber-500 hover:bg-amber-400 text-slate-950 text-xs font-extrabold px-3 py-1 rounded-lg shadow-xs">
-                  🌡️ 「気温・天候」で色分け表示する
+                  👥 来園者数で色分け表示する
                 </button>
               </div>
-              <p class="text-xs text-slate-600">「飲食売上(円)」と「待ち時間(分)」の関係です。ボタンを押して背後の要因（気温・天候）を表示してみてください。</p>
+              <p class="text-xs text-slate-600">日ごとの「売店売上の合計」と「平均待ち時間」の関係です（2026年4〜6月、90日。1点が1日）。点にマウスを重ねると詳細が出ます。</p>
               <div id="m2-scatter-box" class="bg-white border border-slate-200 rounded-lg p-3"></div>
               <p id="m2-scatter-caption" class="text-xs font-bold text-slate-700"></p>
             </div>
 
             <div class="bg-orange-50/70 border border-orange-200 rounded-xl p-4 space-y-3">
-              <div class="flex items-center justify-between">
-                <h4 class="text-xs sm:text-sm font-extrabold text-slate-900">② 誇張されたグラフの修正体験 (p.26)</h4>
-                <span id="m2-axis-label" class="text-xs font-extrabold text-rose-700 bg-rose-100 px-2 py-0.5 rounded">縦軸の最小値: 80万円 (誇張状態)</span>
+              <div class="flex flex-wrap items-center justify-between gap-2">
+                <h4 class="text-xs sm:text-sm font-extrabold text-slate-900">② 部長の資料（月別の満足度）を描き直す (p.26)</h4>
+                <span id="m2-axis-label" class="text-xs font-extrabold text-rose-700 bg-rose-100 px-2 py-0.5 rounded"></span>
               </div>
-              <p class="text-xs text-slate-600">スライダーで縦軸（Y軸）の最小値を <code>80</code> から <code>0</code> に戻し、見た目の印象がどう変わるか比較しましょう。</p>
-              <input id="m2-axis-slider" type="range" min="0" max="80" step="10" value="80" class="w-full">
+              <p class="text-xs text-slate-600">アンケートの総合満足度（1〜5）の月平均です。縦軸の最小値を 3.4 から 1 に戻すと、印象はどう変わりますか？</p>
+              <input id="m2-axis-slider" type="range" min="1" max="3.4" step="0.2" value="3.4" class="w-full">
               <div id="m2-bar-box" class="bg-white border border-slate-200 rounded-lg p-3 h-40 flex items-end justify-around gap-4"></div>
             </div>
           </div>
-          ${renderLabSaveBox(m, "疑似相関と誇張グラフから気づいたこと", "例：飲食売上と待ち時間の相関は気温・来園者数による疑似相関であり、グラフは縦軸を0起点にしないと変化が誇張される。")}
+          ${renderLabSaveBox(m, "", "")}
         `;
 
         let stratified = false;
         const renderScatter = () => {
-          const svgBox = document.getElementById("m2-scatter-box");
-          const cap = document.getElementById("m2-scatter-caption");
-          const pts = THEME_PARK_DATA.filter((d) => d.wait !== null && d.wait > 0 && d.wait < 180);
-          const circles = pts
-            .map((d) => {
-              const cx = 30 + ((d.sales - 120000) / 520000) * 240;
-              const cy = 135 - (d.wait / 120) * 115;
-              let color = "#1677a8";
-              if (stratified) {
-                color = d.temp >= 26 ? "#dc2626" : d.temp >= 20 ? "#16a34a" : "#2563eb";
-              }
-              return `<circle cx="${cx.toFixed(1)}" cy="${cy.toFixed(1)}" r="5" fill="${color}" opacity="0.85"><title>${d.date} (${d.attraction}): 気温${d.temp}℃ / 売上${d.sales.toLocaleString()}円 / 待ち${d.wait}分</title></circle>`;
-            })
-            .join("");
-
-          svgBox.innerHTML = `
-            <svg viewBox="0 0 290 155" class="w-full h-36">
-              <line x1="28" y1="10" x2="28" y2="138" stroke="#94a3b8" stroke-width="1.5"/>
-              <line x1="28" y1="138" x2="280" y2="138" stroke="#94a3b8" stroke-width="1.5"/>
-              <text x="150" y="152" font-size="9" text-anchor="middle" fill="#475569">横軸：飲食売上 (food_sales_yen)</text>
-              <text x="10" y="75" font-size="9" text-anchor="middle" fill="#475569" transform="rotate(-90 10 75)">待ち時間(分)</text>
-              ${!stratified ? `<line x1="40" y1="120" x2="265" y2="25" stroke="#f59e0b" stroke-width="2" stroke-dasharray="4 2"/>` : ""}
+          const circles = pts.map((p) => {
+            const cx = 30 + ((p.food - xMin) / (xMax - xMin)) * 245;
+            const cy = 135 - ((p.wait - yMin) / (yMax - yMin)) * 120;
+            const color = !stratified ? "#1677a8" : p.vis <= q1 ? "#2563eb" : p.vis <= q2 ? "#16a34a" : "#dc2626";
+            return `<circle cx="${cx.toFixed(1)}" cy="${cy.toFixed(1)}" r="3.5" fill="${color}" opacity="0.8"><title>${p.date}：売上${p.food.toLocaleString()}円／待ち${ParkData.fmt(p.wait)}分／来園${p.vis.toLocaleString()}人</title></circle>`;
+          }).join("");
+          document.getElementById("m2-scatter-box").innerHTML = `
+            <svg viewBox="0 0 290 155" class="w-full h-40">
+              <line x1="28" y1="10" x2="28" y2="138" stroke="#94a3b8"/><line x1="28" y1="138" x2="280" y2="138" stroke="#94a3b8"/>
+              <text x="150" y="152" font-size="9" text-anchor="middle" fill="#475569">横軸：その日の売店売上の合計（円）</text>
+              <text x="10" y="75" font-size="9" text-anchor="middle" fill="#475569" transform="rotate(-90 10 75)">平均待ち時間（分）</text>
               ${circles}
-            </svg>
-          `;
-          if (cap) {
-            cap.innerHTML = stratified
-              ? "🔍 <strong>層別化ON：</strong> 🔴高温・週末(26℃〜) / 🟢適温(20〜25℃) / 🔵低温・雨(〜19℃) に分けると、<strong>『気温・来園者数』が両方（飲食売上と待ち時間）を増やしていた疑似相関</strong>だと分かります！"
-              : "👀 <strong>全体表示：</strong> 一見すると『飲食売上が増えるほど待ち時間が伸びる』右肩上がりの直線に見えますが…？";
-          }
+            </svg>`;
+          document.getElementById("m2-scatter-caption").innerHTML = stratified
+            ? `🔍 <strong>来園者数で色分け：</strong>🔵少ない日／🟢ふつうの日／🔴多い日。色が左下から右上へ順に並んでいます。来園者数の影響を取り除いた相関は <strong>r = ${ParkData.fmt(rPart, 2)}</strong> です。`
+            : `👀 <strong>全体：</strong>相関係数 <strong>r = ${ParkData.fmt(rAll, 2)}</strong>。売店がよく売れる日ほど待ち時間が長いように見えますが…？`;
         };
 
         const renderBars = () => {
           const minVal = Number(document.getElementById("m2-axis-slider").value);
           const lbl = document.getElementById("m2-axis-label");
-          const barBox = document.getElementById("m2-bar-box");
-          if (lbl) {
-            lbl.textContent = minVal === 0 ? "縦軸の最小値: 0万円 (適正なグラフ p.26)" : `縦軸の最小値: ${minVal}万円 (差が誇張された状態 p.26)`;
-            lbl.className = minVal === 0 ? "text-xs font-extrabold text-emerald-800 bg-emerald-100 px-2 py-0.5 rounded" : "text-xs font-extrabold text-rose-700 bg-rose-100 px-2 py-0.5 rounded";
-          }
-          const data = [
-            { yr: "2020年", val: 87 },
-            { yr: "2021年", val: 95 },
-            { yr: "2022年", val: 112 }
-          ];
-          const maxScale = 120;
-          barBox.innerHTML = data
-            .map((d) => {
-              const ratio = Math.max(0.05, (d.val - minVal) / (maxScale - minVal));
-              const hPct = Math.min(100, Math.round(ratio * 100));
-              return `
-                <div class="flex flex-col items-center justify-end h-full w-16">
-                  <span class="text-[11px] font-extrabold text-slate-700 mb-1">${d.val}万</span>
-                  <div class="w-12 bg-orange-400 rounded-t transition-all" style="height:${hPct}%"></div>
-                  <span class="text-[11px] font-bold text-slate-600 mt-1">${d.yr}</span>
-                </div>
-              `;
-            })
-            .join("");
+          lbl.textContent = minVal <= 1 ? "縦軸の最小値：1（尺度の最小値）" : `縦軸の最小値：${minVal.toFixed(1)}（差が大きく見える状態）`;
+          lbl.className = minVal <= 1 ? "text-xs font-extrabold text-emerald-800 bg-emerald-100 px-2 py-0.5 rounded" : "text-xs font-extrabold text-rose-700 bg-rose-100 px-2 py-0.5 rounded";
+          document.getElementById("m2-bar-box").innerHTML = monthly.map((d) => {
+            const hPct = Math.max(3, Math.round(((d.val - minVal) / (5 - minVal)) * 100));
+            return `<div class="flex flex-col items-center justify-end h-full w-16">
+                <span class="text-[11px] font-extrabold text-slate-700 mb-1">${ParkData.fmt(d.val, 2)}</span>
+                <div class="w-12 bg-orange-400 rounded-t transition-all" style="height:${hPct}%"></div>
+                <span class="text-[11px] font-bold text-slate-600 mt-1">${d.label}</span></div>`;
+          }).join("");
         };
 
         document.getElementById("btn-m2-stratify").addEventListener("click", () => {
@@ -1665,7 +1686,7 @@
         document.getElementById("m2-axis-slider").addEventListener("input", renderBars);
         renderScatter();
         renderBars();
-        wireLabSaveBox(m, () => "飲食売上と待ち時間の関係は「気温・来園者数」を共通要因とする疑似相関であり、また売上グラフの縦軸起点を0万円に戻すことで誇張を防げることを確認した。");
+        wireLabSaveBox(m, () => `言えること：日別の売店売上と平均待ち時間の相関は r=${ParkData.fmt(rAll, 2)}。まだ言えないこと：来園者数の影響を除くと r=${ParkData.fmt(rPart, 2)} なので、売店と待ち時間に直接の関係があるとは言えない。満足度は${ParkData.fmt(monthly[0].val, 2)}→${ParkData.fmt(monthly[2].val, 2)}だが、縦軸を1から描くと差は小さく見える。`);
         return;
       }
 
@@ -1676,9 +1697,22 @@
           { id: "c2", title: "ケース2：EU在住の観光客がオンラインチケットを購入した際の個人データを、同意やGDPR対応なしで第三者へ販売する", ans: "ng", exp: "❌ 不適切（違法）です（p.29, p.62）。国境をまたぐデータ活用ではGDPR（EU一般データ保護規則）やCCPA等の遵守が必須です。" },
           { id: "c3", title: "ケース3：AIによる入園ゲート顔認証システムで、特定の人種や年齢層だけエラー率が高い状態を放置して運用を続ける", ans: "ng", exp: "❌ 不適切です（p.29）。AI社会原則の「公平性」「透明性」「人間中心の判断」に反します。" }
         ];
+        const piiText = PARK.survey_raw.filter((r) => /\d{3}-\d{4}-\d{4}|会員番号|@/.test(r.free_text || "")).slice(0, 3);
+        const piiMail = PARK.survey_raw.filter((r) => r.email && r.free_text).slice(0, 3);
+        const piiRows = [...piiText, ...piiMail].sort((a, b) => a.response_id - b.response_id);
+        const piiTable = `
+          <div class="bg-white p-3 rounded-lg border border-slate-200 overflow-x-auto">
+            <div class="text-xs font-extrabold text-slate-900 mb-1">📄 受け取ったアンケート元データ（survey_raw の一部）</div>
+            <table class="w-full text-[11px] border-collapse"><thead><tr class="bg-slate-800 text-white">
+              <th class="p-1.5">response_id</th><th class="p-1.5">date</th><th class="p-1.5">age_group</th><th class="p-1.5">free_text</th><th class="p-1.5">email</th></tr></thead>
+              <tbody>${piiRows.map((r) => `<tr class="even:bg-slate-50"><td class="p-1.5">${r.response_id}</td><td class="p-1.5">${r.date}</td><td class="p-1.5">${r.age_group}</td><td class="p-1.5">${r.free_text || ""}</td><td class="p-1.5">${r.email || ""}</td></tr>`).join("")}</tbody></table>
+            <p class="text-[11px] text-slate-500 mt-1">※研修用の架空データです。</p>
+          </div>`;
         box.innerHTML = `
           <div class="bg-sky-50/70 border border-sky-200 rounded-xl p-4 space-y-3">
             <h4 class="text-sm font-extrabold text-slate-900">🛡️ 演習：テーマパークのデータ・AI利活用コンプライアンス判定 (p.29-30, p.62)</h4>
+            ${piiTable}
+            <div class="text-xs font-extrabold text-slate-900 pt-1">⚖️ あわせて、次のデータの使い方は適切か判定してください。</div>
             <div class="space-y-2.5">
               ${cases
                 .map(
@@ -1707,7 +1741,7 @@
             expEl.textContent = (isRight ? "【正解！】 " : "【再確認】 ") + cObj.exp;
           });
         });
-        wireLabSaveBox(m, () => "個人情報保護法・GDPRに基づき、アプリ位置情報や購買履歴は個人を特定できないよう匿名加工・暗号化し、AI社会原則（公平性・透明性・説明責任）を守って運用する。");
+        wireLabSaveBox(m, () => "email 列は分析に不要で個人を特定できるため削除する。free_text には氏名・電話番号・会員番号が混ざる行があるため、伏せ字にしてから使う。");
         return;
       }
 
@@ -1737,15 +1771,15 @@
             <div class="grid grid-cols-1 md:grid-cols-3 gap-3 text-xs">
               <div class="bg-white p-3 rounded-lg border border-slate-200">
                 <strong class="text-sky-800 block mb-1">🌤️ 空（事実・課題の確認）</strong>
-                <textarea id="m4-sky" rows="3" class="w-full border border-slate-300 rounded p-2" placeholder="例：雨の日は屋内アトラクション(Fantasy Castle)の待ち時間が75分以上に急増し満足度が3.1に低下している。">雨の日は屋内系アトラクションの待ち時間が75分以上に急増し、満足度が3.1へ低下している。</textarea>
+                <textarea id="m4-sky" rows="3" class="w-full border border-slate-300 rounded p-2" placeholder="例：部長の資料では、アンケートの満足度が4月から6月で下がっている"></textarea>
               </div>
               <div class="bg-white p-3 rounded-lg border border-slate-200">
                 <strong class="text-sky-800 block mb-1">🌧️ 雨（解釈・課題の深堀）</strong>
-                <textarea id="m4-rain" rows="3" class="w-full border border-slate-300 rounded p-2" placeholder="例：雨天時に屋外から屋内へ人が集中する一方、空いている時間帯やレストランへの誘導がないため待ち疲れが起きている。">雨天時に屋外から屋内へ来園者が集中する一方、時間帯別の混雑案内やレストラン誘導がなく待機列が偏っている。</textarea>
+                <textarea id="m4-rain" rows="3" class="w-full border border-slate-300 rounded p-2" placeholder="例：（仮説）待ち時間が長くなったからでは？ 本当かどうかは M6 以降のデータで確かめる"></textarea>
               </div>
               <div class="bg-white p-3 rounded-lg border border-slate-200">
                 <strong class="text-sky-800 block mb-1">☂️ 傘（結論・アクション）</strong>
-                <textarea id="m4-umb" rows="3" class="w-full border border-slate-300 rounded p-2" placeholder="例：雨天限定でピーク時間帯(11-14時)に使える飲食割引クーポンをアプリ配信し、待機列分散と飲食購買率(KPI)向上を同時達成する。">雨天時のピーク時間帯に使える飲食クーポンをアプリ配信し、屋内待ち時間の分散と飲食購買率(KPI)向上を同時達成する。</textarea>
+                <textarea id="m4-umb" rows="3" class="w-full border border-slate-300 rounded p-2" placeholder="例：（いまは仮の打ち手でよい。最後の M12 で書き直す）"></textarea>
               </div>
             </div>
           </div>
@@ -1774,30 +1808,40 @@
           const s = document.getElementById("m4-sky").value.trim();
           const r = document.getElementById("m4-rain").value.trim();
           const u = document.getElementById("m4-umb").value.trim();
-          return `【空】${s} ➔ 【雨】${r} ➔ 【傘】${u}`;
+          return `KGI＝アンケートの総合満足度。仮説の段階の空・雨・傘：【空】${s} ➔ 【雨】${r} ➔ 【傘】${u}`;
         });
         return;
       }
 
-      // ---- M5 Lab: MECE & Contract / Ethics ----
+      // ---- M5 Lab: 受け取ったアンケートの設問を点検（MECE）＋契約形態 ----
       if (m.labType === "m5_mece_and_contract") {
+        const qs = [
+          { id: "age_group", label: "年代：10代以下／20代／30代／40代／50代／60代以上", ans: "ok", exp: "⭕ MECE です。誰もがちょうど1つに当てはまります。" },
+          { id: "companion", label: "同行者：家族／子ども連れ／友人／カップル／一人", ans: "ng", exp: "❌ 重なりがあります。子どもと来た家族は「家族」と「子ども連れ」のどちらも選べるので、同じ人たちの回答が2つに割れます。" },
+          { id: "visit_type", label: "来園の種類：初回／リピーター／年パス", ans: "ng", exp: "❌ 重なりがあります。年パスを持つ人はリピーターでもあります。「来園回数」と「チケットの種類」を別の設問に分けます。" },
+        ];
+        const counts = (col) => {
+          const g = ParkData.groupBy(PARK.survey_raw, (r) => r[col]);
+          const order = { age_group: ["10代以下", "20代", "30代", "40代", "50代", "60代以上"], companion: ["家族", "子ども連れ", "友人", "カップル", "一人"], visit_type: ["初回", "リピーター", "年パス"] }[col];
+          return order.map((k) => `${k} ${(g.get(k) || []).length.toLocaleString()}件`).join("／");
+        };
         box.innerHTML = `
           <div class="bg-sky-50/70 border border-sky-200 rounded-xl p-4 space-y-3">
-            <h4 class="text-sm font-extrabold text-slate-900">🧩 演習：テーマパーク来園者アンケートの「MECE（漏れ・ダブり）」診断 (p.53)</h4>
-            <p class="text-xs text-slate-600">次の3つのアンケート設問案のうち、どれが「重複あり」で、どれが「漏れあり」で、どれが「MECE（適切）」か判定してみましょう。</p>
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-3 text-xs">
-              <div class="bg-white p-3 rounded-lg border border-slate-200 space-y-1.5">
-                <div class="font-bold">案A：「①10代以下 ②20歳〜30歳 ③30歳〜40歳 ④40歳以上」</div>
-                <p class="text-rose-700 font-bold">➔ ❌ 重複あり（30歳と40歳の人がどちらを選ぶか迷う！）</p>
-              </div>
-              <div class="bg-white p-3 rounded-lg border border-slate-200 space-y-1.5">
-                <div class="font-bold">案B：「①家族連れ ②カップル ③友人グループ」（※1人客がいない）</div>
-                <p class="text-amber-700 font-bold">➔ ❌ 漏れあり（おひとり様・ビジネス利用などが漏れている！）</p>
-              </div>
-              <div class="bg-white p-3 rounded-lg border-2 border-emerald-400 space-y-1.5">
-                <div class="font-bold">案C：「①初回来園 ②2回目〜4回目 ③5回目以上」</div>
-                <p class="text-emerald-700 font-bold">➔ ⭕ MECE！（すべての来園者が必ず1つだけに当てはまる）</p>
-              </div>
+            <h4 class="text-sm font-extrabold text-slate-900">🧩 演習：受け取ったアンケートの設問を「MECE（漏れなくダブりなく）」で点検 (p.53)</h4>
+            <p class="text-xs text-slate-600">マーケティング課が作った実際の設問です。下の件数は、2025年と2026年に集まった回答の数です。それぞれ MECE になっているか判定してください。</p>
+            <div class="space-y-2.5">
+              ${qs.map((q) => `
+                <div class="bg-white p-3 rounded-lg border border-slate-200 flex flex-wrap items-center justify-between gap-2">
+                  <div class="flex-1 min-w-[12rem]">
+                    <p class="text-xs font-bold text-slate-800">${q.label}</p>
+                    <p class="text-[11px] text-slate-500 mt-0.5">${counts(q.id)}</p>
+                  </div>
+                  <div class="flex gap-1.5">
+                    <button type="button" data-qid="${q.id}" data-pick="ok" class="m5-judge-btn px-3 py-1 rounded bg-emerald-100 hover:bg-emerald-200 text-emerald-900 text-xs font-extrabold">⭕ MECE</button>
+                    <button type="button" data-qid="${q.id}" data-pick="ng" class="m5-judge-btn px-3 py-1 rounded bg-rose-100 hover:bg-rose-200 text-rose-900 text-xs font-extrabold">❌ 重なり・漏れあり</button>
+                  </div>
+                  <div id="m5-exp-${q.id}" class="w-full text-xs font-bold mt-1 hidden"></div>
+                </div>`).join("")}
             </div>
             <div class="bg-white p-3 rounded-lg border border-slate-200 text-xs space-y-2">
               <div class="font-extrabold text-slate-900">🔍 ミニ確認：外部ベンダーに「AIによる待ち時間予測モデルの探索的検証」を委託する場合、適した開発手法と契約形態は？（p.57-58）</div>
@@ -1808,113 +1852,135 @@
               <p id="m5-contract-feedback" class="text-xs font-bold"></p>
             </div>
           </div>
-          ${renderLabSaveBox(m, "仮説と異なる分析結果が出たときにデータサイエンティストが取るべき正しい行動 (p.54, p.61)", "例：処理ミスがないか確認し、ミスがなければデータを改ざんせず新しい知見として受け入れる。")}
+          ${renderLabSaveBox(m, "", "")}
         `;
+        box.querySelectorAll(".m5-judge-btn").forEach((btn) => {
+          btn.addEventListener("click", () => {
+            const q = qs.find((x) => x.id === btn.dataset.qid);
+            const expEl = document.getElementById(`m5-exp-${q.id}`);
+            const isRight = btn.dataset.pick === q.ans;
+            expEl.className = `w-full text-xs font-bold mt-1 p-2 rounded ${isRight ? "bg-emerald-50 text-emerald-800" : "bg-amber-50 text-rose-800"}`;
+            expEl.textContent = (isRight ? "【そのとおり】 " : "【もう一度考えましょう】 ") + q.exp;
+          });
+        });
         document.getElementById("m5-btn-agile").addEventListener("click", () => {
           document.getElementById("m5-contract-feedback").innerHTML = "<span class='text-emerald-700'>⭕ 正解！AI開発は事前の性能保証が困難で探索的アプローチが望ましいため、アジャイル型の進行と「準委任契約」が多く採用されます（p.57-58）。</span>";
         });
         document.getElementById("m5-btn-wf").addEventListener("click", () => {
           document.getElementById("m5-contract-feedback").innerHTML = "<span class='text-rose-700'>💡 従来のシステム開発では請負契約が主流ですが、AIの探索的検証では「アジャイル × 準委任契約」が適しています（p.57-58）。</span>";
         });
-        wireLabSaveBox(m, () => "データ受領時はまず背景・定義を確認し、アンケートはMECEに設計する。仮説と異なる結果が出ても改ざんせず、ミス確認のうえで新たな知見として受け入れる。");
+        wireLabSaveBox(m, () => "companion は「家族」と「子ども連れ」が重なるので、「子どもと一緒か（はい／いいえ）」と「同行者の関係」に分ける。visit_type は年パスとリピーターが重なるので、来園回数とチケットの種類を別の設問にする。");
         return;
       }
 
-      // ---- M6 Lab: 4 Major Visualizations (Histogram / Cross-tab / Boxplot / Scatter) ----
+      // ---- M6 Lab: データ確認・理解（4つのグラフを実データで）----
       if (m.labType === "m6_four_charts") {
         box.innerHTML = `
           <div class="bg-sky-50/70 border border-sky-200 rounded-xl p-4 space-y-4">
             <div class="flex flex-wrap items-center justify-between gap-2">
-              <h4 class="text-sm font-extrabold text-slate-900">📊 演習：4大グラフ（ヒストグラム・クロス集計・箱ひげ図・散布図）切り替えラボ (p.78-82)</h4>
+              <h4 class="text-sm font-extrabold text-slate-900">📊 演習：4つのグラフで全体を眺める（ヒストグラム・クロス集計・箱ひげ図・散布図） (p.78-82)</h4>
               <div class="flex flex-wrap gap-1.5">
                 <button type="button" data-tab="hist" class="m6-tab-btn px-3 py-1 rounded-lg bg-[#0f2942] text-white text-xs font-bold">① ヒストグラム (p.78)</button>
                 <button type="button" data-tab="cross" class="m6-tab-btn px-3 py-1 rounded-lg bg-white text-slate-700 border border-slate-300 text-xs font-bold">② クロス集計表 (p.79)</button>
                 <button type="button" data-tab="box" class="m6-tab-btn px-3 py-1 rounded-lg bg-white text-slate-700 border border-slate-300 text-xs font-bold">③ 箱ひげ図 (p.80)</button>
-                <button type="button" data-tab="corr" class="m6-tab-btn px-3 py-1 rounded-lg bg-white text-slate-700 border border-slate-300 text-xs font-bold">④ 相関係数 r (p.81-82)</button>
+                <button type="button" data-tab="corr" class="m6-tab-btn px-3 py-1 rounded-lg bg-white text-slate-700 border border-slate-300 text-xs font-bold">④ 散布図と相関係数 r (p.81-82)</button>
               </div>
             </div>
             <div id="m6-chart-stage" class="bg-white border border-slate-200 rounded-xl p-4"></div>
           </div>
-          ${renderLabSaveBox(m, "4つのグラフを触って確認したテーマパーク待ち時間の特徴", "例：雨の日はファミリー系(屋内)の平均待ち時間が78.5分と長く、来園者数と待ち時間には正の相関がある。")}
+          ${renderLabSaveBox(m, "", "")}
         `;
 
         const stageEl = document.getElementById("m6-chart-stage");
-        const cleanWaits = THEME_PARK_DATA.filter((d) => d.wait !== null && d.wait >= 0 && d.wait < 180);
+        const waitOk = PARK.wait_times_raw.filter((r) => r.wait_time_min !== null && r.wait_time_min < 180 && r.downtime_flag === 0);
+        const weatherOf = new Map(PARK.daily_ops.map((d) => [d.date, d.weather]));
+        const survey = PARK.survey_clean.map((r) => ({ ...r, ym: r.date.slice(0, 7), year: r.date.slice(0, 4), weather: weatherOf.get(r.date) }));
+        const meanCell = (rows, col) => ({ v: ParkData.mean(rows.map((r) => r[col])), n: rows.length });
+        const AGES = ["10代以下", "20代", "30代", "40代", "50代", "60代以上"];
+        const MONTHS = ["2026-04", "2026-05", "2026-06"];
+        const CROSS = {
+          weather_category: { title: "天気 × 分類：平均待ち時間（公式発表、分）", rows: ["sunny", "cloudy", "rainy"], cols: ["thrill", "family", "kids", "indoor", "show"], data: waitOk, rk: "weather", ck: "category", val: "wait_time_min", d: 1 },
+          month_channel: { title: "月 × 回答方法：総合満足度（2026年）", rows: MONTHS, cols: ["paper", "app"], data: survey, rk: "ym", ck: "channel", val: "overall_sat", d: 2 },
+          month_age: { title: "月 × 年代：総合満足度（2026年）", rows: MONTHS, cols: AGES, data: survey, rk: "ym", ck: "age_group", val: "overall_sat", d: 2 },
+          month_wait: { title: "月 × 待ち時間の種類：平均（分、2026年）", custom: true },
+          month_pass: { title: "月 × 優先パス購入：待ち時間の満足度（2026年）", rows: MONTHS, cols: [0, 1], data: survey, rk: "ym", ck: "priority_pass", val: "wait_sat", d: 2 },
+          year_weather: { title: "年 × 天気：総合満足度（前年との比較）", rows: ["2025", "2026"], cols: ["sunny", "cloudy", "rainy"], data: survey, rk: "year", ck: "weather", val: "overall_sat", d: 2 },
+        };
 
-        const renderM6Tab = (tabName, binSize = 20) => {
+        const renderM6Tab = (tabName, binSize = 10) => {
           if (tabName === "hist") {
             const bins = [];
-            for (let b = 0; b < 120; b += binSize) {
-              const cnt = cleanWaits.filter((d) => d.wait >= b && d.wait < b + binSize).length;
-              bins.push({ label: `${b}〜${b + binSize - 1}分`, cnt });
+            for (let b = 0; b < 100; b += binSize) {
+              bins.push({ label: `${b}〜${b + binSize - 1}分`, cnt: waitOk.filter((d) => d.wait_time_min >= b && d.wait_time_min < b + binSize).length });
             }
             const maxCnt = Math.max(1, ...bins.map((x) => x.cnt));
             stageEl.innerHTML = `
               <div class="flex flex-wrap items-center justify-between gap-2 mb-3">
-                <strong class="text-xs sm:text-sm text-slate-900">ヒストグラム（p.78：区間幅を変えると分布の見え方が変化します）</strong>
+                <strong class="text-xs sm:text-sm text-slate-900">ヒストグラム：待ち時間（公式発表）の分布（2026年4〜6月、${waitOk.length.toLocaleString()}件。記録ミスと運休を除く）</strong>
                 <div class="flex gap-1.5 text-xs">
-                  <button type="button" data-bin="10" class="m6-bin-btn px-2.5 py-1 rounded border ${binSize === 10 ? "bg-sky-600 text-white" : "bg-slate-100"} font-bold">区間幅 10分</button>
-                  <button type="button" data-bin="20" class="m6-bin-btn px-2.5 py-1 rounded border ${binSize === 20 ? "bg-sky-600 text-white" : "bg-slate-100"} font-bold">区間幅 20分</button>
-                  <button type="button" data-bin="30" class="m6-bin-btn px-2.5 py-1 rounded border ${binSize === 30 ? "bg-sky-600 text-white" : "bg-slate-100"} font-bold">区間幅 30分</button>
+                  ${[5, 10, 20].map((w) => `<button type="button" data-bin="${w}" class="m6-bin-btn px-2.5 py-1 rounded border ${binSize === w ? "bg-sky-600 text-white" : "bg-slate-100"} font-bold">区間幅 ${w}分</button>`).join("")}
                 </div>
               </div>
-              <div class="space-y-1.5 text-xs">
-                ${bins
-                  .map(
-                    (b) => `
+              <div class="space-y-1 text-xs">
+                ${bins.map((b) => `
                   <div class="grid grid-cols-12 items-center gap-2">
                     <span class="col-span-3 sm:col-span-2 font-mono text-slate-600">${b.label}</span>
-                    <div class="col-span-7 sm:col-span-8 bg-slate-100 h-5 rounded overflow-hidden">
-                      <div class="bg-[#1677a8] h-full" style="width:${((b.cnt / maxCnt) * 100).toFixed(1)}%"></div>
-                    </div>
-                    <strong class="col-span-2 text-right text-slate-800">${b.cnt} 件</strong>
-                  </div>`
-                  )
-                  .join("")}
-              </div>
-            `;
-            stageEl.querySelectorAll(".m6-bin-btn").forEach((b) => {
-              b.addEventListener("click", () => renderM6Tab("hist", Number(b.dataset.bin)));
-            });
+                    <div class="col-span-7 sm:col-span-8 bg-slate-100 h-4 rounded overflow-hidden"><div class="bg-[#1677a8] h-full" style="width:${((b.cnt / maxCnt) * 100).toFixed(1)}%"></div></div>
+                    <strong class="col-span-2 text-right text-slate-800">${b.cnt.toLocaleString()} 件</strong>
+                  </div>`).join("")}
+              </div>`;
+            stageEl.querySelectorAll(".m6-bin-btn").forEach((b) => b.addEventListener("click", () => renderM6Tab("hist", Number(b.dataset.bin))));
           } else if (tabName === "cross") {
-            const weathers = ["sunny", "cloudy", "rainy"];
-            const cats = ["thrill", "family", "kids"];
-            const rows = weathers
-              .map((w) => {
-                const cells = cats
-                  .map((c) => {
-                    const sub = cleanWaits.filter((d) => d.weather === w && d.category === c);
-                    if (!sub.length) return `<td class="p-2 border text-slate-400">-</td>`;
-                    const avg = (sub.reduce((a, b) => a + b.wait, 0) / sub.length).toFixed(1);
-                    const bg = avg >= 65 ? "bg-rose-50 text-rose-900 font-extrabold" : avg >= 40 ? "bg-amber-50 text-amber-900 font-bold" : "bg-emerald-50 text-emerald-900";
-                    return `<td class="p-2 border ${bg}">${avg} 分 <span class="text-[11px] font-normal">(${sub.length}件)</span></td>`;
-                  })
-                  .join("");
-                return `<tr><th class="p-2 border bg-slate-100 text-slate-800">${w}</th>${cells}</tr>`;
-              })
-              .join("");
+            const key = box.dataset.cross || "weather_category";
+            const c = CROSS[key];
+            let table;
+            if (c.custom) {
+              const m26 = PARK.wait_times_clean.filter((r) => r.downtime_flag === 0);
+              const rows = MONTHS.map((ym) => {
+                const s = m26.filter((r) => r.date.startsWith(ym));
+                return `<tr><th class="p-2 border bg-slate-100">${ym}</th><td class="p-2 border">${ParkData.fmt(ParkData.mean(s.map((r) => r.wait_time_min)))} 分</td><td class="p-2 border">${ParkData.fmt(ParkData.mean(s.map((r) => r.wait_standby_min)))} 分</td></tr>`;
+              }).join("");
+              table = `<thead><tr class="bg-slate-800 text-white"><th class="p-2 border">月</th><th class="p-2 border">公式発表（wait_time_min）</th><th class="p-2 border">一般列（wait_standby_min）</th></tr></thead><tbody>${rows}</tbody>`;
+            } else {
+              const head = `<tr class="bg-slate-800 text-white"><th class="p-2 border">${c.rk} ＼ ${c.ck}</th>${c.cols.map((x) => `<th class="p-2 border">${x}</th>`).join("")}</tr>`;
+              const body = c.rows.map((rv) => `<tr><th class="p-2 border bg-slate-100">${rv}</th>${c.cols.map((cv) => {
+                const cell = meanCell(c.data.filter((r) => String(r[c.rk]) === String(rv) && String(r[c.ck]) === String(cv)), c.val);
+                return cell.n ? `<td class="p-2 border">${ParkData.fmt(cell.v, c.d)} <span class="text-[11px] text-slate-500">(${cell.n.toLocaleString()}件)</span></td>` : `<td class="p-2 border text-slate-400">-</td>`;
+              }).join("")}</tr>`).join("");
+              table = `<thead>${head}</thead><tbody>${body}</tbody>`;
+            }
             stageEl.innerHTML = `
-              <strong class="text-xs sm:text-sm text-slate-900 block mb-2">クロス集計表（p.79：天気 × エリア分類ごとの平均待ち時間）</strong>
-              <p class="text-xs text-slate-600 mb-2">2つの因子を掛け合わせると、「晴れの日は絶叫系(thrill)が混むが、雨の日(rainy)はファミリー・屋内系(family)が78.5分と突出して混む」傾向が一目で分かります。</p>
-              <table class="w-full text-xs border-collapse border border-slate-300">
-                <thead><tr class="bg-slate-800 text-white"><th class="p-2 border">天気 ＼ 分類</th><th class="p-2 border">絶叫系 (thrill)</th><th class="p-2 border">ファミリー (family)</th><th class="p-2 border">キッズ (kids)</th></tr></thead>
-                <tbody>${rows}</tbody>
-              </table>
-            `;
+              <div class="flex flex-wrap items-center gap-2 mb-2">
+                <strong class="text-xs sm:text-sm text-slate-900">クロス集計表（p.79）</strong>
+                <select id="m6-cross-select" class="border border-slate-300 rounded px-2 py-1 text-xs max-w-full">
+                  ${Object.entries(CROSS).map(([k, v]) => `<option value="${k}" ${k === key ? "selected" : ""}>${v.title}</option>`).join("")}
+                </select>
+              </div>
+              <p class="text-xs text-slate-600 mb-2">件数（かっこ内）が少ないマスの平均は、ぶれやすいことに注意しましょう。</p>
+              <div class="overflow-x-auto"><table class="w-full text-xs border-collapse border border-slate-300">${table}</table></div>`;
+            document.getElementById("m6-cross-select").addEventListener("change", (e) => { box.dataset.cross = e.target.value; renderM6Tab("cross"); });
           } else if (tabName === "box") {
+            const scale = (v) => 100 + (v / 100) * 300;
+            const attrBoxes = ParkData.ATTRACTIONS.map((a, i) => {
+              const v = waitOk.filter((r) => r.attraction === a).map((r) => r.wait_time_min);
+              const [mn, q1, md, q3, mx] = [0, 0.25, 0.5, 0.75, 1].map((q) => ParkData.quantile(v, q));
+              const y = 14 + i * 22;
+              return `<text x="2" y="${y + 3}" font-size="9" fill="#334155">${a}</text>
+                <line x1="${scale(mn)}" y1="${y}" x2="${scale(mx)}" y2="${y}" stroke="#0f2942"/>
+                <rect x="${scale(q1)}" y="${y - 6}" width="${scale(q3) - scale(q1)}" height="12" fill="#e0f2fe" stroke="#0284c7"><title>${a}：最小${mn} / Q1 ${q1} / 中央値${md} / Q3 ${q3} / 最大${mx}</title></rect>
+                <line x1="${scale(md)}" y1="${y - 6}" x2="${scale(md)}" y2="${y + 6}" stroke="#dc2626" stroke-width="2"/>`;
+            }).join("");
+            const ticks = [0, 20, 40, 60, 80, 100].map((v) => `<text x="${scale(v)}" y="${ParkData.ATTRACTIONS.length * 22 + 14}" font-size="8" text-anchor="middle" fill="#64748b">${v}分</text>`).join("");
             stageEl.innerHTML = `
               <strong class="text-xs sm:text-sm text-slate-900 block mb-2">箱ひげ図と四分位数（スライド p.80 例題データ：1, 2, 6, 7, 10, 12, 15, 18, 19）</strong>
               <p class="text-xs text-slate-600 mb-3">データを昇順に並べたとき、小さい集団の中央値が<strong>第1四分位数(Q1 = 4)</strong>、全体の中央が<strong>中央値(10)</strong>、大きい集団の中央値が<strong>第3四分位数(Q3 = 16.5)</strong>です。</p>
               <svg viewBox="0 0 420 110" class="w-full h-28 bg-slate-50 rounded-lg border border-slate-200">
                 <line x1="30" y1="85" x2="390" y2="85" stroke="#64748b" stroke-width="1.5"/>
-                <!-- Scale ticks 0 to 20 -->
-                <text x="30" y="100" font-size="10" text-anchor="middle">0</text>
                 <text x="48" y="100" font-size="10" text-anchor="middle">1(最小)</text>
                 <text x="102" y="100" font-size="10" text-anchor="middle" fill="#1677a8" font-weight="bold">4(Q1)</text>
                 <text x="210" y="100" font-size="10" text-anchor="middle" fill="#b91c1c" font-weight="bold">10(中央値)</text>
                 <text x="327" y="100" font-size="10" text-anchor="middle" fill="#1677a8" font-weight="bold">16.5(Q3)</text>
                 <text x="372" y="100" font-size="10" text-anchor="middle">19(最大)</text>
-                <!-- Whiskers & Box -->
                 <line x1="48" y1="45" x2="102" y2="45" stroke="#0f2942" stroke-width="2"/>
                 <line x1="327" y1="45" x2="372" y2="45" stroke="#0f2942" stroke-width="2"/>
                 <line x1="48" y1="30" x2="48" y2="60" stroke="#0f2942" stroke-width="2"/>
@@ -1922,29 +1988,32 @@
                 <rect x="102" y="22" width="225" height="46" fill="#e0f2fe" stroke="#0284c7" stroke-width="2.5"/>
                 <line x1="210" y1="22" x2="210" y2="68" stroke="#dc2626" stroke-width="3"/>
               </svg>
-            `;
+              <div class="mt-4 text-xs font-bold text-slate-800">テーマパーク：アトラクション別の待ち時間（公式発表、記録ミスと運休を除く。箱にマウスを重ねると値が出ます）</div>
+              <svg viewBox="0 0 420 ${ParkData.ATTRACTIONS.length * 22 + 20}" class="w-full bg-slate-50 rounded-lg border border-slate-200 mt-1">${attrBoxes}${ticks}</svg>`;
           } else if (tabName === "corr") {
+            const daily26 = PARK.daily_ops.filter((d) => d.year === 2026);
+            const wByDate = new Map([...ParkData.groupBy(waitOk, (r) => r.date)].map(([k, v]) => [k, ParkData.mean(v.map((r) => r.wait_time_min))]));
+            const sByDate = new Map([...ParkData.groupBy(survey.filter((r) => r.year === "2026"), (r) => r.date)].map(([k, v]) => [k, ParkData.mean(v.map((r) => r.overall_sat))]));
+            const PAIRS = {
+              vis_wait: { label: "来園者数 × 平均待ち時間", x: (d) => d.park_visitors, y: (d) => wByDate.get(d.date) },
+              temp_wait: { label: "気温 × 平均待ち時間", x: (d) => d.temperature_c, y: (d) => wByDate.get(d.date) },
+              wait_sat: { label: "平均待ち時間 × アンケート満足度", x: (d) => wByDate.get(d.date), y: (d) => sByDate.get(d.date) },
+            };
+            const pk = box.dataset.pair || "vis_wait";
+            const p = PAIRS[pk];
+            const xs = daily26.map(p.x), ys = daily26.map(p.y);
+            const r = ParkData.pearson(xs, ys);
+            const [x0, x1, y0, y1] = [Math.min(...ParkData.num(xs)), Math.max(...ParkData.num(xs)), Math.min(...ParkData.num(ys)), Math.max(...ParkData.num(ys))];
+            const dots = daily26.map((d, i) => (Number.isFinite(xs[i]) && Number.isFinite(ys[i])
+              ? `<circle cx="${(30 + ((xs[i] - x0) / (x1 - x0)) * 250).toFixed(1)}" cy="${(135 - ((ys[i] - y0) / (y1 - y0)) * 120).toFixed(1)}" r="3" fill="#1677a8" opacity="0.75"><title>${d.date}</title></circle>` : "")).join("");
             stageEl.innerHTML = `
-              <strong class="text-xs sm:text-sm text-slate-900 block mb-2">相関係数 r スライダー体験（スライド p.82：-1 〜 +1 の分布変化）</strong>
-              <div class="flex items-center gap-3 mb-2 text-xs">
-                <span>相関係数を選択:</span>
-                <button type="button" data-r="-0.91" class="m6-r-btn px-2.5 py-1 rounded bg-slate-100 hover:bg-sky-100 font-bold">r = -0.91 (強い負の相関)</button>
-                <button type="button" data-r="0.07" class="m6-r-btn px-2.5 py-1 rounded bg-slate-100 hover:bg-sky-100 font-bold">r = 0.07 (無相関)</button>
-                <button type="button" data-r="0.88" class="m6-r-btn px-2.5 py-1 rounded bg-sky-600 text-white font-bold">r = 0.88 (強い正の相関：来園者数×待ち時間)</button>
+              <div class="flex flex-wrap items-center gap-1.5 mb-2 text-xs">
+                <strong class="text-slate-900 mr-1">散布図と相関係数 r（p.81-82）</strong>
+                ${Object.entries(PAIRS).map(([k, v]) => `<button type="button" data-pair="${k}" class="m6-pair-btn px-2.5 py-1 rounded font-bold ${k === pk ? "bg-sky-600 text-white" : "bg-slate-100"}">${v.label}</button>`).join("")}
               </div>
-              <div id="m6-r-desc" class="text-xs font-bold text-sky-900 bg-sky-50 p-2.5 rounded">
-                現在の表示：強い正の相関（r = +0.88）。来園者数が増えるほど待ち時間も右肩上がりに増加する関係です。
-              </div>
-            `;
-            stageEl.querySelectorAll(".m6-r-btn").forEach((btn) => {
-              btn.addEventListener("click", () => {
-                const rVal = Number(btn.dataset.r);
-                const d = document.getElementById("m6-r-desc");
-                if (rVal < -0.5) d.textContent = `強い負の相関（r = ${rVal}）：一方の値が増えるともう一方が減る右肩下がりの関係（例：待ち時間が長くなるほど満足度が下がる r = -0.85）。`;
-                else if (Math.abs(rVal) < 0.2) d.textContent = `無相関（r = ${rVal}）：2つの変数に直線的な関係が見られない状態。`;
-                else d.textContent = `強い正の相関（r = +${rVal}）：一方が増えるともう一方も増える右肩上がりの関係（例：来園者数と待ち時間）。`;
-              });
-            });
+              <svg viewBox="0 0 290 150" class="w-full h-40 bg-white border border-slate-200 rounded"><line x1="28" y1="10" x2="28" y2="138" stroke="#94a3b8"/><line x1="28" y1="138" x2="285" y2="138" stroke="#94a3b8"/>${dots}</svg>
+              <div class="text-xs font-bold text-sky-900 bg-sky-50 p-2.5 rounded mt-2">${p.label}：r = ${ParkData.fmt(r, 2)}（2026年の90日、1点が1日）</div>`;
+            stageEl.querySelectorAll(".m6-pair-btn").forEach((b) => b.addEventListener("click", () => { box.dataset.pair = b.dataset.pair; renderM6Tab("corr"); }));
           }
         };
 
@@ -1957,63 +2026,70 @@
             renderM6Tab(btn.dataset.tab);
           });
         });
-        renderM6Tab("hist", 20);
-        wireLabSaveBox(m, () => "ヒストグラムで全体分布、クロス集計表で「雨×ファミリー」の混雑(平均78.5分)、箱ひげ図で四分位数(Q1=4, 中央値=10, Q3=16.5)、散布図で相関係数を確認した。");
+        renderM6Tab("hist", 10);
+        wireLabSaveBox(m, () => {
+          const s = (ym, f) => ParkData.mean(survey.filter((r) => r.ym === ym && f(r)).map((r) => r.overall_sat));
+          return `6月は回答方法がアプリだけになり、満足度は5月の紙${ParkData.fmt(s("2026-05", (r) => r.channel === "paper"), 2)}→6月のアプリ${ParkData.fmt(s("2026-06", () => true), 2)}。年代別に見ると下がり幅は小さい。公式の待ち時間は横ばいだが、一般列は伸びている。雨の日の満足度の低さは2025年も同じ。`;
+        });
         return;
       }
 
-      // ---- M7 Lab: Mean vs Median Outlier Seesaw & Deviation Score / Scaling ----
+      // ---- M7 Lab: データ加工（記録ミス・標準化・欠損の偏り）----
       if (m.labType === "m7_stats_and_scaling") {
+        const outlier = PARK.wait_times_raw.find((r) => r.wait_time_min !== null && r.wait_time_min >= 180);
+        const sameDay = PARK.wait_times_raw.filter((r) => r.date === outlier.date && r.attraction === outlier.attraction);
+        const allOfAttr = PARK.wait_times_raw.filter((r) => r.attraction === outlier.attraction && r.downtime_flag === 0);
+        const naRate = (f) => { const s = PARK.survey_raw.filter(f); return s.filter((r) => r.overall_sat === null).length / s.length; };
+        const isP60 = (r) => r.channel === "paper" && r.age_group === "60代以上";
+        const naP60 = naRate(isP60), naOther = naRate((r) => !isP60(r));
+
         box.innerHTML = `
           <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div class="bg-sky-50/70 border border-sky-200 rounded-xl p-4 space-y-3">
-              <div class="flex items-center justify-between">
-                <h4 class="text-xs sm:text-sm font-extrabold text-slate-900">① 外れ値(240分) ON/OFF シーソー (p.83, p.91)</h4>
+              <div class="flex flex-wrap items-center justify-between gap-2">
+                <h4 class="text-xs sm:text-sm font-extrabold text-slate-900">① 記録ミス（240分）を含める／除く (p.83, p.91)</h4>
                 <label class="flex items-center gap-1.5 text-xs font-extrabold text-rose-800 bg-rose-100 px-2.5 py-1 rounded cursor-pointer">
                   <input type="checkbox" id="m7-outlier-toggle" checked>
-                  <span>異常値 240分 を含める</span>
+                  <span>240分を含める</span>
                 </label>
               </div>
-              <p class="text-xs text-slate-600">Sky Coasterの待ち時間データに「入力ミスの240分」が1件混ざったとき、<strong>平均値</strong>と<strong>中央値</strong>がどう動くかスイッチを切り替えて見てください。</p>
-              <div id="m7-seesaw-box" class="bg-white p-3 rounded-lg border border-slate-200 space-y-2 text-xs"></div>
+              <p class="text-xs text-slate-600">元データには待ち時間240分という記録ミスがあります。件数が少ないときと多いときで、<strong>平均値</strong>と<strong>中央値</strong>の動き方を比べましょう。</p>
+              <div id="m7-seesaw-box" class="space-y-2 text-xs"></div>
             </div>
 
             <div class="bg-orange-50/70 border border-orange-200 rounded-xl p-4 space-y-3">
               <h4 class="text-xs sm:text-sm font-extrabold text-slate-900">② 偏差値・標準化(z変換) 計算機 (p.85-86, p.90)</h4>
-              <p class="text-xs text-slate-600">スライドp.85-86の数学・英語の例題と、テーマパークの待ち時間を切り替えて偏差値と標準化zスコアを比較できます。</p>
-              <div class="flex gap-1.5 text-xs">
+              <p class="text-xs text-slate-600">スライド p.85-86 の数学・英語の例題と、テーマパークの実データを切り替えて比べます。</p>
+              <div class="flex flex-wrap gap-1.5 text-xs">
                 <button type="button" id="m7-preset-math" class="px-2.5 py-1 rounded bg-[#0f2942] text-white font-bold">p.86 数学(s=4.5) vs 英語(s=13.4)</button>
-                <button type="button" id="m7-preset-park" class="px-2.5 py-1 rounded bg-white border border-slate-300 font-bold">パーク絶叫系 vs キッズ系</button>
+                <button type="button" id="m7-preset-park" class="px-2.5 py-1 rounded bg-white border border-slate-300 font-bold">パーク：Sky Coaster と Wonder Carousel の最長待ち</button>
               </div>
               <div id="m7-dev-result" class="bg-white p-3 rounded-lg border border-slate-200 text-xs space-y-1.5"></div>
+              <div class="bg-white p-3 rounded-lg border border-slate-200 text-xs space-y-1">
+                <strong>③ 欠損は偏っていないか（アンケートの総合満足度の未回答）</strong>
+                <div>紙で回答した60代以上：<strong class="text-rose-700">${ParkData.fmt(naP60 * 100)}%</strong> ／ それ以外の回答者：<strong>${ParkData.fmt(naOther * 100)}%</strong></div>
+                <div class="text-slate-600">未回答の行をそのまま消すと、どの年代の声が小さくなるでしょうか？</div>
+              </div>
             </div>
           </div>
-          ${renderLabSaveBox(m, "外れ値があるときに平均値と中央値のどちらを見るべきか、また標準化・偏差値のメリット", "例：外れ値がある場合は影響を受けにくい中央値を併用し、分布が異なる対象同士の比較には標準化（z変換）や偏差値を用いる。")}
+          ${renderLabSaveBox(m, "", "")}
         `;
 
         const updateSeesaw = () => {
-          const includeOutlier = document.getElementById("m7-outlier-toggle").checked;
-          const base = [22, 27, 29, 34, 38, 44, 46, 95];
-          const arr = includeOutlier ? [...base, 240] : base;
-          const mean = (arr.reduce((a, b) => a + b, 0) / arr.length).toFixed(1);
-          const sorted = [...arr].sort((a, b) => a - b);
-          const mid = Math.floor(sorted.length / 2);
-          const median = (sorted.length % 2 ? sorted[mid] : (sorted[mid - 1] + sorted[mid]) / 2).toFixed(1);
-          document.getElementById("m7-seesaw-box").innerHTML = `
-            <div class="text-[11px] text-slate-500">対象データ: [${arr.join(", ")}] 分</div>
-            <div class="grid grid-cols-2 gap-2 pt-1">
-              <div class="p-2.5 rounded-lg ${includeOutlier ? "bg-rose-50 border border-rose-300" : "bg-slate-50 border"}">
-                <span class="text-slate-500 block">算術平均値</span>
-                <strong class="text-lg ${includeOutlier ? "text-rose-700" : "text-slate-900"}">${mean} 分</strong>
-                <span class="block text-[11px] text-rose-600">${includeOutlier ? "▲ 240分に強く引っ張られる！" : "✓ 実態に近い値"}</span>
+          const inc = document.getElementById("m7-outlier-toggle").checked;
+          const pick = (rows) => rows.map((r) => r.wait_time_min).filter((v) => v !== null && (inc || v < 180));
+          const card = (title, arr, showValues) => `
+            <div class="p-2.5 rounded-lg bg-white border border-slate-200">
+              <div class="text-[11px] text-slate-500">${title}（${arr.length}件）${showValues ? `：[${arr.join(", ")}] 分` : ""}</div>
+              <div class="grid grid-cols-2 gap-2 pt-1">
+                <div>平均値 <strong class="text-base ${inc ? "text-rose-700" : "text-slate-900"}">${ParkData.fmt(ParkData.mean(arr))}分</strong></div>
+                <div>中央値 <strong class="text-base text-emerald-800">${ParkData.fmt(ParkData.median(arr))}分</strong></div>
               </div>
-              <div class="p-2.5 rounded-lg bg-emerald-50 border border-emerald-300">
-                <span class="text-slate-500 block">中央値 (Median)</span>
-                <strong class="text-lg text-emerald-800">${median} 分</strong>
-                <span class="block text-[11px] text-emerald-700">✓ 外れ値があってもほぼ動かない！</span>
-              </div>
-            </div>
-          `;
+            </div>`;
+          document.getElementById("m7-seesaw-box").innerHTML =
+            card(`${outlier.date} の ${outlier.attraction}（その日の5時間帯）`, pick(sameDay), true) +
+            card(`${outlier.attraction} の4〜6月すべて`, pick(allOfAttr), false) +
+            `<p class="text-[11px] text-slate-600">件数が少ないと、1件の記録ミスで平均が大きく動きます。件数が多いと影響は薄まりますが、なくなるわけではありません。</p>`;
         };
 
         const showDevPreset = (mode) => {
@@ -2022,14 +2098,16 @@
             el.innerHTML = `
               <div><strong>📘 数学（平均79点、標準偏差 s=4.5、Aさん90点）：</strong><br>標準化 z = (90-79)÷4.5 = <strong>+2.44</strong> ➔ 偏差値 = <strong>74.4</strong></div>
               <div><strong>📗 英語（平均79点、標準偏差 s=13.4、Aさん90点）：</strong><br>標準化 z = (90-79)÷13.4 = <strong>+0.82</strong> ➔ 偏差値 = <strong>58.2</strong></div>
-              <div class="text-sky-800 font-bold pt-1">💡 同じ「90点（平均79点）」でも、ばらつき（標準偏差）が小さい数学の方が圧倒的に価値が高いことが分かります！</div>
-            `;
+              <div class="text-sky-800 font-bold pt-1">💡 同じ「90点（平均79点）」でも、ばらつき（標準偏差）が小さい数学の方が価値が高いことが分かります。</div>`;
           } else {
-            el.innerHTML = `
-              <div><strong>🎢 Kids Train（平均20分、標準偏差 s=5分、現在35分待ち）：</strong><br>標準化 z = (35-20)÷5 = <strong>+3.00 (3σ超えの外れ値！)</strong> ➔ 混雑偏差値 = <strong>80.0</strong></div>
-              <div><strong>🚀 Sky Coaster（平均50分、標準偏差 s=20分、現在60分待ち）：</strong><br>標準化 z = (60-50)÷20 = <strong>+0.50</strong> ➔ 混雑偏差値 = <strong>55.0</strong></div>
-              <div class="text-sky-800 font-bold pt-1">💡 分数だけ見ると60分の方が長いですが、標準化すると「Kids Trainの35分待ち（+3σ）」の方が異常事態だと検知できます！</div>
-            `;
+            const zOf = (a) => {
+              const v = PARK.wait_times_clean.filter((r) => r.attraction === a && r.downtime_flag === 0).map((r) => r.wait_time_min);
+              const mu = ParkData.mean(v), sd = ParkData.std(v), x = Math.max(...v);
+              return { a, mu, sd, x, z: (x - mu) / sd };
+            };
+            el.innerHTML = [zOf("Sky Coaster"), zOf("Wonder Carousel")].map((s) =>
+              `<div><strong>${s.a}（平均${ParkData.fmt(s.mu)}分、標準偏差${ParkData.fmt(s.sd)}分、最長${s.x}分）</strong><br>z = (${s.x}−${ParkData.fmt(s.mu)})÷${ParkData.fmt(s.sd)} = <strong>${ParkData.fmt(s.z, 2)}</strong> ➔ 偏差値 ${ParkData.fmt(50 + 10 * s.z)}</div>`).join("")
+              + `<div class="text-sky-800 font-bold pt-1">💡 分数の長さと、「いつもと比べてどれだけ混んでいるか」は別のものです。</div>`;
           }
         };
 
@@ -2038,7 +2116,7 @@
         document.getElementById("m7-preset-park").addEventListener("click", () => showDevPreset("park"));
         updateSeesaw();
         showDevPreset("math");
-        wireLabSaveBox(m, () => "異常値240分を除くと平均値が63.9分から41.9分へ適正化されることを確認。また標準偏差を用いた標準化・偏差値により異なる分布間で比較できることを体験した。");
+        wireLabSaveBox(m, () => `${outlier.date} の ${outlier.attraction} は240分の記録ミスで平均が大きく動くため除外し、中央値も確認する。満足度の未回答は紙の60代以上で${ParkData.fmt(naP60 * 100)}%と偏っているので、そのまま消すと高年代の声が小さくなる。`);
         return;
       }
 
@@ -2063,7 +2141,7 @@
                   🎲 標本抽出を実行
                 </button>
               </div>
-              <p class="text-xs text-slate-600">サンプルサイズ $n=5$ と $n=50$ で無作為抽出したとき、どちらが母平均（48.5分）の近くに安定するか（標準誤差 $\sigma/\sqrt{n}$）ボタンを押して比べてください。</p>
+              <p class="text-xs text-slate-600">2026年4月のアンケート回答（紙）を母集団とみなし、n=15（6月のアプリの1日分）と n=400（6月のひと月分）で20回ずつ抽出します。標本平均のばらつき（標準誤差 σ/√n）を比べてください。</p>
               <div id="m8-sample-box" class="bg-white p-3 rounded-lg border border-slate-200 text-xs space-y-2"></div>
             </div>
           </div>
@@ -2091,20 +2169,19 @@
           }
         };
 
+        const pop = ParkData.num(PARK.survey_clean.filter((r) => r.date.startsWith("2026-04")).map((r) => r.overall_sat));
+        const mu = ParkData.mean(pop), sigma = ParkData.std(pop);
+        const draw = (n) => { const out = []; for (let k = 0; k < n; k++) out.push(pop[Math.floor(Math.random() * pop.length)]); return ParkData.mean(out); };
         const runSampleSim = () => {
-          const popMean = 48.5;
-          const popStd = 21.0;
-          const n5Mean = (popMean + (Math.random() - 0.5) * 24).toFixed(1);
-          const n50Mean = (popMean + (Math.random() - 0.5) * 5.5).toFixed(1);
-          document.getElementById("m8-sample-box").innerHTML = `
-            <div>母集団：母平均 $\\mu = 48.5$分 / 母標準偏差 $\\sigma = 21.0$分</div>
-            <div class="p-2 rounded bg-amber-50 border border-amber-200">
-              <strong>小標本 ($n = 5$)：</strong> 今回の標本平均 = <strong>${n5Mean} 分</strong> （標準誤差 $\\sigma/\\sqrt{5} = 9.39$分 ➔ ブレが大きい）
-            </div>
-            <div class="p-2 rounded bg-emerald-50 border border-emerald-200">
-              <strong>大標本 ($n = 50$)：</strong> 今回の標本平均 = <strong>${n50Mean} 分</strong> （標準誤差 $\\sigma/\\sqrt{50} = 2.97$分 ➔ 母平均にピタッと安定！）
-            </div>
-          `;
+          const rows = [15, 400].map((n) => {
+            const means = Array.from({ length: 20 }, () => draw(n));
+            const lo = Math.min(...means), hi = Math.max(...means);
+            return `<div class="p-2 rounded ${n === 15 ? "bg-amber-50 border border-amber-200" : "bg-emerald-50 border border-emerald-200"}">
+              <strong>n = ${n}：</strong>20回の標本平均の範囲 ${ParkData.fmt(lo, 2)}〜${ParkData.fmt(hi, 2)}（幅 ${ParkData.fmt(hi - lo, 2)}）<br>
+              標準誤差 σ/√n = ${ParkData.fmt(sigma, 2)}/√${n} = <strong>${ParkData.fmt(sigma / Math.sqrt(n), 3)}</strong></div>`;
+          }).join("");
+          document.getElementById("m8-sample-box").innerHTML = `<div>母集団（2026年4月）：平均 μ = ${ParkData.fmt(mu, 2)} ／ 標準偏差 σ = ${ParkData.fmt(sigma, 2)} ／ ${pop.length.toLocaleString()}件</div>${rows}
+            <div class="text-slate-600">1日分（n=15）の満足度が前日より0.2下がっても、それだけでは誤差と区別できません。</div>`;
         };
 
         document.getElementById("m8-bayes-slide").addEventListener("click", () => renderBayes("slide"));
@@ -2112,12 +2189,32 @@
         document.getElementById("m8-btn-sample").addEventListener("click", runSampleSim);
         renderBayes("slide");
         runSampleSim();
-        wireLabSaveBox(m, () => "ベイズの定理により事後確率(0.72)を算出し、標本抽出においてサンプルサイズnを大きくすると標準誤差(σ/√n)が小さくなることを確認した。");
+        wireLabSaveBox(m, () => `母集団の標準偏差は${ParkData.fmt(sigma, 2)}。n=15 の標準誤差は${ParkData.fmt(sigma / Math.sqrt(15), 2)}で、1日単位の変化は誤差に埋もれる。月単位（n≈400）なら標準誤差は${ParkData.fmt(sigma / Math.sqrt(400), 3)}で、0.3の低下は誤差の範囲を超える。ただし回答者の構成が変わっているので、差の理由は別に確かめる必要がある。`);
         return;
       }
 
       // ---- M9 Lab: Calculus Derivative (AI Gradient) & ML 3 Types ----
       if (m.labType === "m9_math_and_ml") {
+        const scLeak = PARK.survey_clean.filter((r) => r.overall_sat !== null);
+        const unhappy = (r) => r.overall_sat <= 2;
+        const rule = (f) => {
+          const tp = scLeak.filter((r) => f(r) && unhappy(r)).length;
+          const fp = scLeak.filter((r) => f(r) && !unhappy(r)).length;
+          const fn = scLeak.filter((r) => !f(r) && unhappy(r)).length;
+          return { precision: tp / (tp + fp || 1), recall: tp / (tp + fn || 1) };
+        };
+        const leakRows = [
+          ["待ち時間の満足度が2以下", rule((r) => r.wait_sat <= 2)],
+          ["優先パスを買っていない（2026年5月以降）", rule((r) => r.date >= "2026-05-01" && r.priority_pass === 0)],
+          ["苦情記録あり（complaint_flag=1）", rule((r) => r.complaint_flag === 1)],
+        ];
+        const leakHtml = `
+          <div class="bg-white p-3 rounded-lg border border-slate-200 text-xs mt-3 space-y-1">
+            <strong>③ 不満（総合満足度2以下）を見つける「ルール」の成績</strong>
+            ${leakRows.map(([l, s]) => `<div>${l}：適合率 ${ParkData.fmt(s.precision * 100)}% ／ 再現率 ${ParkData.fmt(s.recall * 100)}%</div>`).join("")}
+            <div class="text-slate-500">適合率＝「不満」と判定した人のうち本当に不満だった割合。再現率＝本当に不満だった人のうち見つけられた割合。</div>
+            <div class="text-slate-700 font-bold">一番成績の良い列は、来園中の「予測したいその時点」で手に入るでしょうか？ データ辞書の説明を確かめましょう。</div>
+          </div>`;
         box.innerHTML = `
           <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div class="bg-sky-50/70 border border-sky-200 rounded-xl p-4 space-y-3">
@@ -2137,6 +2234,7 @@
                 <div>🔹 <strong>強化学習（p.125-126）</strong>：自律清掃ロボットが試行錯誤で最適巡回ルートを学習する</div>
                 <div>🔹 <strong>生成AI / LLM（p.127）</strong>：多言語対応のパーク案内チャットボットで自然な回答文を生成する</div>
               </div>
+              ${leakHtml}
             </div>
           </div>
           ${renderLabSaveBox(m, "テーマパークまたはあなたの職場で使ってみたい機械学習の手法（回帰・分類・クラスタリング・強化学習・LLM）", "例：過去の天候と曜日から来園者数を予測する「教師あり学習（回帰）」をシフト作成に活用したい。")}
@@ -2157,7 +2255,7 @@
         };
         document.getElementById("m9-x-slider").addEventListener("input", updateDeriv);
         updateDeriv();
-        wireLabSaveBox(m, () => "微分 f'(x)=4x による接線の傾きとAIの誤差最小化の仕組みを確認し、教師あり(回帰/分類)・教師なし(クラスタリング)・強化学習・LLMの使い分けを整理した。");
+        wireLabSaveBox(m, () => "complaint_flag は回答のあとに苦情窓口で付く記録なので、来園中に不満を予測する時点では手に入らない（リーク）。使えるのは来園中に分かる列（優先パスの有無、天気、待ち時間など）だけにする。");
         return;
       }
 
@@ -2173,7 +2271,7 @@
               </div>
               <div class="bg-white p-3 rounded-lg border border-slate-200">
                 <strong class="text-sky-900 block mb-1">② DWH (p.139)</strong>
-                <p class="text-slate-600">分析用に構造化テーブル（<code>theme_park</code>等）へ整形・格納し、SQLクエリで時間帯別・天候別に高速集計。</p>
+                <p class="text-slate-600">分析用に構造化テーブル（<code>wait_times</code>・<code>survey</code>等）へ整形・格納し、SQLクエリで時間帯別・天候別に高速集計。</p>
               </div>
               <div class="bg-white p-3 rounded-lg border border-slate-200">
                 <strong class="text-sky-900 block mb-1">③ BIツール (p.140)</strong>
@@ -2203,21 +2301,21 @@
             else out.textContent = "バックアップ比較（p.144）：「フル」は全体保存で時間長・復旧簡便。「差分」はフル以降の更新分、「増分」は前回バックアップ以降の更新分のみ保存するためバックアップ時間は最短ですが復旧手順は複雑になります。";
           });
         });
-        wireLabSaveBox(m, () => "データレイク(生データ集約)→DWH(SQL分析用蓄積)→BI(可視化・共有)のパイプラインと、ホットスタンバイ・バックアップ3方式(フル/差分/増分)を確認した。");
+        wireLabSaveBox(m, () => "毎週見る KPI：一般列の待ち時間（中央値と60分超の割合）、優先パスを買っていない人の満足度、回答方法・年代別の満足度。平均だけでなく、グループ別と前年同週も並べる。");
         return;
       }
 
-      // ---- M11 Lab: Interactive SQL Lab (theme_park + students + club) & 5 Samplings ----
+      // ---- M11 Lab: SQL (wait_times + survey + students + club) & 5 Samplings ----
       if (m.labType === "m11_sql_and_sampling") {
         box.innerHTML = `
           <div class="bg-sky-50/70 border border-sky-200 rounded-xl p-4 space-y-3">
             <div class="flex flex-wrap items-center justify-between gap-2">
-              <h4 class="text-sm font-extrabold text-slate-900">💻 演習：ブラウザで動く SQL Lab（スライド p.153-157 ＆ テーマパーク両対応）</h4>
+              <h4 class="text-sm font-extrabold text-slate-900">💻 演習：SQL で集計し直す（スライド p.153-157）</h4>
               <span class="text-xs font-bold text-sky-800">ボタンを押すかSQLを編集して「SQL実行」を押してください</span>
             </div>
             <div class="flex flex-wrap gap-1.5 text-xs">
-              <button type="button" data-sql="SELECT category, AVG(wait), COUNT(*) FROM theme_park GROUP BY category;" class="m11-sql-preset px-2.5 py-1 rounded bg-white border border-sky-300 font-bold text-sky-900">① パーク：分類別の平均待ち時間</button>
-              <button type="button" data-sql="SELECT date, attraction, weather, wait FROM theme_park WHERE weather = 'rainy' ORDER BY wait DESC;" class="m11-sql-preset px-2.5 py-1 rounded bg-white border border-sky-300 font-bold text-sky-900">② パーク：雨の日を待ち時間順</button>
+              <button type="button" data-sql="SELECT channel, AVG(overall_sat), COUNT(*) FROM survey WHERE date >= '2026-06-01' GROUP BY channel;" class="m11-sql-preset px-2.5 py-1 rounded bg-white border border-sky-300 font-bold text-sky-900">① 6月の回答方法別の満足度</button>
+              <button type="button" data-sql="SELECT category, AVG(wait_time_min), COUNT(*) FROM wait_times GROUP BY category;" class="m11-sql-preset px-2.5 py-1 rounded bg-white border border-sky-300 font-bold text-sky-900">② 分類別の平均待ち時間</button>
               <button type="button" data-sql="SELECT student_id, l_name, f_name, birth_date, pref, club_id FROM students WHERE student_id = 101;" class="m11-sql-preset px-2.5 py-1 rounded bg-orange-50 border border-orange-300 font-bold text-orange-900">③ p.154 SELECT+WHERE (101)</button>
               <button type="button" data-sql="SELECT student_id, l_name, f_name, height FROM students WHERE height >= 180;" class="m11-sql-preset px-2.5 py-1 rounded bg-orange-50 border border-orange-300 font-bold text-orange-900">④ p.155 height >= 180</button>
               <button type="button" data-sql="SELECT student_id, l_name, f_name, height FROM students ORDER BY height;" class="m11-sql-preset px-2.5 py-1 rounded bg-orange-50 border border-orange-300 font-bold text-orange-900">⑤ p.156 ORDER BY height</button>
@@ -2226,7 +2324,7 @@
               <button type="button" data-sql="DELETE FROM club WHERE club_id = 50;" class="m11-sql-preset px-2.5 py-1 rounded bg-rose-50 border border-rose-300 font-bold text-rose-900">⑧ p.157 DELETE (50削除)</button>
             </div>
             <div class="flex gap-2">
-              <input id="m11-sql-input" type="text" value="SELECT category, AVG(wait), COUNT(*) FROM theme_park GROUP BY category;" class="flex-1 font-mono text-xs bg-slate-900 text-sky-200 px-3 py-2 rounded-lg border border-slate-700">
+              <input id="m11-sql-input" type="text" value="SELECT category, AVG(wait_time_min), COUNT(*) FROM wait_times GROUP BY category;" class="flex-1 font-mono text-xs bg-slate-900 text-sky-200 px-3 py-2 rounded-lg border border-slate-700">
               <button type="button" id="m11-sql-run" class="bg-[#1677a8] hover:bg-[#125e85] text-white text-xs font-extrabold px-4 py-2 rounded-lg shrink-0">▶ SQL実行</button>
             </div>
             <div id="m11-sql-status" class="text-xs font-bold text-slate-700"></div>
@@ -2234,7 +2332,7 @@
               <table id="m11-sql-table" class="w-full text-xs text-left border-collapse"></table>
             </div>
           </div>
-          ${renderLabSaveBox(m, "実行したSQL文と結果のメモ", "例：SELECT category, AVG(wait) FROM theme_park GROUP BY category; を実行し分類別平均を確認。")}
+          ${renderLabSaveBox(m, "実行したSQL文と結果のメモ", "")}
         `;
 
         const runM11Sql = () => {
@@ -2297,27 +2395,19 @@
               return;
             }
 
-            // Default: theme_park queries
-            const cleanPark = THEME_PARK_DATA.filter((d) => d.wait !== null && d.wait >= 0 && d.wait < 180);
-            if (/GROUP\s+BY\s+category/i.test(rawQ)) {
-              const cats = ["thrill", "family", "kids"];
-              const out = cats.map((c) => {
-                const sub = cleanPark.filter((d) => d.category === c);
-                return {
-                  category: c,
-                  "AVG(wait)": (sub.reduce((a, b) => a + b.wait, 0) / sub.length).toFixed(1) + "分",
-                  "COUNT(*)": sub.length + "件"
-                };
-              });
-              stEl.textContent = "✅ theme_park 集計結果（GROUP BY category）";
-              renderSimpleTable(tblEl, ["category", "AVG(wait)", "COUNT(*)"], out);
-            } else if (/weather\s*=\s*'rainy'/i.test(rawQ)) {
-              const out = cleanPark.filter((d) => d.weather === "rainy").sort((a, b) => b.wait - a.wait);
-              stEl.textContent = "✅ theme_park 抽出結果（WHERE weather = 'rainy' ORDER BY wait DESC）";
-              renderSimpleTable(tblEl, ["date", "attraction", "category", "weather", "wait", "sat"], out);
+            if (/FROM\s+survey/i.test(rawQ) && /GROUP\s+BY\s+channel/i.test(rawQ)) {
+              const rows = PARK.survey_clean.filter((r) => !/WHERE/i.test(rawQ) || r.date >= "2026-06-01");
+              const out = [...ParkData.groupBy(rows, (r) => r.channel)].map(([k, v]) => ({ channel: k, "AVG(overall_sat)": ParkData.fmt(ParkData.mean(v.map((r) => r.overall_sat)), 2), "COUNT(*)": v.length }));
+              stEl.textContent = "✅ survey 集計結果（GROUP BY channel）";
+              renderSimpleTable(tblEl, ["channel", "AVG(overall_sat)", "COUNT(*)"], out);
+            } else if (/FROM\s+wait_times/i.test(rawQ) && /GROUP\s+BY\s+category/i.test(rawQ)) {
+              const rows = PARK.wait_times_clean.filter((r) => r.downtime_flag === 0);
+              const out = [...ParkData.groupBy(rows, (r) => r.category)].map(([k, v]) => ({ category: k, "AVG(wait_time_min)": ParkData.fmt(ParkData.mean(v.map((r) => r.wait_time_min))), "COUNT(*)": v.length }));
+              stEl.textContent = "✅ wait_times 集計結果（GROUP BY category）";
+              renderSimpleTable(tblEl, ["category", "AVG(wait_time_min)", "COUNT(*)"], out);
             } else {
-              stEl.textContent = "✅ theme_park テーブル表示";
-              renderSimpleTable(tblEl, ["date", "weather", "attraction", "category", "wait", "sat", "sales"], cleanPark.slice(0, 12));
+              stEl.textContent = "ℹ️ この画面では、上のボタンの SQL だけが実行できます。自由な SQL は「SQL Lab」ページで試してください。";
+              renderSimpleTable(tblEl, ["table", "rows"], [{ table: "wait_times", rows: PARK.wait_times_clean.length }, { table: "survey", rows: PARK.survey_clean.length }, { table: "daily_ops", rows: PARK.daily_ops.length }]);
             }
           } catch (e) {
             stEl.textContent = "⚠️ SQLを確認してください: " + e.message;
@@ -2339,7 +2429,7 @@
         });
         document.getElementById("m11-sql-run").addEventListener("click", runM11Sql);
         runM11Sql();
-        wireLabSaveBox(m, () => `実行SQL: ${document.getElementById("m11-sql-input").value} を検証し、SELECT/WHERE/ORDER BY/INSERT/UPDATE/DELETEの動作を確認した。`);
+        wireLabSaveBox(m, () => "回答方法（紙・アプリ）と年代で層に分け、2026年4月の構成比に合わせて各層から抽出する（層化抽出）。");
         return;
       }
 
@@ -2379,7 +2469,11 @@
         document.getElementById("m12-btn-pub").addEventListener("click", () => {
           document.getElementById("m12-crypto-box").innerHTML = "<strong>🔑 公開鍵暗号方式（p.168）：</strong><br>暗号鍵と復号鍵が<strong>異なる</strong>方式。暗号鍵（公開鍵）を公開し、復号鍵（秘密鍵）を厳重に管理することで安全にやり取りできます。";
         });
-        wireLabSaveBox(m, () => "情報セキュリティの3要素（機密性・完全性・可用性）と公開鍵暗号方式の仕組みを確認し、全12モジュールのDS検定演習を完了した。");
+        wireLabSaveBox(m, () => {
+          const r = studentState.labResponses;
+          const pick = (ids) => ids.map((id) => r[id]).filter(Boolean).join(" ／ ") || "（まだ記録がありません）";
+          return `【空】${pick(["m2", "m4"])}\n【雨】${pick(["m6", "m8"])}\n【傘】${pick(["m10", "m11"])}`;
+        });
       }
     }
 
@@ -2390,49 +2484,30 @@
       const w = document.getElementById("exp-weather").value;
       const c = document.getElementById("exp-category").value;
       const mode = document.getElementById("exp-clean").value;
-
-      let rows = THEME_PARK_DATA.filter((d) => (!w || d.weather === w) && (!c || d.category === c));
-      if (mode === "clean") {
-        rows = rows.filter((d) => d.wait !== null && d.wait >= 0 && d.wait < 180);
+      if (!PARK) {
+        document.getElementById("exp-metrics").innerHTML = "";
+        document.getElementById("exp-tbody").innerHTML = `<tr><td colspan="12" class="p-2">${PARK_ERROR ? "データを読み込めませんでした：" + PARK_ERROR : "データを読み込んでいます…"}</td></tr>`;
+        return;
       }
-
-      const validWaits = rows.map((r) => r.wait).filter((v) => v !== null && Number.isFinite(v));
-      const mean = validWaits.length ? (validWaits.reduce((a, b) => a + b, 0) / validWaits.length).toFixed(1) : "-";
-      const sorted = [...validWaits].sort((a, b) => a - b);
-      const mid = Math.floor(sorted.length / 2);
-      const median = sorted.length ? (sorted.length % 2 ? sorted[mid] : (sorted[mid - 1] + sorted[mid]) / 2).toFixed(1) : "-";
-      const max = validWaits.length ? Math.max(...validWaits) : "-";
-
-      document.getElementById("exp-metrics").innerHTML = `
-        <div class="bg-sky-50 border border-sky-200 p-2.5 rounded-lg"><span>該当件数</span><strong class="block text-sm text-slate-900">${rows.length} 件</strong></div>
-        <div class="bg-sky-50 border border-sky-200 p-2.5 rounded-lg"><span>平均待ち時間</span><strong class="block text-sm text-slate-900">${mean} 分</strong></div>
-        <div class="bg-sky-50 border border-sky-200 p-2.5 rounded-lg"><span>中央値</span><strong class="block text-sm text-slate-900">${median} 分</strong></div>
-        <div class="bg-sky-50 border border-sky-200 p-2.5 rounded-lg"><span>最大待ち時間</span><strong class="block text-sm text-slate-900">${max} 分</strong></div>
-        <div class="bg-sky-50 border border-sky-200 p-2.5 rounded-lg"><span>異常値/欠損状態</span><strong class="block text-sm text-rose-700">${mode === "clean" ? "除外済み" : "生データ(240分/-10分含)"}</strong></div>
-      `;
-
-      document.getElementById("exp-tbody").innerHTML = rows
-        .map((r) => {
-          const isOut = r.wait !== null && (r.wait >= 180 || r.wait < 0);
-          const isMiss = r.wait === null || r.sat === null;
-          const cls = isOut ? "bg-rose-100 font-bold text-rose-900" : isMiss ? "bg-amber-100 font-bold text-amber-900" : "even:bg-slate-50";
-          return `
-            <tr class="${cls}">
-              <td class="p-2">${r.id}</td>
-              <td class="p-2">${r.date} (${r.dow})</td>
-              <td class="p-2">${r.weather}</td>
-              <td class="p-2">${r.temp}℃</td>
-              <td class="p-2">${r.visitors.toLocaleString()}</td>
-              <td class="p-2">${r.attraction}</td>
-              <td class="p-2">${r.category}</td>
-              <td class="p-2">${r.hour}:00</td>
-              <td class="p-2">${r.wait === null ? "欠損(NULL)" : r.wait + "分"}</td>
-              <td class="p-2">${r.sat === null ? "欠損(NULL)" : r.sat}</td>
-              <td class="p-2">${r.sales.toLocaleString()}円</td>
-            </tr>
-          `;
-        })
-        .join("");
+      let rows = PARK.wait_times_raw.filter((d) => (!w || d.weather === w) && (!c || d.category === c));
+      if (mode === "clean") rows = rows.filter((d) => d.wait_time_min !== null && d.wait_time_min < 180 && d.downtime_flag === 0);
+      const waits = rows.map((r) => r.wait_time_min);
+      const nums = ParkData.num(waits);
+      document.getElementById("exp-metrics").innerHTML = [
+        ["該当件数", `${rows.length.toLocaleString()} 件`], ["平均待ち時間", `${ParkData.fmt(ParkData.mean(waits))} 分`],
+        ["中央値", `${ParkData.fmt(ParkData.median(waits))} 分`], ["最大", `${nums.length ? Math.max(...nums) : "-"} 分`],
+        ["状態", mode === "clean" ? "記録ミス・運休を除外" : "元データ（記録ミス・欠損を含む）"],
+      ].map(([k, v]) => `<div class="bg-sky-50 border border-sky-200 p-2.5 rounded-lg"><span>${k}</span><strong class="block text-sm text-slate-900">${v}</strong></div>`).join("");
+      const cell = (v, unit = "") => (v === null ? "欠損" : `${typeof v === "number" ? v.toLocaleString() : v}${unit}`);
+      document.getElementById("exp-tbody").innerHTML = rows.slice(0, 200).map((r) => {
+        const isOut = r.wait_time_min !== null && r.wait_time_min >= 180;
+        const isMiss = r.temperature_c === null || (r.satisfaction_1to5 === null && r.downtime_flag === 0);
+        const cls = isOut ? "bg-rose-100 font-bold text-rose-900" : isMiss ? "bg-amber-100 font-bold text-amber-900" : "even:bg-slate-50";
+        return `<tr class="${cls}"><td class="p-2">${r.record_id}</td><td class="p-2">${r.date} (${r.day_of_week})</td><td class="p-2">${r.weather}</td>
+          <td class="p-2">${cell(r.temperature_c, "℃")}</td><td class="p-2">${cell(r.park_visitors)}</td><td class="p-2">${r.attraction}</td>
+          <td class="p-2">${r.category}</td><td class="p-2">${r.hour}:00</td><td class="p-2">${cell(r.wait_time_min, "分")}</td>
+          <td class="p-2">${cell(r.wait_standby_min, "分")}</td><td class="p-2">${r.downtime_flag ? "運休" : cell(r.satisfaction_1to5)}</td><td class="p-2">${cell(r.food_sales_yen, "円")}</td></tr>`;
+      }).join("") + (rows.length > 200 ? `<tr><td colspan="12" class="p-2 text-slate-500">…ほか ${(rows.length - 200).toLocaleString()} 件（すべて見るには「Excel風操作」ページへ）</td></tr>` : "");
     }
 
     // =========================================================================
@@ -2440,11 +2515,11 @@
     // =========================================================================
     function seedDemoStudents() {
       const demoProfiles = [
-        { name: "佐藤 健太 (営業1課)", dept: "営業本部", preRate: 0.55, postRate: 0.95, sru: "【空】雨天時は屋内Fantasy Castleが75分超待ち【雨】屋外からの流入が集中【傘】11-14時飲食クーポンで分散" },
-        { name: "鈴木 陽菜 (企画部)", dept: "経営企画", preRate: 0.65, postRate: 1.0, sru: "【空】240分の異常値混入で平均が歪んでいた【雨】外れ値除外と中央値確認が必要【傘】3σ超アラートと自動クレンジング導入" },
-        { name: "高橋 誠 (店舗運営)", dept: "運営部", preRate: 0.4, postRate: 0.85, sru: "【空】猛暑日はアイス売上と待ち時間が両方増加【雨】気温という共通要因による疑似相関【傘】気温28度以上の日は給水・モバイルオーダー強化" },
-        { name: "田中 美咲 (マーケティング)", dept: "マーケ部", preRate: 0.5, postRate: 0.92, sru: "【空】常連客アンケートだけでは初回客の不満が漏れる【雨】標本バイアスが発生【傘】層別サンプリング(ファミリー80:学生20)で調査" },
-        { name: "伊藤 大輔 (情報システム)", dept: "IT推進部", preRate: 0.75, postRate: 1.0, sru: "【空】各部署にCSVが散在【雨】データレイクとDWHの分離が必要【傘】生ログをレイクへ集約しDWH+BIで日次モニタリング" }
+        { name: "佐藤 健太 (営業1課)", dept: "営業本部", preRate: 0.55, postRate: 0.95, sru: "【空】6月から満足度が0.3下がった【雨】6月はアプリ回答だけで若い回答者が多い【傘】回答方法と年代で層化して取り直す" },
+        { name: "鈴木 陽菜 (企画部)", dept: "経営企画", preRate: 0.65, postRate: 1.0, sru: "【空】公式の平均待ち時間は横ばい【雨】一般列だけ伸びている【傘】一般列の待ち時間を KPI にする" },
+        { name: "高橋 誠 (店舗運営)", dept: "運営部", preRate: 0.4, postRate: 0.85, sru: "【空】雨の日は満足度が低い【雨】去年も同じなので今回の原因ではない【傘】雨の日対策は別の課題として扱う" },
+        { name: "田中 美咲 (マーケティング)", dept: "マーケ部", preRate: 0.5, postRate: 0.92, sru: "【空】売店売上と待ち時間に強い相関【雨】来園者数による疑似相関【傘】来園者数で層別して見る" },
+        { name: "伊藤 大輔 (情報システム)", dept: "IT推進部", preRate: 0.75, postRate: 1.0, sru: "【空】パスを買っていない人の満足度だけが下がった【雨】優先パスの販売枠が多すぎる可能性【傘】販売枠の上限を試験的に下げる" }
       ];
 
       demoProfiles.forEach((p, idx) => {
@@ -2458,7 +2533,7 @@
           const postOk = ((idx + mIdx) % 7 !== 0);
           const postChoice = postOk ? m.postQuiz.answer : (m.postQuiz.answer + 2) % 4;
           rec.postAnswers[m.id] = { choice: postChoice, correct: postOk, time: "14:" + (20 + mIdx) };
-          rec.labResponses[m.id] = m.id === "m4" ? p.sru : `${m.code} 演習確認済（${p.name}）`;
+          rec.labResponses[m.id] = m.id === "m12" ? p.sru : `${m.code} 演習確認済（${p.name}）`;
         });
         classRecords[p.name] = rec;
       });
@@ -2655,12 +2730,14 @@
       document.getElementById("student-module-view").classList.remove("hidden");
       document.getElementById("dataset-explorer-view").classList.add("hidden");
       document.getElementById("instructor-dashboard-view").classList.add("hidden");
+      document.getElementById("case-note-view").classList.add("hidden");
     }
 
     function showDatasetView() {
       document.getElementById("student-module-view").classList.add("hidden");
       document.getElementById("dataset-explorer-view").classList.remove("hidden");
       document.getElementById("instructor-dashboard-view").classList.add("hidden");
+      document.getElementById("case-note-view").classList.add("hidden");
       renderDatasetExplorer();
     }
 
@@ -2668,7 +2745,28 @@
       document.getElementById("student-module-view").classList.add("hidden");
       document.getElementById("dataset-explorer-view").classList.add("hidden");
       document.getElementById("instructor-dashboard-view").classList.remove("hidden");
+      document.getElementById("case-note-view").classList.add("hidden");
       renderInstructorDashboard();
+    }
+
+    function caseNoteText() {
+      const order = ["空", "雨", "傘", null];
+      const label = { 空: "【空】事実", 雨: "【雨】解釈", 傘: "【傘】打ち手", null: "そのほかの記録" };
+      return order.map((tag) => {
+        const items = MODULES.filter((m) => m.record && m.record.tag === tag && studentState.labResponses[m.id]);
+        if (!items.length) return "";
+        return `${label[tag]}\n` + items.map((m) => `・${m.code}：${studentState.labResponses[m.id]}`).join("\n");
+      }).filter(Boolean).join("\n\n");
+    }
+
+    function showCaseNote() {
+      ["student-module-view", "dataset-explorer-view", "instructor-dashboard-view"].forEach((id) =>
+        document.getElementById(id).classList.add("hidden"));
+      document.getElementById("case-note-view").classList.remove("hidden");
+      const txt = caseNoteText();
+      document.getElementById("case-note-body").innerHTML = txt
+        ? `<pre class="whitespace-pre-wrap bg-slate-50 border border-slate-200 rounded-lg p-4 text-xs sm:text-sm">${txt.replace(/</g, "&lt;")}</pre>`
+        : `<p class="text-slate-500">まだ記録がありません。各モジュールの STEP 4 で「案件ノートに記録」してください。</p>`;
     }
 
     function switchInstTab(activeTabId) {
@@ -2826,6 +2924,11 @@
 
       // 5. Dataset Explorer Controls
       document.getElementById("btn-dataset-overview").addEventListener("click", showDatasetView);
+      document.getElementById("btn-open-case-note").addEventListener("click", showCaseNote);
+      document.getElementById("btn-close-case-note").addEventListener("click", showStudentView);
+      document.getElementById("btn-copy-case-note").addEventListener("click", async () => {
+        try { await navigator.clipboard.writeText(caseNoteText()); } catch (e) {}
+      });
       document.getElementById("btn-close-dataset-view").addEventListener("click", showStudentView);
       ["exp-weather", "exp-category", "exp-clean"].forEach((id) => {
         document.getElementById(id).addEventListener("change", renderDatasetExplorer);
@@ -2877,7 +2980,7 @@
             const a = stu.postAnswers && stu.postAnswers[m.id];
             return a ? `${a.choice + 1}(${a.correct ? "O" : "X"})` : "-";
           });
-          const sru = ((stu.labResponses && stu.labResponses.m4) || "").replace(/"/g, '""');
+          const sru = ((stu.labResponses && stu.labResponses.m12) || "").replace(/"/g, '""');
           lines.push([`"${stu.name}"`, `"${stu.dept || ""}"`, sc.prePct ?? 0, sc.postPct ?? 0, ...preCols, ...postCols, `"${sru}"`].join(","));
         });
         const blob = new Blob(["\uFEFF" + lines.join("\n")], { type: "text/csv;charset=utf-8" });
@@ -2919,6 +3022,9 @@
     initEvents();
     updateHeaderStats();
     renderActiveModule();
+    ParkData.loadTables(PARK_TABLES)
+      .then((t) => { PARK = t; renderActiveModule(); })
+      .catch((e) => { PARK_ERROR = e.message; renderActiveModule(); });
 
     // Show student name registration modal on first visit if name is empty
     if (!studentState.name) {

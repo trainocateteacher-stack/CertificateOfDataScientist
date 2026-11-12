@@ -34,6 +34,11 @@
 sql.js 1.14.2 の本体は `assets/vendor/sql.js-1.14.2/` に同梱しているため、外部の CDN には接続しません。
 テーブル：`wait_times`（= wait_times_clean）、`survey`（= survey_clean）、`daily_ops`、`students`・`club`（テキスト p.153）。
 
+## Python
+`python.html` の5つのグラフは、同梱の Plotly.js 4.1.1（MIT）で描くため、Python を動かさなくても全員が操作できます。
+「Python で実行してみる」を押した人だけ、同梱の Pyodide 0.29.5（MPL-2.0、ブラウザで動く Python）と pandas・numpy・plotly 7.1.0 を読み込みます（初回 約30MB）。
+外部の CDN には接続しません。同梱した部品とライセンスの一覧は `assets/vendor/pyodide-0.29.5/NOTICE.txt` にあります。
+
 サイトは CSV を読み込むため、ファイルを直接開く（file://）と動きません。公開サイトか、`python3 -m http.server` などのローカルサーバーで開いてください。
 
 ## Cloudflare Pages
@@ -48,4 +53,4 @@ sql.js 1.14.2 の本体は `assets/vendor/sql.js-1.14.2/` に同梱している�
 | V1 | 初期版。1ページ型の受講者サイト |
 | V2 | 複数ページ化、Excel風UI、テキスト連動問題、SQL Labを追加 |
 | V3 | 上の「V3 の主な変更点」を参照 |
-| **V4** | **データを1本化（待ち時間・アンケート・日別運営）し、「満足度低下の調査」という案件の物語で12モジュールを再構成。SQL を sql.js（本物の SQLite）に置き換え** |
+| **V4** | **データを1本化（待ち時間・アンケート・日別運営）し、「満足度低下の調査」という案件の物語で12モジュールを再構成。SQL を sql.js（本物の SQLite）に置き換え。Python ページを Plotly.js のグラフ＋ブラウザで動く Python（Pyodide）に** |

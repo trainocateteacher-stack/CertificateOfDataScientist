@@ -1,0 +1,13 @@
+このフォルダは、受講者サイトの Python 演習（python.html）をブラウザだけで動かすために同梱したものです。
+外部の CDN に接続しなくても動くよう、必要なファイルだけを置いています。
+
+- Pyodide 0.29.5（npm: pyodide@0.29.5）            Mozilla Public License 2.0  https://github.com/pyodide/pyodide
+- numpy 2.2.5 / pandas 2.3.3（Pyodide 0.29.5 配布物） BSD-3-Clause
+- python-dateutil 2.9.0.post0                       Apache-2.0 / BSD-3-Clause
+- pytz 2025.2 / six 1.17.0 / packaging 26.2           MIT / MIT / Apache-2.0 or BSD-2-Clause
+- micropip 0.11.1                                    MPL-2.0
+- narwhals 2.15.0                                    MIT
+- plotly 7.1.0（PyPI）                               MIT  https://github.com/plotly/plotly.py
+
+wheel ファイルは pyodide-lock.json に記載の sha256 と一致することを確認済み（2026-11-12）。
+plotly-7.1.0 の sha256：dbb7fa18afce40d0a8e80d1bf162eceb3faa0ce5a77fe741ad09a74cf78f53f3（PyPI 記載と一致）

@@ -6,11 +6,12 @@
   <title>Python補助・標本抽出シミュレーター (第4・5章連動) | ビジネスパーソンのためのデータリテラシー入門</title>
   <link rel="stylesheet" href="assets/style.css">
   <link rel="stylesheet" href="assets/v2.css">
+  <link rel="stylesheet" href="assets/py.css?v=4">
 </head>
 <body>
   <header>
     <b>第4章 p.103-106 & 第5章 p.150-158 連動</b>
-    <h1>Python補助演習 ＆ 母集団と標本・標準誤差シミュレーター</h1>
+    <h1>Python 演習（グラフ・標本抽出・基本統計量）</h1>
     <nav>
       <a href="index.html">ホーム</a>
       <a href="workbook.html">Excel風操作 (第3・4章)</a>
@@ -20,6 +21,16 @@
     </nav>
   </header>
   <main>
+    <section class="card py-intro">
+      <i>グラフは全員が操作できます。Python の実行は「やってみたい人」向けです</i>
+      <h2>📈 Python（pandas と plotly）でテーマパークのデータをグラフにする</h2>
+      <p style="font-size:13.5px;margin:4px 0 8px;">下の5つのグラフは、ページを開いたときからマウスで操作できます（拡大・値の表示・凡例のクリック）。右のコードは、同じグラフを Python で作るときのコードです。「▶ Python で実行してみる」を押すと、ブラウザの中で本物の Python が動きます。</p>
+      <p style="font-size:12.5px;margin:0 0 8px;color:var(--muted);">はじめて実行するときは、Python 一式（約30MB）を読み込むため数十秒かかります。会社のネットワークやブラウザの設定によっては動かないことがあります。その場合でも、グラフとコードはこのまま見られます。</p>
+      <div id="py-status" class="py-status">Python はまだ読み込んでいません（実行ボタンを押すと読み込みます）</div>
+    </section>
+
+    <div id="py-charts"></div>
+
     <section class="card">
       <i>第4章 p.103-106「推測統計学：母集団と標本・標本誤差と標準誤差」インタラクティブ体験</i>
       <h2>🎲 標本抽出（サンプリング）と標準誤差シミュレーター</h2>
@@ -29,33 +40,6 @@
         <span id="pop-info" style="font-size:13.5px;font-weight:700;color:var(--navy);margin-left:8px;">母集団データを読み込み中...</span>
       </div>
       <div id="sim-results"></div>
-    </section>
-
-    <section class="card">
-      <div class="code-header">
-        <div>
-          <i>テキスト p.103-106</i>
-          <h2>1. データ確認（基本統計量と欠損値の確認）</h2>
-        </div>
-        <button type="button" class="secondary copy-btn" data-target="code1">コードをコピー</button>
-      </div>
-      <pre id="code1">import pandas as pd
-
-df = pd.read_csv("data/wait_times_raw.csv")
-print(df["wait_time_min"].describe())
-print(df.isna().sum())</pre>
-    </section>
-
-    <section class="card">
-      <div class="code-header">
-        <div>
-          <i>テキスト p.103-106</i>
-          <h2>2. 標本と標準誤差（Pythonによるランダムサンプリング）</h2>
-        </div>
-        <button type="button" class="secondary copy-btn" data-target="code2">コードをコピー</button>
-      </div>
-      <pre id="code2">for n in [5, 20, 100]:
-    print(n, df["wait_time_min"].dropna().sample(n).mean())</pre>
     </section>
 
     <section class="card">
@@ -214,5 +198,9 @@ print(df.isna().sum())</pre>
       initSim();
     })();
   </script>
+  <script src="assets/vendor/plotly.js-4.1.1/plotly-cartesian.min.js"></script>
+  <script src="assets/data.js?v=4"></script>
+  <script src="assets/pyrun.js?v=4"></script>
+  <script src="assets/pycharts.js?v=4"></script>
 </body>
 </html>

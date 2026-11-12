@@ -1,0 +1,28 @@
+/* V4：Python ページ（グラフ＋Python 実行） */
+.py-note { font-size: 13.5px; margin: 4px 0 10px; }
+.py-grid { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 14px; align-items: start; }
+.py-grid-single { grid-template-columns: minmax(0, 1fr); }
+.py-plot { width: 100%; min-height: 340px; }
+.py-result .py-plot { min-height: 0; }
+.py-code-head { font-size: 12.5px; margin-bottom: 4px; color: var(--navy); }
+.py-code {
+  width: 100%;
+  font-family: Consolas, Monaco, "Courier New", monospace;
+  font-size: 12.5px;
+  line-height: 1.5;
+  background: #102536;
+  color: #d9f2ff;
+  border-radius: 10px;
+  padding: 10px;
+  box-sizing: border-box;
+  white-space: pre;
+  overflow: auto;
+}
+.py-actions { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 6px; }
+.py-actions button { margin: 0; }
+.py-result { margin-top: 12px; border-top: 1px dashed var(--line); padding-top: 10px; }
+.py-out { max-height: 220px; overflow: auto; font-size: 12px; }
+.py-err { color: #b91c1c; font-weight: 700; }
+.py-status { display: inline-block; font-size: 13px; font-weight: 700; background: var(--sky); color: var(--navy); padding: 6px 12px; border-radius: 10px; }
+.py-status.py-error { background: #fdecec; color: #9b1c1c; }
+@media (max-width: 860px) { .py-grid { grid-template-columns: minmax(0, 1fr); } }
